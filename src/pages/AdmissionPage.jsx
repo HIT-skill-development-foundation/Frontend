@@ -80,7 +80,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
   return (
     <div className="flex flex-col w-full">
       {/* Session Header Banner */}
-      <div className="w-full bg-primary text-on-primary py-space-sm px-margin-sm lg:px-margin-lg shadow-sm">
+      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm">
           <div className="flex items-center gap-space-xs text-label-sm font-label-sm">
             <button 
@@ -88,14 +88,14 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                 if (setActiveTab) setActiveTab('home');
                 navigate('/');
               }} 
-              className="text-on-primary/70 hover:text-on-primary transition-colors cursor-pointer"
+              className="text-white/70 hover:text-white transition-colors cursor-pointer"
             >
               HIT Computer Education
             </button>
-            <span className="text-on-primary/40">/</span>
+            <span className="text-white/40">/</span>
             <span className="text-secondary-fixed font-semibold">Student Admissions Session 2026-2027</span>
           </div>
-          <div className="flex items-center gap-space-xs bg-primary-container px-space-sm py-1 rounded-full text-label-sm font-label-sm text-secondary-fixed">
+          <div className="flex items-center gap-space-xs bg-white/10 px-space-sm py-1 rounded-full text-label-sm font-label-sm text-secondary-fixed border border-white/15">
             <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             <span>Direct Enrollment • Processing Fee Flat ₹100.00</span>
           </div>
@@ -103,7 +103,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
       </div>
 
       {/* Hero Banner */}
-      <section className="w-full bg-gradient-to-r from-primary via-primary-container to-primary text-on-primary py-space-lg px-margin-sm lg:px-margin-lg shadow-inner">
+      <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-space-lg px-margin-sm lg:px-margin-lg shadow-inner">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-space-md">
           <div className="flex items-start gap-space-md max-w-3xl">
             <div className="w-12 h-12 rounded-xl bg-secondary/30 flex items-center justify-center shrink-0 text-secondary-fixed shadow-sm">
@@ -114,19 +114,19 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                 <span className="px-2 py-0.5 rounded text-label-sm font-label-sm uppercase tracking-wider bg-on-tertiary-container text-white font-bold">
                   Standard Fee Notice
                 </span>
-                <span className="text-label-sm font-label-sm text-on-primary-container">
+                <span className="text-label-sm font-label-sm text-white/80">
                   Govt. Registered Skill Mission
                 </span>
               </div>
               <h1 className="font-headline-xl text-2xl sm:text-4xl text-white font-bold leading-tight tracking-tight">
                 Online Admission Form <span className="text-tertiary-fixed font-normal">(Session 2026–27)</span>
               </h1>
-              <p className="font-body-md text-sm sm:text-base text-on-primary-container mt-1">
+              <p className="font-body-md text-sm sm:text-base text-white/80 mt-1">
                 Admission & Verification Processing Fee: <strong className="text-white font-semibold">Flat ₹100.00</strong>. Instant digital registration code, student profile, and QR-verifiable student credential generated immediately on transaction clearance.
               </p>
             </div>
           </div>
-          <div className="flex flex-row md:flex-col items-center md:items-end justify-between bg-primary-container/80 backdrop-blur-md p-space-md rounded-xl shadow-md min-w-[220px]">
+          <div className="flex flex-row md:flex-col items-center md:items-end justify-between bg-white/10 backdrop-blur-md p-space-md rounded-xl shadow-md min-w-[220px] border border-white/15">
             <div className="flex flex-col text-left md:text-right">
               <span className="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wide">
                 Government Affiliated

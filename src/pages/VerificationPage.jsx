@@ -48,11 +48,11 @@ export default function VerificationPage({ initialQuery = '' }) {
   return (
     <div className="flex flex-col w-full pb-space-xl">
       {/* Header Banner */}
-      <div className="w-full bg-primary text-on-primary py-space-sm px-margin-sm lg:px-margin-lg shadow-sm">
+      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
-            <span className="text-on-primary/70">Central Registry</span>
-            <span className="text-on-primary/40">/</span>
+            <span className="text-white/70">Central Registry</span>
+            <span className="text-white/40">/</span>
             <span className="text-secondary-fixed font-semibold">Cryptographic Ledger Verification</span>
           </div>
           <span className="text-emerald-400 flex items-center gap-1">
@@ -90,7 +90,7 @@ export default function VerificationPage({ initialQuery = '' }) {
             </div>
             <button
               type="submit"
-              className="h-12 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-sm transition-all flex items-center justify-center gap-2 shrink-0"
+              className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
             >
               <span className="material-symbols-outlined text-lg">fact_check</span>
               <span>Verify Records</span>
@@ -103,7 +103,7 @@ export default function VerificationPage({ initialQuery = '' }) {
           result ? (
             <div className="bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 overflow-hidden">
               {/* Top Dual-Zone Authoritative Header */}
-              <div className="bg-gradient-to-r from-primary via-primary-container to-primary p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+              <div className="bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-white p-0.5 flex items-center justify-center shadow-sm shrink-0 overflow-hidden border border-secondary/30">
                     <img

@@ -227,19 +227,19 @@ export default function GalleryPage() {
   return (
     <div className="flex flex-col w-full pb-space-xl">
       {/* Top Breadcrumb & Metadata Strip */}
-      <div className="w-full bg-surface-container-low py-space-sm px-margin sm:px-margin-lg border-b border-outline-variant/20">
+      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin sm:px-margin-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-xs text-xs sm:text-sm">
-          <div className="flex items-center gap-2 text-on-surface-variant">
+          <div className="flex items-center gap-2 text-white/80">
             <span>Home</span>
             <span className="material-symbols-outlined text-[14px]">chevron_right</span>
-            <span className="text-primary font-bold">Official Activities & Events Gallery</span>
+            <span className="text-secondary-fixed font-bold">Official Activities & Events Gallery</span>
           </div>
-          <div className="flex items-center gap-3 text-on-surface-variant text-xs">
-            <span className="inline-flex items-center gap-1.5 text-secondary font-semibold">
-              <span className="w-2 h-2 rounded-full bg-secondary animate-pulse"></span>
+          <div className="flex items-center gap-3 text-white/80 text-xs">
+            <span className="inline-flex items-center gap-1.5 text-secondary-fixed font-semibold">
+              <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
               Live Public Records Archive
             </span>
-            <span className="hidden sm:inline text-outline-variant">|</span>
+            <span className="hidden sm:inline text-white/40">|</span>
             <span className="hidden sm:inline">District Mau (Eastern UP) Regional Chapter</span>
           </div>
         </div>

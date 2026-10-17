@@ -13,9 +13,9 @@ export default function Footer({ setActiveTab }) {
   };
 
   return (
-    <footer className="w-full bg-primary text-on-primary">
+    <footer className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white shadow-2xl relative overflow-hidden">
       {/* Top Credentials Ribbon */}
-      <div className="bg-primary-container/80 border-b border-outline-variant/20 py-space-md px-margin-sm lg:px-margin-lg">
+      <div className="bg-black/25 backdrop-blur-md border-b border-white/10 py-space-md px-margin-sm lg:px-margin-lg">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-md text-label-sm font-label-sm">
           <div className="flex items-center gap-space-sm flex-wrap text-surface-container-high">
             <span className="flex items-center gap-1 text-secondary-fixed font-semibold">
@@ -59,27 +59,27 @@ export default function Footer({ setActiveTab }) {
                 <span className="text-xs text-secondary-fixed block">Skill Development Foundation</span>
               </div>
             </div>
-            <p className="font-body-md text-sm text-on-primary-container leading-relaxed">
+            <p className="font-body-md text-sm text-white/80 leading-relaxed">
               Academic Wing: <strong className="text-white">HIT Computer Education</strong>. Providing rural and semi-urban youths across Purvanchal and Uttar Pradesh with verified technical literacy, vocational competence, and government-recognized diplomas.
             </p>
-            <div className="flex items-center gap-2 text-xs text-surface-container-highest pt-2">
-              <span className="material-symbols-outlined text-sm text-tertiary-fixed">location_on</span>
+            <div className="flex items-center gap-2 text-xs text-white/70 pt-2">
+              <span className="material-symbols-outlined text-sm text-secondary-fixed">location_on</span>
               <span>Jamal Mirzapur, Kasba Khas, Ghosi, Mau, Uttar Pradesh - 275105</span>
             </div>
-            <div className="flex flex-col gap-1.5 text-xs text-surface-container-highest pt-1">
+            <div className="flex flex-col gap-1.5 text-xs text-white/70 pt-1">
               <div className="flex items-center gap-2">
-                <span className="material-symbols-outlined text-sm text-tertiary-fixed">call</span>
+                <span className="material-symbols-outlined text-sm text-secondary-fixed">call</span>
                 <div className="flex flex-wrap gap-2">
-                  <a href="tel:+919616764675" className="hover:text-white transition-colors font-medium">+91 96167-64675</a>
+                  <a href="tel:+919616764675" className="hover:text-white transition-colors font-medium text-white/90">+91 96167-64675</a>
                   <span>•</span>
-                  <a href="tel:+918115507046" className="hover:text-white transition-colors font-medium">+91 81155-07046</a>
+                  <a href="tel:+918115507046" className="hover:text-white transition-colors font-medium text-white/90">+91 81155-07046</a>
                 </div>
               </div>
               <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
-                <span className="material-symbols-outlined text-sm text-tertiary-fixed">mail</span>
-                <a href="mailto:hitindia.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30">hitindia.ghosi@gmail.com</a>
+                <span className="material-symbols-outlined text-sm text-secondary-fixed">mail</span>
+                <a href="mailto:hitindia.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30 text-white/90">hitindia.ghosi@gmail.com</a>
                 <span>•</span>
-                <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30">hitcomputer.ghosi@gmail.com</a>
+                <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30 text-white/90">hitcomputer.ghosi@gmail.com</a>
               </div>
             </div>
           </div>
@@ -89,7 +89,7 @@ export default function Footer({ setActiveTab }) {
             <h4 className="font-headline text-sm font-bold text-secondary-fixed uppercase tracking-wider mb-space-sm">
               Academic Portals
             </h4>
-            <ul className="space-y-2 text-sm text-on-primary-container">
+            <ul className="space-y-2 text-sm text-white/80">
               <li>
                 <button onClick={() => handleNav('/courses', 'courses')} className="hover:text-white transition-colors cursor-pointer">
                   Course Offerings
@@ -118,7 +118,7 @@ export default function Footer({ setActiveTab }) {
             <h4 className="font-headline text-sm font-bold text-secondary-fixed uppercase tracking-wider mb-space-sm">
               Programs
             </h4>
-            <ul className="space-y-2 text-sm text-on-primary-container">
+            <ul className="space-y-2 text-sm text-white/80">
               <li><button onClick={() => handleNav('/courses', 'courses')} className="hover:text-white transition-colors cursor-pointer">ADCA (12 Months - ₹12,000)</button></li>
               <li><button onClick={() => handleNav('/courses', 'courses')} className="hover:text-white transition-colors cursor-pointer">DCA (12 Months - ₹12,000)</button></li>
               <li><button onClick={() => handleNav('/courses', 'courses')} className="hover:text-white transition-colors cursor-pointer">PGDCA (12 Months - ₹22,000)</button></li>
@@ -133,7 +133,7 @@ export default function Footer({ setActiveTab }) {
             <h4 className="font-headline text-sm font-bold text-secondary-fixed uppercase tracking-wider mb-space-sm">
               Quick Links
             </h4>
-            <ul className="space-y-2 text-sm text-on-primary-container">
+            <ul className="space-y-2 text-sm text-white/80">
               <li>
                 <button onClick={() => handleNav('/about', 'about')} className="hover:text-white transition-colors cursor-pointer">
                   About Us
@@ -164,7 +164,7 @@ export default function Footer({ setActiveTab }) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="border-t border-outline-variant/20 py-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm text-label-sm font-label-sm text-surface-container-high">
+        <div className="border-t border-white/15 py-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm text-label-sm font-label-sm text-white/70">
           <p>© 2026 H.I.T India Skill Development Foundation. All rights reserved.</p>
           <div className="flex flex-wrap items-center gap-space-md">
             <span>Kasba Khas, Ghosi, Mau Central Campus</span>

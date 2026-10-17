@@ -43,7 +43,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
   };
 
   return (
-    <header className="sticky top-0 w-full z-50 bg-gradient-to-r from-[#001438] via-[#092252] to-[#153478] text-white shadow-[0_4px_25px_rgba(0,18,51,0.25)] border-b border-white/10 backdrop-blur-md">
+    <header className="sticky top-0 w-full z-50 bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white shadow-[0_4px_30px_rgba(0,18,51,0.35)] border-b border-white/15 backdrop-blur-md">
       {/* Top Notification Strip */}
       <div className="bg-black/25 text-white/90 px-margin-sm lg:px-margin-lg py-1.5 flex items-center justify-between text-label-sm font-label-sm border-b border-white/10">
         <div className="flex items-center gap-space-md flex-wrap">
@@ -79,18 +79,18 @@ export default function Navbar({ activeTab, setActiveTab }) {
           onClick={() => handleNavClick({ path: '/', id: 'home' })}
           className="flex items-center gap-3.5 sm:gap-4 mr-6 lg:mr-10 xl:mr-12 cursor-pointer select-none group shrink-0"
         >
-          <div className="w-10 h-10 rounded-full overflow-hidden shadow-md group-hover:scale-105 transition-transform shrink-0 border-2 border-secondary-fixed/70 bg-white flex items-center justify-center">
+          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-lg group-hover:scale-105 transition-transform shrink-0 border-2 border-secondary-fixed/80 bg-white flex items-center justify-center">
             <img
               src={logo}
               alt="HIT Computer Education Official Logo"
-              className="w-full h-full object-cover scale-[1.12] block"
+              className="w-full h-full object-cover scale-[1.03] block"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-headline text-sm sm:text-base font-extrabold tracking-tight text-white leading-tight drop-shadow-xs">
+            <span className="font-headline text-base sm:text-lg font-extrabold tracking-tight text-white leading-tight drop-shadow-xs">
               HIT COMPUTER EDUCATION
             </span>
-            <span className="text-[10px] text-secondary-fixed/90 font-medium hidden sm:inline">
+            <span className="text-[11px] text-secondary-fixed/90 font-medium hidden sm:inline">
               Academic Wing of H.I.T India Skill Development Foundation
             </span>
           </div>
@@ -121,7 +121,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
 
                   {/* Dropdown Menu on Hover */}
                   <div className="absolute right-0 top-full pt-2 w-64 z-50 pointer-events-none group-hover:pointer-events-auto opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
-                    <div className="bg-[#092252]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-2 flex flex-col gap-1 ring-1 ring-black/20">
+                    <div className="bg-gradient-to-b from-[#0a3582]/95 to-[#001338]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-2 flex flex-col gap-1 ring-1 ring-black/20">
                       {link.children.map((child) => (
                         <button
                           key={child.id}
@@ -184,7 +184,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
 
       {/* Mobile Drawer Menu with Matching Gradient */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-gradient-to-b from-[#092252] to-[#001438] border-t border-white/15 px-4 py-3 shadow-2xl max-h-[80vh] overflow-y-auto">
+        <div className="lg:hidden bg-gradient-to-b from-[#0a3582] via-[#072a6b] to-[#000d29] border-t border-white/15 px-4 py-3 shadow-2xl max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-2">
             {NAV_LINKS.map((link) => {
               if (link.hasDropdown) {

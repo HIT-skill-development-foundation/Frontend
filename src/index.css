@@ -43,6 +43,24 @@
   background: #747780;
 }
 
+/* Brand Gradient Utilities */
+.bg-brand-gradient {
+  background: linear-gradient(135deg, #000d29 0%, #072a6b 35%, #0d4499 70%, #1a62c6 100%);
+}
+
+.bg-brand-gradient-horizontal {
+  background: linear-gradient(90deg, #000d29 0%, #072a6b 35%, #0d4499 70%, #1a62c6 100%);
+}
+
+.bg-brand-btn {
+  background: linear-gradient(135deg, #072a6b 0%, #0d4499 50%, #1a62c6 100%);
+  transition: all 0.25s ease-in-out;
+}
+
+.bg-brand-btn:hover {
+  background: linear-gradient(135deg, #0a3582 0%, #104fa8 50%, #2563eb 100%);
+}
+
 /* Card flip 3D utility */
 .perspective-1000 {
   perspective: 1000px;

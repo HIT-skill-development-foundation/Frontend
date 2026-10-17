@@ -93,7 +93,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </button>
             <button
               onClick={handleDownload}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-container text-white font-semibold text-xs shadow-sm transition-all"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-semibold text-xs shadow-md transition-all cursor-pointer"
             >
               <span className="material-symbols-outlined text-base">picture_as_pdf</span>
               <span>{downloading ? 'Generating PDF...' : 'Download PDF (80G)'}</span>

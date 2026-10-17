@@ -71,18 +71,18 @@ export default function CoursesOfferPage() {
   return (
     <div className="flex flex-col w-full pb-space-xl">
       {/* Top Breadcrumb & Trust Banner */}
-      <div className="w-full bg-primary text-on-primary py-space-sm px-margin-sm lg:px-margin-lg shadow-sm">
+      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
-            <span className="text-on-primary/70">Academic Catalog</span>
-            <span className="text-on-primary/40">/</span>
+            <span className="text-white/70">Academic Catalog</span>
+            <span className="text-white/40">/</span>
             <span className="text-secondary-fixed font-semibold">
               {activeCatalogTab === 'vocational'
                 ? 'Vocational & Computer IT Diploma Programs'
                 : 'University Programs (Online & Distance Mode)'}
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-primary-container text-secondary-fixed text-xs font-semibold">
+          <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 text-secondary-fixed text-xs font-semibold border border-white/15">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
             Direct Admissions Open • Session 2026–2027
           </span>
@@ -90,7 +90,7 @@ export default function CoursesOfferPage() {
       </div>
 
       {/* Hero Header */}
-      <section className="w-full bg-gradient-to-r from-primary via-primary-container to-primary text-on-primary py-12 px-margin-sm lg:px-margin-lg shadow-inner">
+      <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-12 px-margin-sm lg:px-margin-lg shadow-inner">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider mb-3">

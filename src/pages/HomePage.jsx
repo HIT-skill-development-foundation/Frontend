@@ -289,30 +289,30 @@ export default function HomePage({ setActiveTab }) {
       {/* Trust & Impact Counters */}
       <section className="w-full bg-surface-container-low py-8 border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto px-margin-sm lg:px-margin-lg">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-              <span className="font-headline text-3xl font-extrabold text-primary block">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
+            <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow border border-outline-variant/20">
+              <span className="font-headline text-3xl sm:text-4xl font-extrabold text-primary block">
                 <CountUp end={12500} suffix="+" duration={2200} />
               </span>
-              <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Certified Students</span>
-            </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-              <span className="font-headline text-3xl font-extrabold text-secondary block">
-                <CountUp end={48} suffix="+" duration={1800} />
+              <span className="font-label-md text-xs sm:text-sm text-on-surface-variant font-semibold mt-1.5 block">
+                Certified Students
               </span>
-              <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Affiliated Centres</span>
             </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-              <span className="font-headline text-3xl font-extrabold text-on-tertiary-container block">
+            <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow border border-outline-variant/20">
+              <span className="font-headline text-3xl sm:text-4xl font-extrabold text-secondary block">
                 <CountUp end={98.4} decimals={1} suffix="%" duration={2000} />
               </span>
-              <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Course Completion</span>
+              <span className="font-label-md text-xs sm:text-sm text-on-surface-variant font-semibold mt-1.5 block">
+                Course Completion
+              </span>
             </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
-              <span className="font-headline text-3xl font-extrabold text-emerald-600 block">
+            <div className="p-5 rounded-2xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow border border-outline-variant/20">
+              <span className="font-headline text-3xl sm:text-4xl font-extrabold text-emerald-600 block">
                 <CountUp end={100} suffix="%" duration={1900} />
               </span>
-              <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">QR Verified Diplomas</span>
+              <span className="font-label-md text-xs sm:text-sm text-on-surface-variant font-semibold mt-1.5 block">
+                QR Verified Diplomas
+              </span>
             </div>
           </div>
         </div>
@@ -435,7 +435,7 @@ export default function HomePage({ setActiveTab }) {
               <div className="flex flex-wrap items-center gap-3 pt-2">
                 <button
                   onClick={() => handleNavigate('/courses', 'courses')}
-                  className="h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                  className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-base">menu_book</span>
                   <span>Explore Hardware & PGDCA Syllabi</span>
@@ -731,7 +731,7 @@ export default function HomePage({ setActiveTab }) {
                     </span>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-7 py-3 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                      className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
                     >
                       <span className="material-symbols-outlined text-base">send</span>
                       <span>Submit Franchise Inquiry</span>
@@ -752,7 +752,7 @@ export default function HomePage({ setActiveTab }) {
               {/* Franchise Support Hotlines Card */}
               <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/30 space-y-4">
                 <div className="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
-                  <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center font-bold">
+                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#072a6b] to-[#1a62c6] text-white flex items-center justify-center font-bold shadow-md">
                     <span className="material-symbols-outlined text-2xl">support_agent</span>
                   </div>
                   <div>
@@ -896,7 +896,7 @@ export default function HomePage({ setActiveTab }) {
 
       {/* Giving & Donation Callout */}
       <section className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg py-16">
-        <div className="bg-gradient-to-r from-primary-container via-primary to-primary-container text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
+        <div className="bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
           <div className="max-w-2xl">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-tertiary-fixed text-xs font-bold mb-3">
               <span className="material-symbols-outlined text-sm">volunteer_activism</span>

@@ -81,7 +81,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
   return (
     <div className="flex flex-col w-full pb-space-xl">
       {/* Top Subtle Trust Indicator Banner */}
-      <div className="w-full bg-primary-container text-on-primary py-2 px-margin sm:px-margin-lg">
+      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-2 px-margin sm:px-margin-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-xs font-label-md text-xs sm:text-sm">
           <div className="flex items-center gap-space-sm flex-wrap">
             <span className="inline-flex items-center gap-1 bg-surface-container-lowest/15 px-2.5 py-0.5 rounded-full text-surface-bright">

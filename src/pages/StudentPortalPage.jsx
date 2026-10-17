@@ -112,11 +112,11 @@ export default function StudentPortalPage() {
     return (
       <div className="flex flex-col w-full pb-space-xl">
         {/* Header Ribbon */}
-        <div className="w-full bg-primary text-on-primary py-space-sm px-margin-sm lg:px-margin-lg shadow-sm">
+        <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
             <div className="flex items-center gap-space-xs">
-              <span className="text-on-primary/70">Academic Wing</span>
-              <span className="text-on-primary/40">/</span>
+              <span className="text-white/70">Academic Wing</span>
+              <span className="text-white/40">/</span>
               <span className="text-secondary-fixed font-semibold">Student Central Authentication Gateway</span>
             </div>
             <span className="inline-flex items-center gap-1 text-emerald-400">
@@ -472,7 +472,7 @@ export default function StudentPortalPage() {
     <div className="flex flex-col w-full pb-space-xl">
       {/* Top Welcome Dossier Header */}
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-        <div className="relative overflow-hidden bg-primary rounded-3xl text-on-primary p-6 sm:p-8 shadow-xl">
+        <div className="relative overflow-hidden bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] rounded-3xl text-white p-6 sm:p-8 shadow-xl">
           <div className="absolute -right-12 -bottom-16 w-80 h-80 rounded-full bg-secondary opacity-15 blur-3xl pointer-events-none"></div>
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
             <div className="flex flex-col gap-2 max-w-2xl">
