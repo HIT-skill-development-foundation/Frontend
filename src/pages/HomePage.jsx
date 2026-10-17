@@ -1,8 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { centresList } from '../data/mockData';
+import { motion } from 'framer-motion';
 import mainBanner from '../assets/images/main.jpeg';
 import main2Banner from '../assets/images/main2.jpeg';
+import directorImg from '../assets/images/director.jpeg';
 
 export default function HomePage({ setActiveTab }) {
   const navigate = useNavigate();
@@ -218,42 +219,206 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Network of Training Centres */}
-      <section className="w-full bg-surface-container-low py-16">
-        <div className="max-w-7xl mx-auto px-margin-sm lg:px-margin-lg">
-          <div className="text-center max-w-2xl mx-auto mb-10">
-            <span className="text-xs font-bold text-secondary uppercase tracking-wider bg-white px-3 py-1 rounded-full shadow-xs">
-              Purvanchal & Uttar Pradesh Network
-            </span>
-            <h2 className="font-headline text-2xl sm:text-3xl font-bold text-primary mt-2">
-              Authorized Training Centres
-            </h2>
-            <p className="font-body-md text-sm text-on-surface-variant mt-1">
-              Equipped with modern computer hardware, high-speed fiber internet, and certified instructors.
-            </p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {centresList.map((centre) => (
-              <div
-                key={centre.id}
-                className="bg-surface-container-lowest p-5 rounded-xl shadow-xs border border-outline-variant/30 flex items-start gap-3"
-              >
-                <div className="w-10 h-10 rounded-lg bg-primary-container text-on-primary flex items-center justify-center shrink-0">
-                  <span className="material-symbols-outlined text-xl">location_city</span>
-                </div>
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center justify-between">
-                    <span className="font-mono text-[10px] text-secondary font-bold">{centre.id}</span>
-                    <span className="text-[10px] bg-emerald-100 text-emerald-800 font-bold px-2 py-0.5 rounded-full">
-                      {centre.status}
-                    </span>
-                  </div>
-                  <h4 className="font-headline text-sm font-bold text-primary truncate mt-0.5">{centre.name}</h4>
-                  <p className="text-xs text-on-surface-variant mt-1 leading-snug">{centre.address}</p>
-                </div>
+      {/* Director's Master Training & Specialized Wings (Split 2-Column with Framer Motion) */}
+      <section className="w-full bg-gradient-to-b from-surface via-surface-container-lowest to-surface-container-low py-16 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20 overflow-hidden">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+            
+            {/* LEFT HALF: Content on Hardware Training, PGDCA Teacher Training & Director's Mentorship */}
+            <motion.div
+              className="lg:col-span-7 flex flex-col justify-center space-y-6"
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, ease: 'easeOut' }}
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              {/* Badge */}
+              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider w-fit shadow-xs">
+                <span className="material-symbols-outlined text-base">engineering</span>
+                <span>Director's Desk & Master Training Wing</span>
               </div>
-            ))}
+
+              {/* Headline */}
+              <div className="space-y-2">
+                <h2 className="font-headline text-2xl sm:text-4xl font-extrabold text-primary leading-tight">
+                  Master-Led <span className="text-secondary">Computer Hardware</span> &{' '}
+                  <span className="text-tertiary-container">PGDCA Teacher Training</span>
+                </h2>
+                <p className="text-xs sm:text-sm text-secondary font-bold uppercase tracking-wide">
+                  Direct Practical Mentorship Under the Leadership of the Institute Director
+                </p>
+              </div>
+
+              {/* Narrative / Context */}
+              <p className="font-body-lg text-sm sm:text-base text-on-surface-variant leading-relaxed">
+                At HIT Computer Education, our Director actively leads specialized practical training sessions.
+                Rather than relying solely on theoretical slides, students work on live diagnostic benches under his
+                direct personal guidance—mastering chip-level PC hardware and training to become certified computer
+                teachers and institutional faculty.
+              </p>
+
+              {/* 2 Focused Training Modules (Hardware & PGDCA Teacher Training) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+                {/* Module 1: Computer Hardware Training */}
+                <motion.div
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs hover:shadow-md transition-all space-y-2.5"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined text-xl">build</span>
+                  </div>
+                  <div>
+                    <h3 className="font-headline text-sm font-bold text-primary">
+                      Computer Hardware Training (CHW)
+                    </h3>
+                    <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+                      Complete motherboard diagnostics, PC assembling, SMPS power supplies, CPU/RAM installation,
+                      BIOS/CMOS setup, OS installation, and real-time troubleshooting.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-outline-variant/20 flex items-center gap-1.5 text-[11px] font-bold text-secondary">
+                    <span className="material-symbols-outlined text-sm">verified</span>
+                    <span>100% Practical Lab Bench Training</span>
+                  </div>
+                </motion.div>
+
+                {/* Module 2: PGDCA & Teacher Training */}
+                <motion.div
+                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
+                  className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs hover:shadow-md transition-all space-y-2.5"
+                >
+                  <div className="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined text-xl">school</span>
+                  </div>
+                  <div>
+                    <h3 className="font-headline text-sm font-bold text-primary">
+                      PGDCA & Teacher Training (CTT)
+                    </h3>
+                    <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
+                      Advanced diploma curriculum preparing professional educators. Covers pedagogical methodology,
+                      IT syllabus delivery, lab coordination, and faculty certification.
+                    </p>
+                  </div>
+                  <div className="pt-2 border-t border-outline-variant/20 flex items-center gap-1.5 text-[11px] font-bold text-emerald-700">
+                    <span className="material-symbols-outlined text-sm">verified</span>
+                    <span>Prepares Certified Computer Faculty</span>
+                  </div>
+                </motion.div>
+              </div>
+
+              {/* Direct Mentor Highlights */}
+              <div className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/20 space-y-2 text-xs">
+                <span className="font-bold text-primary flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-base text-secondary">verified_user</span>
+                  <span>Why Train Directly Under the Director?</span>
+                </span>
+                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-on-surface font-medium">
+                  <li className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                    <span>Live component testing & multimeters</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                    <span>State-level computer teacher credentials</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                    <span>Industry internship & repair guidance</span>
+                  </li>
+                  <li className="flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                    <span>Personalized career mentorship</span>
+                  </li>
+                </ul>
+              </div>
+
+              {/* CTA Buttons */}
+              <div className="flex flex-wrap items-center gap-3 pt-2">
+                <button
+                  onClick={() => handleNavigate('/courses', 'courses')}
+                  className="h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-base">menu_book</span>
+                  <span>Explore Hardware & PGDCA Syllabi</span>
+                </button>
+                <button
+                  onClick={() => handleNavigate('/student-portal', 'student_portal')}
+                  className="h-11 px-5 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-primary font-bold text-xs sm:text-sm shadow-xs border border-outline-variant/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                >
+                  <span className="material-symbols-outlined text-base">how_to_reg</span>
+                  <span>Apply for Training</span>
+                </button>
+              </div>
+            </motion.div>
+
+            {/* RIGHT HALF: Director Image with Framer Motion Animation & Floating Badges */}
+            <motion.div
+              className="lg:col-span-5 relative flex justify-center items-center"
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
+              viewport={{ once: true, margin: '-60px' }}
+            >
+              <div className="relative w-full max-w-md">
+                {/* Background Glow */}
+                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-secondary/20 via-primary/10 to-tertiary-container/20 blur-xl opacity-70"></div>
+
+                {/* Director Photo Card Frame */}
+                <div className="relative rounded-3xl overflow-hidden border-2 border-outline-variant/30 shadow-2xl bg-surface-container-lowest group">
+                  <img
+                    src={directorImg}
+                    alt="Institute Director conducting training and institutional oversight"
+                    className="w-full h-[400px] sm:h-[480px] object-cover object-top block transition-transform duration-500 group-hover:scale-105"
+                  />
+
+                  {/* Gradient Bottom Overlay */}
+                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-5 text-white">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-secondary-fixed block">
+                      Leadership & Master Mentorship
+                    </span>
+                    <h3 className="font-headline text-lg sm:text-xl font-extrabold text-white">
+                      Institute Director
+                    </h3>
+                    <p className="text-xs text-white/80 mt-0.5 font-medium">
+                      HIT Computer Education • H.I.T India Skill Development Foundation
+                    </p>
+                  </div>
+                </div>
+
+                {/* Floating Top Badge */}
+                <motion.div
+                  initial={{ y: 0 }}
+                  animate={{ y: [-4, 4, -4] }}
+                  transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
+                  className="absolute -top-4 -left-4 sm:-left-6 px-4 py-2 rounded-2xl bg-surface-container-lowest/95 backdrop-blur-md shadow-xl border border-outline-variant/30 flex items-center gap-2.5 z-20"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-secondary text-white flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined text-lg">workspace_premium</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-on-surface-variant uppercase font-bold block">Specialist</span>
+                    <span className="text-xs font-extrabold text-primary">Hardware & PGDCA</span>
+                  </div>
+                </motion.div>
+
+                {/* Floating Bottom Badge */}
+                <motion.div
+                  initial={{ y: 0 }}
+                  animate={{ y: [4, -4, 4] }}
+                  transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut' }}
+                  className="absolute -bottom-4 -right-4 sm:-right-6 px-4 py-2.5 rounded-2xl bg-primary text-white shadow-xl border border-white/20 flex items-center gap-2.5 z-20"
+                >
+                  <div className="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined text-lg">verified</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-white/70 uppercase font-bold block">Mentorship</span>
+                    <span className="text-xs font-extrabold text-secondary-fixed">12,500+ Students</span>
+                  </div>
+                </motion.div>
+              </div>
+            </motion.div>
+
           </div>
         </div>
       </section>
