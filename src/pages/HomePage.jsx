@@ -104,21 +104,6 @@ export default function HomePage({ setActiveTab }) {
 
   return (
     <div className="flex flex-col w-full">
-      {/* Session Header Banner */}
-      <div className="w-full bg-primary text-on-primary py-space-sm px-margin-sm lg:px-margin-lg shadow-sm">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm">
-          <div className="flex items-center gap-space-xs text-label-sm font-label-sm">
-            <span className="text-on-primary/70">HIT Computer Education</span>
-            <span className="text-on-primary/40">/</span>
-            <span className="text-secondary-fixed font-semibold">Student Admissions Session 2026-2027</span>
-          </div>
-          <div className="flex items-center gap-space-xs bg-primary-container px-space-sm py-1 rounded-full text-label-sm font-label-sm text-secondary-fixed">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            <span>Admissions Open • Direct Enrollment Portal (Flat ₹100)</span>
-          </div>
-        </div>
-      </div>
-
       {/* Full-Bleed Animated Carousel (main.jpeg & main2.jpeg) */}
       <section
         className="w-full p-0 m-0 bg-primary overflow-hidden shadow-md relative group select-none"

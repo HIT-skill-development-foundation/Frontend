@@ -245,44 +245,9 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {/* Hero Header & Filter Ecosystem */}
-      <section className="w-full py-10 sm:py-14 px-margin sm:px-margin-lg bg-surface">
-        <div className="max-w-7xl mx-auto space-y-6">
-          <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
-            <div className="max-w-3xl space-y-2">
-              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-xs uppercase tracking-wider font-bold">
-                <span className="material-symbols-outlined text-[16px]">verified</span>
-                Institutional Photographic Ledger • Sec. 8 MCA / NITI Aayog Verified
-              </div>
-              <h1 className="font-headline text-3xl sm:text-4xl lg:text-5xl text-primary font-extrabold tracking-tight">
-                Life & Milestones at H.I.T India
-              </h1>
-              <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">
-                Documenting our grassroots vocational training, PMKVY / CSC skill initiatives, academic celebrations, student diploma felicitation ceremonies, and centre expansion across Mau & Eastern Uttar Pradesh.
-              </p>
-            </div>
-
-            {/* Impact Ticker Strip */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-surface-container-lowest p-4 rounded-2xl shadow-sm border border-outline-variant/30">
-              <div className="p-2">
-                <div className="font-headline text-2xl font-bold text-primary">14+</div>
-                <div className="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Active Batches</div>
-              </div>
-              <div className="p-2">
-                <div className="font-headline text-2xl font-bold text-secondary">3,850+</div>
-                <div className="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Certified Youths</div>
-              </div>
-              <div className="p-2">
-                <div className="font-headline text-2xl font-bold text-on-tertiary-container">120+</div>
-                <div className="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Events Held</div>
-              </div>
-              <div className="p-2">
-                <div className="font-headline text-2xl font-bold text-emerald-600">100%</div>
-                <div className="text-[10px] text-on-surface-variant uppercase tracking-wider font-semibold">Verified Records</div>
-              </div>
-            </div>
-          </div>
-
+      {/* Filter & Search Toolbar */}
+      <section className="w-full py-6 sm:py-8 px-margin sm:px-margin-lg bg-surface">
+        <div className="max-w-7xl mx-auto">
           {/* Interactive Controls Toolbar */}
           <div className="bg-surface-container p-4 rounded-2xl shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
