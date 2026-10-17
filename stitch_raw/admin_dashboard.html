@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+
+<html lang="en"><head><meta charset="utf-8"/><meta content="width=device-width, initial-scale=1.0" name="viewport"/><meta content="web_dashboard" name="shell-type"/><title>H.I.T India - Super Admin &amp; Accounts Ledger</title><link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/><link href="https://fonts.googleapis.com" rel="preconnect"/><link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/><link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=Plus+Jakarta+Sans:wght@600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/><style>@layer base{html,body{margin:0;padding:0;}body{overscroll-behavior:none;}main>:first-child{margin-top:0!important;}main>:last-child{margin-bottom:0!important;}}::-webkit-scrollbar{display:none;}</style><script src="https://cdn.tailwindcss.com"></script><script id="tailwind-config">tailwind.config={darkMode:"class",theme:{extend:{"colors":{"on-primary-container":"#7c94cb","surface-container-low":"#f2f3ff","surface":"#faf8ff","on-primary-fixed":"#001944","tertiary-fixed-dim":"#ffb77d","error":"#ba1a1a","primary-fixed":"#d9e2ff","tertiary-fixed":"#ffdcc3","surface-bright":"#faf8ff","on-primary":"#ffffff","on-tertiary-fixed-variant":"#6e3900","surface-dim":"#d2d9f4","secondary-fixed-dim":"#b8c4ff","surface-container-high":"#e2e7ff","outline":"#747780","on-surface-variant":"#44464f","surface-tint":"#465d91","on-tertiary-container":"#de7b0d","on-secondary-fixed-variant":"#173bab","primary-container":"#0f2b5c","primary-fixed-dim":"#afc6ff","on-background":"#131b2e","primary":"#00163d","surface-container-highest":"#dae2fd","surface-container":"#eaedff","secondary":"#3755c3","on-secondary-container":"#00217a","inverse-primary":"#afc6ff","outline-variant":"#c4c6d0","inverse-on-surface":"#eef0ff","background":"#faf8ff","on-surface":"#131b2e","on-error-container":"#93000a","on-tertiary-fixed":"#2f1500","secondary-container":"#708cfd","on-primary-fixed-variant":"#2d4678","surface-container-lowest":"#ffffff","secondary-fixed":"#dde1ff","on-error":"#ffffff","on-secondary":"#ffffff","error-container":"#ffdad6","on-tertiary":"#ffffff","on-secondary-fixed":"#001453","tertiary-container":"#482300","surface-variant":"#dae2fd","tertiary":"#2a1200","inverse-surface":"#283044"},"borderRadius":{"DEFAULT":"0.25rem","lg":"0.5rem","xl":"0.75rem","full":"9999px"},"spacing":{"space-lg":"1.5rem","margin":"1.5rem","space-md":"1rem","margin-lg":"3rem","gutter":"1.5rem","space-xs":"0.25rem","space-sm":"0.5rem","margin-sm":"1rem","gutter-lg":"2rem","space-xl":"2.5rem","gutter-sm":"1rem"},"fontFamily":{"headline-md":["Plus Jakarta Sans"],"label-sm":["Inter"],"display-lg":["Plus Jakarta Sans"],"body-lg":["Inter"],"headline-sm":["Plus Jakarta Sans"],"label-md":["Inter"],"body-sm":["Inter"],"headline-xl-mobile":["Plus Jakarta Sans"],"label-lg":["Inter"],"headline-lg":["Plus Jakarta Sans"],"body-md":["Inter"],"display-lg-mobile":["Plus Jakarta Sans"],"headline-xl":["Plus Jakarta Sans"]},"fontSize":{"headline-md":["20px",{"lineHeight":"28px","letterSpacing":"-0.005em","fontWeight":"600"}],"label-sm":["10px",{"lineHeight":"14px","letterSpacing":"0.04em","fontWeight":"700"}],"display-lg":["48px",{"lineHeight":"56px","letterSpacing":"-0.02em","fontWeight":"800"}],"body-lg":["18px",{"lineHeight":"28px","letterSpacing":"-0.005em","fontWeight":"400"}],"headline-sm":["16px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"600"}],"label-md":["12px",{"lineHeight":"16px","letterSpacing":"0.02em","fontWeight":"600"}],"body-sm":["13px",{"lineHeight":"20px","letterSpacing":"0.005em","fontWeight":"400"}],"headline-xl-mobile":["26px",{"lineHeight":"34px","letterSpacing":"-0.01em","fontWeight":"700"}],"label-lg":["14px",{"lineHeight":"20px","letterSpacing":"0.01em","fontWeight":"600"}],"headline-lg":["24px",{"lineHeight":"32px","letterSpacing":"-0.01em","fontWeight":"700"}],"body-md":["15px",{"lineHeight":"24px","letterSpacing":"0em","fontWeight":"400"}],"display-lg-mobile":["36px",{"lineHeight":"44px","letterSpacing":"-0.015em","fontWeight":"800"}],"headline-xl":["32px",{"lineHeight":"40px","letterSpacing":"-0.015em","fontWeight":"700"}]}}}}</script></head><body class="bg-background font-body-md text-on-surface"><aside class="fixed left-0 top-0 h-full w-72 bg-surface-container-low shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-50 flex flex-col justify-between pt-space-lg pb-space-lg"><div class="flex flex-col"><div class="px-space-lg pb-space-lg"><div class="flex items-center gap-space-sm"><div class="w-10 h-10 rounded-lg bg-primary text-on-primary flex items-center justify-center font-headline-md text-headline-md font-bold">H</div><div><span class="font-headline-sm text-headline-sm text-primary block leading-none">H.I.T INDIA</span><span class="font-label-sm text-label-sm text-on-surface-variant block mt-1 tracking-wider uppercase">Skill Foundation</span></div></div><div class="mt-space-md px-3 py-1.5 rounded-lg bg-surface-container-high flex items-center justify-between"><span class="font-label-sm text-label-sm text-on-surface-variant">HQ: Ghosi, Mau</span><span class="w-2 h-2 rounded-full bg-secondary"></span></div></div><nav class="flex flex-col space-y-1 px-space-md" data-active-classes="bg-primary-container text-on-primary font-headline-sm rounded-lg"><a aria-current="page" class="flex items-center gap-space-sm px-space-md py-3 transition-colors bg-primary-container text-on-primary font-headline-sm rounded-lg" data-path="super-admin-dashboard" href="#"><span class="material-symbols-outlined text-[20px]">space_dashboard</span><span>Dashboard Overview</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="centre-and-branch-approvals" href="#"><span class="material-symbols-outlined text-[20px]">account_balance</span><span>Centre &amp; Branch Approvals</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="student-admissions" href="#"><span class="material-symbols-outlined text-[20px]">school</span><span>Student Admissions</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="certificate-approvals" href="#"><span class="material-symbols-outlined text-[20px]">verified</span><span>Certificate Approvals</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="donation-ledger" href="#"><span class="material-symbols-outlined text-[20px]">receipt_long</span><span>Donation Ledger</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="monthly-financial-reports" href="#"><span class="material-symbols-outlined text-[20px]">query_stats</span><span>Monthly Financial Reports</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="audit-logs" href="#"><span class="material-symbols-outlined text-[20px]">history_edu</span><span>Audit Logs</span></a><a class="flex items-center gap-space-sm px-space-md py-3 rounded-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface font-label-lg text-label-lg transition-colors" data-path="settings" href="#"><span class="material-symbols-outlined text-[20px]">tune</span><span>Settings</span></a></nav></div><div class="px-space-lg"><div class="p-space-md rounded-xl bg-surface-container flex items-center justify-between shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]"><div class="flex items-center gap-space-xs"><span class="material-symbols-outlined text-[18px] text-secondary">cloud_done</span><span class="font-label-sm text-label-sm text-on-surface font-bold">Ledger Live Sync</span></div><span class="inline-block w-2 h-2 rounded-full bg-secondary animate-pulse"></span></div></div></aside><div class="pl-72"><header class="fixed top-0 left-72 right-0 h-16 bg-surface/90 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)] z-40 px-margin sm:px-margin-lg flex items-center justify-between"><div class="flex items-center gap-space-md"><span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary text-on-primary font-label-sm text-label-sm tracking-wide"><span class="material-symbols-outlined text-[14px]">shield_person</span>SUPER ADMIN CONSOLE</span><div class="hidden md:flex items-center gap-space-xs text-on-surface-variant font-label-md text-label-md"><span class="material-symbols-outlined text-[16px]">sync</span><span>Ledger Synced: 275105-MAU-NODE-01</span></div></div><div class="flex items-center gap-space-md"><button class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors relative" type="button"><span class="material-symbols-outlined text-[20px]">notifications</span><span class="absolute top-1.5 right-1.5 w-2 h-2 rounded-full bg-error"></span></button><button class="w-9 h-9 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface flex items-center justify-center transition-colors" type="button"><span class="material-symbols-outlined text-[20px]">search</span></button><div class="flex items-center gap-space-sm pl-space-sm"><div class="text-right hidden sm:block"><span class="block font-label-md text-label-md text-on-surface leading-tight font-bold">Dr. A. K. Verma</span><span class="block font-label-sm text-label-sm text-on-surface-variant">Super Administrator</span></div><div class="w-8 h-8 rounded-full bg-primary flex items-center justify-center shadow-[0_1px_3px_0_rgba(15,23,42,0.05)]"><span class="material-symbols-outlined text-on-primary text-[18px]">person</span></div></div></div></header><main class="w-full pt-16 bg-surface"><div class="flex flex-col w-full">
+<div class="px-margin sm:px-margin-lg py-space-lg flex flex-col space-y-space-xl">
+<!-- EXECUTIVE HEADER -->
+<section class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex flex-col">
+<div class="flex items-center gap-space-sm mb-1">
+<span class="px-2.5 py-0.5 rounded-full bg-surface-container-high text-primary font-label-sm text-label-sm uppercase tracking-wider font-bold">
+            Consolidated Command Center
+          </span>
+<span class="inline-flex items-center gap-1 text-on-surface-variant font-label-sm text-label-sm">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+            Ledger Session: FY 2025–2026
+          </span>
+</div>
+<h1 class="font-headline-xl text-headline-xl text-primary font-bold tracking-tight">
+          Super Admin Central Command &amp; Accounts Hub
+        </h1>
+<p class="font-body-md text-body-md text-on-surface-variant mt-0.5">
+          Real-time oversight for institutional credentialing, franchise branch onboarding, and fiscal governance.
+        </p>
+</div>
+<div class="flex flex-wrap items-center gap-space-sm">
+<div class="relative inline-block text-left" id="exportMenuWrapper">
+<button class="h-11 px-space-md rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-lg text-label-lg transition-colors flex items-center gap-2 shadow-sm" id="exportDropdownBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">file_download</span>
+<span>Export Monthly Audit</span>
+<span class="material-symbols-outlined text-[18px]">expand_more</span>
+</button>
+<div class="hidden absolute right-0 mt-2 w-56 rounded-xl bg-surface-container-lowest shadow-xl z-50 py-2" id="exportDropdownMenu">
+<a class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-secondary text-[18px]">description</span>
+<span>Audit Ledger (Excel .xlsx)</span>
+</a>
+<a class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-error text-[18px]">picture_as_pdf</span>
+<span>Signed Audit Pack (PDF)</span>
+</a>
+<a class="flex items-center gap-2.5 px-4 py-2 text-on-surface hover:bg-surface-container-low font-label-md text-label-md" href="#">
+<span class="material-symbols-outlined text-primary text-[18px]">verified_user</span>
+<span>Statutory 80G Certificate CSV</span>
+</a>
+</div>
+</div>
+<button class="h-11 px-space-md rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg transition-all flex items-center gap-2 shadow-md" type="button">
+<span class="material-symbols-outlined text-[18px]">tune</span>
+<span>Configure Fee Schedule</span>
+</button>
+</div>
+</section>
+<!-- METRIC KPI CARDS (Bento Grid) -->
+<section class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-gutter">
+<!-- Card 1: Donations -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Monthly Donations (80G)</span>
+<span class="font-display-lg text-display-lg text-primary font-extrabold block mt-1 tracking-tight">₹4,85,500</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-primary-container text-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">volunteer_activism</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col space-y-1.5">
+<div class="flex items-center justify-between text-on-surface">
+<span class="inline-flex items-center gap-1 font-label-md text-label-md text-secondary font-bold">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+              +18.4% vs last mo.
+            </span>
+<span class="font-label-md text-label-md text-on-surface-variant">248 Donors</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="w-2 h-2 rounded-full bg-secondary"></span>
+<span>100% verified via Razorpay/Cashfree Webhook</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Membership -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Membership Collection</span>
+<span class="font-display-lg text-display-lg text-primary font-extrabold block mt-1 tracking-tight">₹1,24,000</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-secondary-fixed text-on-secondary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">badge</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col space-y-1.5">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-md text-label-md text-primary font-bold">62 Active Institutional Members</span>
+<span class="font-label-sm text-label-sm px-2 py-0.5 rounded-full bg-surface-container font-mono text-on-surface-variant">FY 25-26</span>
+</div>
+<div class="flex items-center gap-1 text-on-surface-variant font-body-sm text-body-sm font-mono truncate">
+<span>Pattern: HIT-MEM-2026-XXXXX</span>
+</div>
+</div>
+</div>
+<!-- Card 3: Student Fees -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Admissions &amp; Course Fees</span>
+<span class="font-display-lg text-display-lg text-primary font-extrabold block mt-1 tracking-tight">₹2,68,100</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container-high text-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">school</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col space-y-1.5">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-md text-label-md text-secondary font-bold">14 Franchise Training Centres</span>
+<span class="font-label-md text-label-md text-on-surface-variant">₹100 Base Reg. Settled</span>
+</div>
+<div class="flex items-center gap-1.5 text-on-surface-variant font-body-sm text-body-sm">
+<span class="material-symbols-outlined text-[15px] text-secondary">verified</span>
+<span>Includes ADCA, DITA &amp; Hardware cert fees</span>
+</div>
+</div>
+</div>
+<!-- Card 4: Net Surplus -->
+<div class="relative overflow-hidden rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col justify-between">
+<div class="flex items-start justify-between">
+<div>
+<span class="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider block">Net Surplus / Treasury Balance</span>
+<span class="font-display-lg text-display-lg text-primary font-extrabold block mt-1 tracking-tight">₹6,12,800</span>
+</div>
+<div class="w-12 h-12 rounded-xl bg-surface-container text-on-tertiary-container flex items-center justify-center">
+<span class="material-symbols-outlined text-[24px]">account_balance_wallet</span>
+</div>
+</div>
+<div class="mt-space-md pt-space-sm flex flex-col space-y-1.5">
+<div class="flex items-center justify-between text-on-surface">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Gross: ₹8,77,600</span>
+<span class="font-label-sm text-label-sm text-error font-semibold">Opex: -₹2,64,800</span>
+</div>
+<div class="w-full bg-surface-container rounded-full h-2 overflow-hidden flex">
+<div class="bg-secondary h-full" style="width: 70%"></div>
+<div class="bg-error h-full" style="width: 30%"></div>
+</div>
+</div>
+</div>
+</section>
+<!-- TWO-COLUMN WORKFLOW: CENTRE APPROVALS & CERTIFICATE GATE -->
+<div class="grid grid-cols-1 xl:grid-cols-12 gap-gutter items-start">
+<!-- Section 1: Centre & Branch Approvals (PRD Sec 6 & 10) -->
+<section class="xl:col-span-7 rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-primary text-on-primary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">apartment</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Centre &amp; Branch Approval Queue</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Section 6 &amp; 10 Governance • Franchise Verification Protocol</span>
+</div>
+</div>
+<span class="px-3 py-1 rounded-full bg-surface-container-high text-primary font-label-md text-label-md font-bold">
+            3 Requests Active
+          </span>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant">
+<th class="py-3 px-space-md rounded-l-lg">Centre / Applicant</th>
+<th class="py-3 px-space-md">App Reference</th>
+<th class="py-3 px-space-md">Inspection State</th>
+<th class="py-3 px-space-md rounded-r-lg text-right">Super Admin Action</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-on-surface font-body-sm text-body-sm">
+<!-- Item 1: Pending -->
+<tr class="hover:bg-surface-container-lowest/60 transition-colors">
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Azamgarh Skill Hub</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mt-0.5">Proprietor: Manoj Tiwari</span>
+</td>
+<td class="py-3.5 px-space-md font-mono text-on-surface-variant">
+                  APP-CEN-2026-084
+                </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container text-tertiary-container font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-on-tertiary-container"></span>
+                    Pending Document Review
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm transition-colors" type="button">
+                      Review Dossier
+                    </button>
+<button class="px-2.5 py-1 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-sm text-label-sm transition-colors" type="button">
+                      Grant Code
+                    </button>
+</div>
+</td>
+</tr>
+<!-- Item 2: Approved -->
+<tr class="hover:bg-surface-container-lowest/60 transition-colors">
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Mau Sadar Digital Campus</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mt-0.5">Proprietor: S. N. Yadav</span>
+</td>
+<td class="py-3.5 px-space-md font-mono text-secondary font-bold">
+                  HIT-CEN-0002
+                </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-semibold">
+<span class="material-symbols-outlined text-[14px]">check_circle</span>
+                    Approved &amp; Active
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm transition-colors" type="button">
+                    View Agreement
+                  </button>
+</td>
+</tr>
+<!-- Item 3: Under Inspection -->
+<tr class="hover:bg-surface-container-lowest/60 transition-colors">
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Doharighat Centre</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant block mt-0.5">Applicant: Amit Srivastava</span>
+</td>
+<td class="py-3.5 px-space-md font-mono text-on-surface-variant">
+                  APP-CEN-2026-091
+                </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface-container-highest text-primary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary animate-ping"></span>
+                    Under Physical Inspection
+                  </span>
+</td>
+<td class="py-3.5 px-space-md text-right">
+<div class="inline-flex items-center gap-1.5">
+<button class="px-2.5 py-1 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary font-label-sm text-label-sm transition-colors" type="button">
+                      Inspector Notes
+                    </button>
+<button class="px-2.5 py-1 rounded-lg bg-surface-container-high hover:bg-error-container text-error font-label-sm text-label-sm transition-colors" type="button">
+                      Reject
+                    </button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<!-- Section 2: Certificate Issuance & Eligibility Gate (PRD Sec 9 & 10) -->
+<section class="xl:col-span-5 rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-space-md">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-space-sm">
+<div class="w-9 h-9 rounded-lg bg-secondary text-on-secondary flex items-center justify-center">
+<span class="material-symbols-outlined text-[20px]">verified</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Certificate Eligibility Gate</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">PRD Rule: 75% Attendance + Practical Viva + Fee Cleared</span>
+</div>
+</div>
+<span class="material-symbols-outlined text-on-surface-variant text-[20px]" title="Audit Rule Engine Enabled">gavel</span>
+</div>
+<!-- Candidate Verification Card -->
+<div class="rounded-xl bg-surface-container-low p-space-md flex flex-col space-y-3">
+<div class="flex items-start justify-between">
+<div class="flex items-center gap-3">
+<div class="w-11 h-11 rounded-lg bg-surface-container-high flex items-center justify-center text-primary font-headline-sm font-bold">
+                RV
+              </div>
+<div>
+<span class="font-headline-sm text-headline-sm text-primary font-bold block leading-tight">Rahul Verma</span>
+<span class="font-mono text-label-sm text-label-sm text-on-surface-variant block mt-0.5">HIT-STU-2026-00001 • ADCA (12 Mo.)</span>
+<span class="font-label-sm text-label-sm text-secondary block">Ghosi Main Training Centre</span>
+</div>
+</div>
+<span class="px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-bold">
+              Final Sign-off
+            </span>
+</div>
+<!-- Gates Checklist Grid -->
+<div class="grid grid-cols-3 gap-2 pt-1">
+<div class="p-2 rounded-lg bg-surface-container-lowest flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Attendance</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold mt-0.5">88%</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Min 75% Met</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-lowest flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Practical / Viva</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold mt-0.5">Cleared</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Score: 84/100</span>
+</div>
+<div class="p-2 rounded-lg bg-surface-container-lowest flex flex-col">
+<span class="font-label-sm text-label-sm text-on-surface-variant">Fee Ledger</span>
+<span class="font-headline-sm text-headline-sm text-primary font-bold mt-0.5">₹500</span>
+<span class="font-label-sm text-label-sm text-secondary font-semibold">Zero Due</span>
+</div>
+</div>
+<div class="pt-2 flex flex-col space-y-2">
+<button class="w-full h-10 rounded-lg bg-primary hover:bg-primary-container text-on-primary font-label-lg text-label-lg transition-all flex items-center justify-center gap-2 shadow-sm" id="approveCertBtn" type="button">
+<span class="material-symbols-outlined text-[18px]">verified_user</span>
+<span>Approve &amp; Generate QR Certificate</span>
+</button>
+<div class="hidden p-2 rounded-lg bg-surface-container text-primary font-label-sm text-label-sm text-center" id="certSuccessMsg">
+              Generated: <span class="font-mono font-bold">HIT-CERT-2026-00001</span> (Hashed on Ledger)
+            </div>
+</div>
+</div>
+<!-- Secondary mini-gate -->
+<div class="p-3 rounded-lg bg-surface-container flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-[18px] text-tertiary-container">pending_actions</span>
+<div class="text-on-surface font-label-md text-label-md">
+<span class="font-bold">Priya Sharma</span> (HIT-STU-2026-00042)
+              <span class="block font-label-sm text-label-sm text-on-surface-variant">Attendance 71% (Below 75% Threshold - Blocked)</span>
+</div>
+</div>
+<span class="px-2 py-1 rounded bg-surface-container-high font-label-sm text-label-sm text-on-surface-variant font-bold">
+            Flagged
+          </span>
+</div>
+</section>
+</div>
+<!-- LIVE FINANCIAL LEDGER & AUDIT TRAIL (PRD Sec 7 & 12) -->
+<section class="rounded-xl bg-surface-container-lowest p-space-lg shadow-sm flex flex-col space-y-space-md">
+<!-- Ledger Header & Controls -->
+<div class="flex flex-col lg:flex-row lg:items-center justify-between gap-space-md">
+<div class="flex items-center gap-space-sm">
+<div class="w-10 h-10 rounded-lg bg-primary-container text-primary-fixed flex items-center justify-center">
+<span class="material-symbols-outlined text-[22px]">receipt_long</span>
+</div>
+<div>
+<h2 class="font-headline-md text-headline-md text-primary font-bold">Live Financial Ledger &amp; Audit Trail</h2>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Immutable Journal • Bank Webhook Synchronization &amp; GST Compliance</span>
+</div>
+</div>
+<!-- Filter Bar -->
+<div class="flex flex-wrap items-center gap-2">
+<!-- Date Filter -->
+<div class="flex items-center bg-surface-container-low rounded-lg px-2.5 py-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-1.5">calendar_month</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface outline-none cursor-pointer">
+<option selected="">Current Month (March 2026)</option>
+<option>February 2026</option>
+<option>January 2026</option>
+<option>Full FY 2025-2026</option>
+</select>
+</div>
+<!-- Branch Dropdown -->
+<div class="flex items-center bg-surface-container-low rounded-lg px-2.5 py-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-1.5">store</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface outline-none cursor-pointer">
+<option selected="">All Centres / Branches</option>
+<option>HQ - Ghosi, Mau</option>
+<option>Mau Sadar Digital Campus</option>
+<option>Azamgarh Skill Hub</option>
+<option>Online Portal Gateway</option>
+</select>
+</div>
+<!-- Category Filter -->
+<div class="flex items-center bg-surface-container-low rounded-lg px-2.5 py-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-1.5">category</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface outline-none cursor-pointer">
+<option selected="">All Categories</option>
+<option>Donation (80G)</option>
+<option>Membership Fee</option>
+<option>Student Admission</option>
+<option>Operating Expense</option>
+</select>
+</div>
+<!-- Status Filter -->
+<div class="flex items-center bg-surface-container-low rounded-lg px-2.5 py-1.5 text-on-surface">
+<span class="material-symbols-outlined text-[16px] text-on-surface-variant mr-1.5">filter_list</span>
+<select class="bg-transparent font-label-md text-label-md text-on-surface outline-none cursor-pointer">
+<option selected="">All Statuses</option>
+<option>Webhook Verified</option>
+<option>Settled to Escrow</option>
+<option>Pending Reconciliation</option>
+</select>
+</div>
+</div>
+</div>
+<!-- Ledger Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead>
+<tr class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant">
+<th class="py-3 px-space-md rounded-l-lg">Voucher / Txn Ref</th>
+<th class="py-3 px-space-md">Category</th>
+<th class="py-3 px-space-md">Entity / Payer</th>
+<th class="py-3 px-space-md">Branch / Centre</th>
+<th class="py-3 px-space-md text-right">Amount (INR)</th>
+<th class="py-3 px-space-md">Gateway Webhook</th>
+<th class="py-3 px-space-md">Timestamp</th>
+<th class="py-3 px-space-md rounded-r-lg text-center">Receipt</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-surface-container-low text-on-surface font-body-sm text-body-sm">
+<!-- Row 1: Donation -->
+<tr class="hover:bg-surface-container-lowest/70 transition-colors">
+<td class="py-3.5 px-space-md font-mono text-primary font-bold">
+                TXN-2026-98124
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container text-tertiary-container font-label-sm text-label-sm font-semibold">
+                  Donation (80G)
+                </span>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Shree Ratan Charitable Trust</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">PAN: AAATB1289K</span>
+</td>
+<td class="py-3.5 px-space-md text-on-surface-variant font-label-md text-label-md">
+                Online Gateway (Direct)
+              </td>
+<td class="py-3.5 px-space-md text-right font-headline-sm text-headline-sm text-secondary font-bold">
+                +₹51,000.00
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Webhook Verified
+                </span>
+</td>
+<td class="py-3.5 px-space-md font-label-sm text-label-sm text-on-surface-variant">
+                Today, 02:44 PM
+              </td>
+<td class="py-3.5 px-space-md text-center">
+<button class="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary inline-flex items-center justify-center transition-colors" title="Download Official 80G Receipt" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</td>
+</tr>
+<!-- Row 2: Student Fee -->
+<tr class="hover:bg-surface-container-lowest/70 transition-colors">
+<td class="py-3.5 px-space-md font-mono text-primary font-bold">
+                TXN-2026-98123
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed font-label-sm text-label-sm font-semibold">
+                  Student Fee (ADCA)
+                </span>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Rahul Verma</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">Roll: HIT-STU-2026-00001</span>
+</td>
+<td class="py-3.5 px-space-md text-on-surface-variant font-label-md text-label-md">
+                Ghosi HQ Centre
+              </td>
+<td class="py-3.5 px-space-md text-right font-headline-sm text-headline-sm text-secondary font-bold">
+                +₹500.00
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Webhook Verified
+                </span>
+</td>
+<td class="py-3.5 px-space-md font-label-sm text-label-sm text-on-surface-variant">
+                Today, 01:15 PM
+              </td>
+<td class="py-3.5 px-space-md text-center">
+<button class="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary inline-flex items-center justify-center transition-colors" title="Download Student Fee Voucher" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</td>
+</tr>
+<!-- Row 3: Membership -->
+<tr class="hover:bg-surface-container-lowest/70 transition-colors">
+<td class="py-3.5 px-space-md font-mono text-primary font-bold">
+                TXN-2026-98120
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-highest text-primary font-label-sm text-label-sm font-semibold">
+                  Annual Membership
+                </span>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">Vikas Vocational Society</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant font-mono">HIT-MEM-2026-00045</span>
+</td>
+<td class="py-3.5 px-space-md text-on-surface-variant font-label-md text-label-md">
+                Mau Sadar Digital Campus
+              </td>
+<td class="py-3.5 px-space-md text-right font-headline-sm text-headline-sm text-secondary font-bold">
+                +₹2,000.00
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container-high text-secondary font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-secondary"></span>
+                  Settled to Escrow
+                </span>
+</td>
+<td class="py-3.5 px-space-md font-label-sm text-label-sm text-on-surface-variant">
+                Today, 11:02 AM
+              </td>
+<td class="py-3.5 px-space-md text-center">
+<button class="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary inline-flex items-center justify-center transition-colors" title="Download Membership Certificate &amp; Receipt" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</td>
+</tr>
+<!-- Row 4: Operating Expense -->
+<tr class="hover:bg-surface-container-lowest/70 transition-colors">
+<td class="py-3.5 px-space-md font-mono text-primary font-bold">
+                VOUCH-2026-00412
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-surface-container-high text-on-surface-variant font-label-sm text-label-sm font-semibold">
+                  Operating Expense
+                </span>
+</td>
+<td class="py-3.5 px-space-md">
+<span class="font-headline-sm text-headline-sm text-primary block leading-tight">National Hologram Security Printers</span>
+<span class="font-label-sm text-label-sm text-on-surface-variant">Cert Stock &amp; Foil Stamping</span>
+</td>
+<td class="py-3.5 px-space-md text-on-surface-variant font-label-md text-label-md">
+                Super Admin HQ
+              </td>
+<td class="py-3.5 px-space-md text-right font-headline-sm text-headline-sm text-error font-bold">
+                -₹14,500.00
+              </td>
+<td class="py-3.5 px-space-md">
+<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-surface-container text-on-surface-variant font-label-sm text-label-sm font-semibold">
+<span class="w-1.5 h-1.5 rounded-full bg-outline"></span>
+                  NEFT Disbursed
+                </span>
+</td>
+<td class="py-3.5 px-space-md font-label-sm text-label-sm text-on-surface-variant">
+                Yesterday, 04:30 PM
+              </td>
+<td class="py-3.5 px-space-md text-center">
+<button class="w-8 h-8 rounded-lg bg-surface-container hover:bg-surface-container-high text-primary inline-flex items-center justify-center transition-colors" title="Download Expense Voucher" type="button">
+<span class="material-symbols-outlined text-[18px]">download</span>
+</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination / Summary Footer -->
+<div class="flex flex-col sm:flex-row items-center justify-between gap-space-sm pt-space-sm">
+<span class="font-label-sm text-label-sm text-on-surface-variant">
+          Showing 4 of 482 journal entries recorded in ledger session FY 25–26
+        </span>
+<div class="flex items-center gap-2">
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" disabled="" type="button">
+            Previous
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-primary text-on-primary font-label-md text-label-md" type="button">
+            1
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+            2
+          </button>
+<button class="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface font-label-md text-label-md transition-colors" type="button">
+            Next
+          </button>
+</div>
+</div>
+</section>
+</div>
+</div>
+<script>
+  // Simple interactive controls for Dropdown & Certificate generation simulation
+  document.addEventListener('DOMContentLoaded', function () {
+    const exportBtn = document.getElementById('exportDropdownBtn');
+    const exportMenu = document.getElementById('exportDropdownMenu');
+    
+    if (exportBtn && exportMenu) {
+      exportBtn.addEventListener('click', function (e) {
+        e.stopPropagation();
+        exportMenu.classList.toggle('hidden');
+      });
+
+      document.addEventListener('click', function (e) {
+        if (!exportMenu.contains(e.target) && !exportBtn.contains(e.target)) {
+          exportMenu.classList.add('hidden');
+        }
+      });
+    }
+
+    const approveCertBtn = document.getElementById('approveCertBtn');
+    const certSuccessMsg = document.getElementById('certSuccessMsg');
+    if (approveCertBtn && certSuccessMsg) {
+      approveCertBtn.addEventListener('click', function () {
+        approveCertBtn.classList.add('bg-surface-container-high', 'text-on-surface-variant');
+        approveCertBtn.innerHTML = '<span class="material-symbols-outlined text-[18px] text-secondary">check</span><span>Certificate Issued &amp; Dispatched</span>';
+        approveCertBtn.disabled = true;
+        certSuccessMsg.classList.remove('hidden');
+      });
+    }
+  });
+</script></main></div></body></html>
