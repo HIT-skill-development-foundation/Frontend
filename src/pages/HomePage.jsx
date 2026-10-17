@@ -8,6 +8,79 @@ import directorImg from '../assets/images/director.jpeg';
 import certificateImg from '../assets/images/certificate.jpeg';
 import isoImg from '../assets/images/iso.jpeg';
 
+// Animated count-up counter with easing and IntersectionObserver support
+function CountUp({ end, duration = 2000, decimals = 0, prefix = '', suffix = '' }) {
+  const [count, setCount] = useState(0);
+  const ref = useRef(null);
+  const [hasStarted, setHasStarted] = useState(false);
+
+  useEffect(() => {
+    if (typeof IntersectionObserver === 'undefined') {
+      setHasStarted(true);
+      return;
+    }
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting) {
+          setHasStarted(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.15 }
+    );
+
+    if (ref.current) {
+      observer.observe(ref.current);
+    } else {
+      setHasStarted(true);
+    }
+
+    return () => observer.disconnect();
+  }, []);
+
+  useEffect(() => {
+    if (!hasStarted) return;
+
+    let startTime = null;
+    let animationFrameId = null;
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+    const animate = (currentTime) => {
+      if (!startTime) startTime = currentTime;
+      const elapsed = currentTime - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+      const easedProgress = easeOutCubic(progress);
+
+      setCount(easedProgress * end);
+
+      if (progress < 1) {
+        animationFrameId = requestAnimationFrame(animate);
+      } else {
+        setCount(end);
+      }
+    };
+
+    animationFrameId = requestAnimationFrame(animate);
+
+    return () => {
+      if (animationFrameId) {
+        cancelAnimationFrame(animationFrameId);
+      }
+    };
+  }, [hasStarted, end, duration]);
+
+  const formatted = decimals > 0 
+    ? count.toFixed(decimals) 
+    : Math.floor(count).toLocaleString();
+
+  return (
+    <span ref={ref} className="inline-block tabular-nums">
+      {prefix}{formatted}{suffix}
+    </span>
+  );
+}
+
 export default function HomePage({ setActiveTab }) {
   const navigate = useNavigate();
 
@@ -217,20 +290,28 @@ export default function HomePage({ setActiveTab }) {
       <section className="w-full bg-surface-container-low py-8 border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto px-margin-sm lg:px-margin-lg">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-center">
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-              <span className="font-headline text-3xl font-extrabold text-primary block">12,500+</span>
+            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+              <span className="font-headline text-3xl font-extrabold text-primary block">
+                <CountUp end={12500} suffix="+" duration={2200} />
+              </span>
               <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Certified Students</span>
             </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-              <span className="font-headline text-3xl font-extrabold text-secondary block">48+</span>
+            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+              <span className="font-headline text-3xl font-extrabold text-secondary block">
+                <CountUp end={48} suffix="+" duration={1800} />
+              </span>
               <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Affiliated Centres</span>
             </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-              <span className="font-headline text-3xl font-extrabold text-on-tertiary-container block">98.4%</span>
+            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+              <span className="font-headline text-3xl font-extrabold text-on-tertiary-container block">
+                <CountUp end={98.4} decimals={1} suffix="%" duration={2000} />
+              </span>
               <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">Course Completion</span>
             </div>
-            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm">
-              <span className="font-headline text-3xl font-extrabold text-emerald-600 block">100%</span>
+            <div className="p-4 rounded-xl bg-surface-container-lowest shadow-sm hover:shadow-md transition-shadow">
+              <span className="font-headline text-3xl font-extrabold text-emerald-600 block">
+                <CountUp end={100} suffix="%" duration={1900} />
+              </span>
               <span className="font-label-md text-xs text-on-surface-variant font-medium mt-1 block">QR Verified Diplomas</span>
             </div>
           </div>
