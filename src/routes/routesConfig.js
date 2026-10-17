@@ -71,12 +71,29 @@ export const ROUTES_CONFIG = [
   },
   {
     path: '/become-member',
-    id: 'become_member',
-    label: 'Become Member',
-    icon: 'card_membership',
-    title: 'Join Foundation as Patron / Life Member',
+    id: 'member',
+    label: 'Member',
+    icon: 'group',
+    title: 'Membership & Franchise Network',
     navOrder: 8,
     isNav: true,
+    hasDropdown: true,
+    children: [
+      {
+        path: '/become-member',
+        id: 'become_member',
+        label: 'Become a Member',
+        icon: 'card_membership',
+        desc: 'Join Foundation as Patron / Life Member',
+      },
+      {
+        path: '/#franchise-contact',
+        id: 'get_franchise',
+        label: 'Get Franchise',
+        icon: 'storefront',
+        desc: 'Affiliate or open an authorized HIT Centre',
+      },
+    ],
   },
   // Sub-routes & supplementary pages
   {
