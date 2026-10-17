@@ -1,12 +1,31 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import confetti from 'canvas-confetti';
 import mainBanner from '../assets/images/main.jpeg';
 import main2Banner from '../assets/images/main2.jpeg';
 import directorImg from '../assets/images/director.jpeg';
+import certificateImg from '../assets/images/certificate.jpeg';
+import isoImg from '../assets/images/iso.jpeg';
 
 export default function HomePage({ setActiveTab }) {
   const navigate = useNavigate();
+
+  // Franchise Form State
+  const [franchiseForm, setFranchiseForm] = useState({
+    name: '',
+    phone: '',
+    email: '',
+    city: '',
+    district: '',
+    state: 'Uttar Pradesh',
+    centerType: 'New Computer Center',
+    pcCount: '10 to 20 Computers',
+    spaceAvailable: '500 to 1,000 Sq. Ft.',
+    message: '',
+  });
+  const [franchiseSubmitted, setFranchiseSubmitted] = useState(false);
+  const [activeCertificateModal, setActiveCertificateModal] = useState(null);
 
   // Banner Carousel State
   const slides = [
@@ -67,6 +86,20 @@ export default function HomePage({ setActiveTab }) {
       setActiveTab(tabId);
     }
     navigate(path);
+  };
+
+  const handleFranchiseSubmit = (e) => {
+    e.preventDefault();
+    if (!franchiseForm.name || !franchiseForm.phone) {
+      alert('Please provide your name and contact phone number.');
+      return;
+    }
+    setFranchiseSubmitted(true);
+    try {
+      confetti({ particleCount: 90, spread: 60, origin: { y: 0.7 } });
+    } catch {
+      // ignore
+    }
   };
 
   return (
@@ -423,6 +456,378 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
+      {/* Franchise Purchase & Center Affiliation Contact Section */}
+      <section id="franchise-contact" className="w-full bg-surface-container-low py-16 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto space-y-12">
+          
+          {/* Section Header */}
+          <div className="text-center max-w-3xl mx-auto space-y-3">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider shadow-xs">
+              <span className="material-symbols-outlined text-base">domain_add</span>
+              <span>Authorized Training Centre (ATC) Franchise</span>
+            </div>
+            <h2 className="font-headline text-3xl sm:text-4xl font-extrabold text-primary leading-tight">
+              Start Your Own Computer Center — <span className="text-secondary">Get HIT Franchise</span>
+            </h2>
+            <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">
+              Partner with <strong>H.I.T India Skill Development Foundation</strong> (Registered under Ministry of Corporate Affairs, Govt. of India • ISO 9001:2015 Certified). Launch a prestigious computer training & university counseling centre in your district or town with low investment.
+            </p>
+          </div>
+
+          {/* 2-Column Main Layout */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            
+            {/* LEFT COLUMN: Interactive Franchise Application Form */}
+            <motion.div
+              className="lg:col-span-7 bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-md border border-outline-variant/30"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6 }}
+              viewport={{ once: true }}
+            >
+              <div className="flex items-center justify-between pb-4 border-b border-outline-variant/20 mb-6">
+                <div>
+                  <h3 className="font-headline text-xl font-bold text-primary flex items-center gap-2">
+                    <span className="material-symbols-outlined text-secondary">assignment</span>
+                    <span>Franchise Purchase & Affiliation Form</span>
+                  </h3>
+                  <p className="text-xs text-on-surface-variant mt-0.5">
+                    Fill out the form below. Our Franchise Onboarding Director will contact you within 24 hours.
+                  </p>
+                </div>
+                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold hidden sm:inline-block">
+                  Session 2026–2027
+                </span>
+              </div>
+
+              {franchiseSubmitted ? (
+                <div className="py-10 text-center space-y-4">
+                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
+                    <span className="material-symbols-outlined text-4xl">check_circle</span>
+                  </div>
+                  <div className="space-y-1">
+                    <h4 className="font-headline text-2xl font-bold text-primary">
+                      Franchise Application Submitted!
+                    </h4>
+                    <p className="text-sm text-on-surface-variant max-w-md mx-auto">
+                      Thank you <strong>{franchiseForm.name}</strong>. Our Head Office Franchise Coordinator will call you shortly on <strong>{franchiseForm.phone}</strong> with the complete affiliation kit, fee structure, and MoU terms.
+                    </p>
+                  </div>
+                  <div className="pt-4 flex justify-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setFranchiseSubmitted(false)}
+                      className="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-bold text-xs cursor-pointer"
+                    >
+                      Submit Another Inquiry
+                    </button>
+                    <a
+                      href={`https://wa.me/919616764675?text=Hello%20HIT%20Franchise%20Team%2C%20I%20have%20submitted%20my%20application%20for%20${encodeURIComponent(franchiseForm.city || 'Center')}`}
+                      target="_blank"
+                      rel="noreferrer"
+                      className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                    >
+                      <span>Connect on WhatsApp</span>
+                      <span className="material-symbols-outlined text-sm">chat</span>
+                    </a>
+                  </div>
+                </div>
+              ) : (
+                <form onSubmit={handleFranchiseSubmit} className="space-y-4 text-xs">
+                  {/* Row 1: Name & Phone */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Director / Centre Owner Name *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Anand Kumar Singh"
+                        value={franchiseForm.name}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, name: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Mobile Number (WhatsApp) *
+                      </label>
+                      <input
+                        type="tel"
+                        required
+                        placeholder="e.g. 9616764675 / 8115507046"
+                        value={franchiseForm.phone}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, phone: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 2: Email & District/City */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Email Address
+                      </label>
+                      <input
+                        type="email"
+                        placeholder="centre@email.com"
+                        value={franchiseForm.email}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, email: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                      />
+                    </div>
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Proposed City / Town & District *
+                      </label>
+                      <input
+                        type="text"
+                        required
+                        placeholder="e.g. Ghosi / Mau / Azamgarh"
+                        value={franchiseForm.city}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, city: e.target.value })}
+                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Row 3: Centre Status & Infrastructure */}
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Current Setup Status
+                      </label>
+                      <select
+                        value={franchiseForm.centerType}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, centerType: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                      >
+                        <option>New Computer Center</option>
+                        <option>Already Running Center</option>
+                        <option>School / College Lab</option>
+                        <option>Coaching Institute</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Computer Systems
+                      </label>
+                      <select
+                        value={franchiseForm.pcCount}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, pcCount: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                      >
+                        <option>5 to 10 Computers</option>
+                        <option>10 to 20 Computers</option>
+                        <option>20+ Computers</option>
+                        <option>Planning to Purchase</option>
+                      </select>
+                    </div>
+
+                    <div>
+                      <label className="font-bold text-on-surface-variant block mb-1">
+                        Lab Space Available
+                      </label>
+                      <select
+                        value={franchiseForm.spaceAvailable}
+                        onChange={(e) => setFranchiseForm({ ...franchiseForm, spaceAvailable: e.target.value })}
+                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                      >
+                        <option>300 to 500 Sq. Ft.</option>
+                        <option>500 to 1,000 Sq. Ft.</option>
+                        <option>1,000+ Sq. Ft.</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  {/* Message */}
+                  <div>
+                    <label className="font-bold text-on-surface-variant block mb-1">
+                      Location Details / Any Specific Query
+                    </label>
+                    <textarea
+                      rows={3}
+                      placeholder="Enter exact address, landmark, or your query about franchise fees, kit, and student exams..."
+                      value={franchiseForm.message}
+                      onChange={(e) => setFranchiseForm({ ...franchiseForm, message: e.target.value })}
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface resize-none"
+                    />
+                  </div>
+
+                  {/* Submit Button */}
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
+                    <span className="text-[11px] text-on-surface-variant flex items-center gap-1">
+                      <span className="material-symbols-outlined text-sm text-emerald-600">lock</span>
+                      <span>No Hidden Fees • Direct Head Office Affiliation</span>
+                    </span>
+                    <button
+                      type="submit"
+                      className="w-full sm:w-auto px-7 py-3 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                    >
+                      <span className="material-symbols-outlined text-base">send</span>
+                      <span>Submit Franchise Inquiry</span>
+                    </button>
+                  </div>
+                </form>
+              )}
+            </motion.div>
+
+            {/* RIGHT COLUMN: Official Credentials & Direct Helpdesk Dossier */}
+            <motion.div
+              className="lg:col-span-5 space-y-6"
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.2 }}
+              viewport={{ once: true }}
+            >
+              {/* Franchise Support Hotlines Card */}
+              <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/30 space-y-4">
+                <div className="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
+                  <div className="w-11 h-11 rounded-xl bg-primary text-white flex items-center justify-center font-bold">
+                    <span className="material-symbols-outlined text-2xl">support_agent</span>
+                  </div>
+                  <div>
+                    <span className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
+                      Direct Franchise Desk
+                    </span>
+                    <h3 className="font-headline text-lg font-bold text-primary">Head Office Contacts</h3>
+                  </div>
+                </div>
+
+                <div className="space-y-3 text-xs">
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
+                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">call</span>
+                    <div>
+                      <span className="font-bold text-primary block">Calling & WhatsApp Support:</span>
+                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 font-semibold text-secondary">
+                        <a href="tel:+919616764675" className="hover:underline flex items-center gap-1">
+                          <span className="text-emerald-600 font-bold">●</span>
+                          <span>+91 96167-64675</span>
+                        </a>
+                        <a href="tel:+918115507046" className="hover:underline flex items-center gap-1">
+                          <span className="text-emerald-600 font-bold">●</span>
+                          <span>+91 81155-07046</span>
+                        </a>
+                        <a href="tel:+919452078192" className="text-on-surface-variant hover:underline flex items-center gap-1">
+                          <span>+91 94520-78192</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
+                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">pin_drop</span>
+                    <div>
+                      <span className="font-bold text-primary block">Registered HQ Address:</span>
+                      <p className="text-on-surface-variant text-[11px] mt-0.5 leading-relaxed">
+                        H.No.-117A, Malik Tola, Ward-11, Kasba Khas, Ghosi, Jamal Mirja Pur, Mau, Uttar Pradesh - 275105
+                      </p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
+                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">mail</span>
+                    <div className="w-full">
+                      <span className="font-bold text-primary block">Official Franchise & Affiliation Emails:</span>
+                      <div className="flex flex-col gap-1 mt-1 font-semibold text-secondary text-[11px] sm:text-xs">
+                        <a href="mailto:hitindia.ghosi@gmail.com" className="hover:underline flex items-center gap-1.5 break-all">
+                          <span className="material-symbols-outlined text-xs text-primary">send</span>
+                          <span>hitindia.ghosi@gmail.com</span>
+                        </a>
+                        <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:underline flex items-center gap-1.5 break-all">
+                          <span className="material-symbols-outlined text-xs text-primary">send</span>
+                          <span>hitcomputer.ghosi@gmail.com</span>
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Instant WhatsApp Actions */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
+                  <a
+                    href="https://wa.me/919616764675?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                  >
+                    <span className="material-symbols-outlined text-base">chat</span>
+                    <span>WhatsApp: 9616764675</span>
+                  </a>
+                  <a
+                    href="https://wa.me/918115507046?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
+                    target="_blank"
+                    rel="noreferrer"
+                    className="py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
+                  >
+                    <span className="material-symbols-outlined text-base">chat</span>
+                    <span>WhatsApp: 8115507046</span>
+                  </a>
+                </div>
+              </div>
+
+              {/* Official Verification & Registration Certificates Preview */}
+              <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/30 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
+                    <span className="material-symbols-outlined text-sm text-secondary">verified</span>
+                    <span>Govt. Registration & Accreditation</span>
+                  </span>
+                  <span className="text-[10px] text-on-surface-variant font-medium">Click to inspect</span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 pt-1">
+                  {/* Certificate 1: MCA Govt. of India */}
+                  <div
+                    onClick={() => setActiveCertificateModal({
+                      title: "Government of India — Ministry of Corporate Affairs",
+                      subtitle: "Certificate of Incorporation • CIN: U85500UP2026NPL250943",
+                      image: certificateImg,
+                    })}
+                    className="group relative rounded-2xl overflow-hidden border border-outline-variant/30 shadow-xs hover:shadow-lg transition-all cursor-pointer bg-black/5"
+                  >
+                    <img
+                      src={certificateImg}
+                      alt="Ministry of Corporate Affairs Certificate of Incorporation"
+                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2.5 text-white">
+                      <span className="text-[10px] font-bold leading-tight line-clamp-1">Govt. MCA Certificate</span>
+                      <span className="text-[9px] text-secondary-fixed">Click to view full</span>
+                    </div>
+                  </div>
+
+                  {/* Certificate 2: ISO 9001:2015 */}
+                  <div
+                    onClick={() => setActiveCertificateModal({
+                      title: "ISO 9001:2015 Certified Quality Management System",
+                      subtitle: "Accredited for Vocational, Professional Skill & Educational Training",
+                      image: isoImg,
+                    })}
+                    className="group relative rounded-2xl overflow-hidden border border-outline-variant/30 shadow-xs hover:shadow-lg transition-all cursor-pointer bg-black/5"
+                  >
+                    <img
+                      src={isoImg}
+                      alt="ISO 9001:2015 Quality Management System Certificate"
+                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2.5 text-white">
+                      <span className="text-[10px] font-bold leading-tight line-clamp-1">ISO 9001:2015 Seal</span>
+                      <span className="text-[9px] text-secondary-fixed">Click to view full</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </motion.div>
+          </div>
+
+        </div>
+      </section>
+
       {/* Giving & Donation Callout */}
       <section className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg py-16">
         <div className="bg-gradient-to-r from-primary-container via-primary to-primary-container text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
@@ -456,6 +861,58 @@ export default function HomePage({ setActiveTab }) {
           </div>
         </div>
       </section>
+
+      {/* Certificate Lightbox Modal */}
+      {activeCertificateModal && (
+        <div
+          role="dialog"
+          aria-modal="true"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm"
+          onClick={() => setActiveCertificateModal(null)}
+        >
+          <div
+            className="relative max-w-3xl w-full bg-surface rounded-3xl overflow-hidden shadow-2xl border border-outline-variant/30 flex flex-col max-h-[92vh]"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="flex items-center justify-between p-4 px-6 border-b border-outline-variant/20 bg-surface-container-low">
+              <div>
+                <h3 className="text-base font-bold text-primary font-headline">
+                  {activeCertificateModal.title}
+                </h3>
+                <p className="text-xs text-on-surface-variant">
+                  {activeCertificateModal.subtitle}
+                </p>
+              </div>
+              <button
+                type="button"
+                onClick={() => setActiveCertificateModal(null)}
+                className="w-9 h-9 rounded-full bg-surface-container-high hover:bg-error/10 hover:text-error text-on-surface flex items-center justify-center transition-colors cursor-pointer"
+                title="Close Certificate Viewer"
+              >
+                <span className="material-symbols-outlined text-xl">close</span>
+              </button>
+            </div>
+            <div className="p-4 overflow-auto flex items-center justify-center bg-black/5 max-h-[75vh]">
+              <img
+                src={activeCertificateModal.image}
+                alt={activeCertificateModal.title}
+                className="max-h-[70vh] w-auto object-contain rounded-xl shadow-md border border-outline-variant/20"
+              />
+            </div>
+            <div className="p-3 px-6 bg-surface-container-low border-t border-outline-variant/20 flex items-center justify-between text-xs text-on-surface-variant">
+              <span>H.I.T India Skill Development Foundation • Official Document</span>
+              <button
+                type="button"
+                onClick={() => setActiveCertificateModal(null)}
+                className="px-4 py-1.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors text-xs cursor-pointer"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
+

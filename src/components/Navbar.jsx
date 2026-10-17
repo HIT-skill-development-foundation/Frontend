@@ -47,7 +47,9 @@ export default function Navbar({ activeTab, setActiveTab }) {
             Toll-Free: 1800-HIT-SKILL
           </a>
           <span className="hidden sm:inline text-white/30">|</span>
-          <span className="hidden sm:inline text-white/80">Direct: +91 94520-78192</span>
+          <a href="tel:+919616764675" className="hidden sm:inline text-white/80 hover:text-secondary-fixed transition-colors">
+            Direct: +91 96167-64675 / 81155-07046
+          </a>
         </div>
       </div>
 

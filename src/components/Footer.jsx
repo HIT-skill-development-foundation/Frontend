@@ -66,6 +66,22 @@ export default function Footer({ setActiveTab }) {
               <span className="material-symbols-outlined text-sm text-tertiary-fixed">location_on</span>
               <span>Jamal Mirzapur, Kasba Khas, Ghosi, Mau, Uttar Pradesh - 275105</span>
             </div>
+            <div className="flex flex-col gap-1.5 text-xs text-surface-container-highest pt-1">
+              <div className="flex items-center gap-2">
+                <span className="material-symbols-outlined text-sm text-tertiary-fixed">call</span>
+                <div className="flex flex-wrap gap-2">
+                  <a href="tel:+919616764675" className="hover:text-white transition-colors font-medium">+91 96167-64675</a>
+                  <span>•</span>
+                  <a href="tel:+918115507046" className="hover:text-white transition-colors font-medium">+91 81155-07046</a>
+                </div>
+              </div>
+              <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
+                <span className="material-symbols-outlined text-sm text-tertiary-fixed">mail</span>
+                <a href="mailto:hitindia.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30">hitindia.ghosi@gmail.com</a>
+                <span>•</span>
+                <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:text-white transition-colors underline decoration-white/30">hitcomputer.ghosi@gmail.com</a>
+              </div>
+            </div>
           </div>
 
           {/* Col 2: Academic Portals */}
@@ -150,10 +166,12 @@ export default function Footer({ setActiveTab }) {
         {/* Bottom Bar */}
         <div className="border-t border-outline-variant/20 py-space-lg flex flex-col sm:flex-row items-center justify-between gap-space-sm text-label-sm font-label-sm text-surface-container-high">
           <p>© 2026 H.I.T India Skill Development Foundation. All rights reserved.</p>
-          <div className="flex items-center gap-space-md">
+          <div className="flex flex-wrap items-center gap-space-md">
             <span>Kasba Khas, Ghosi, Mau Central Campus</span>
             <span>•</span>
-            <a href="tel:+919452078192" className="hover:text-white transition-colors">+91 94520-78192</a>
+            <a href="tel:+919616764675" className="hover:text-white transition-colors">+91 96167-64675</a>
+            <span>•</span>
+            <a href="tel:+918115507046" className="hover:text-white transition-colors">+91 81155-07046</a>
           </div>
         </div>
       </div>
