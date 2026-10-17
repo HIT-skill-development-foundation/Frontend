@@ -1,9 +1,6 @@
 import React, { useState } from 'react';
 
-// Static Imports for all 17 Local Image Assets
-import imgLogo from '../assets/images/logo.jpeg';
-import imgLogo2 from '../assets/images/logo2.jpeg';
-import imgMain from '../assets/images/main.jpeg';
+// Static Imports for Local Campus & Event Image Assets
 import imgAward from '../assets/images/award.jpeg';
 import imgGift from '../assets/images/gift.jpeg';
 import imgGift2 from '../assets/images/gift2.jpeg';
@@ -12,6 +9,8 @@ import imgHeadOffice from '../assets/images/headoffice.jpeg';
 import imgClass from '../assets/images/class.jpeg';
 import imgClass2 from '../assets/images/class2.jpeg';
 import imgClass3 from '../assets/images/class3.jpeg';
+import imgClass4 from '../assets/images/class4.jpeg';
+import imgClass5 from '../assets/images/class5.jpeg';
 import imgCake from '../assets/images/cake.jpeg';
 import imgCake1 from '../assets/images/cake1.jpeg';
 import imgCake2 from '../assets/images/cake2.jpeg';
@@ -28,39 +27,6 @@ export default function GalleryPage() {
   const [activeModalImg, setActiveModalImg] = useState(null);
 
   const galleryItems = [
-    {
-      id: 1,
-      title: 'HIT Computer Education Official Course Portfolio & Signboard',
-      category: 'infrastructure',
-      location: 'Near Post Office Jamal Mirzapur, Kasba Khas, Ghosi, Mau - 275105',
-      date: 'Session 2025–2026',
-      badge: 'Main Prospectus',
-      img: imgLogo,
-      desc: 'Official outdoor prospectus and affiliated course directory at Jamal Mirzapur Krishna Market, Ghosi, Mau. Offering recognized certifications in CCC, DTP, DCA, ADCA, PGDCA, Tally Prime + GST.',
-      gps: 'Lat 26.103858° / Long 83.544569°',
-    },
-    {
-      id: 2,
-      title: 'H.I.T India Skill Development Foundation Official Seal',
-      category: 'badges',
-      location: 'Central Registry & Governance Unit',
-      date: 'Permanent Emblems',
-      badge: 'ISO 9001:2015',
-      img: imgLogo2,
-      desc: 'The official certified insignia of H.I.T India Skill Development Foundation, registered under Ministry of Corporate Affairs (MCA) and verified on NITI Aayog Darpan portal.',
-      gps: 'U85300UP2021NPL142981',
-    },
-    {
-      id: 3,
-      title: 'Main Academic Center & Skill Campus Entrance',
-      category: 'infrastructure',
-      location: 'Kasba Khas, Ghosi, Mau, Uttar Pradesh - 275105',
-      date: 'Audited Campus',
-      badge: 'GPS Verified',
-      img: imgMain,
-      desc: 'Ground-level verified facility hosting multimedia computer workstations, faculty consultation suites, and high-speed optical fiber connectivity.',
-      gps: 'Kasba Khas, Ghosi, Mau',
-    },
     {
       id: 4,
       title: 'Annual Student Achievement & Course Completion Award',
@@ -150,6 +116,28 @@ export default function GalleryPage() {
       gps: 'Hall B Training',
     },
     {
+      id: 18,
+      title: 'Computer Hardware & Practical Workstations Lab (Room 01)',
+      category: 'classroom',
+      location: 'Ghosi Central Training Lab, Mau',
+      date: 'Daily Hands-on Practical',
+      badge: 'Hardware Lab',
+      img: imgClass4,
+      desc: 'Hands-on IT laboratory equipped with dedicated desktop terminals, motherboards, high-speed networking, and practical hardware maintenance stations for diploma scholars.',
+      gps: 'Central Lab Wing A',
+    },
+    {
+      id: 19,
+      title: 'PMKVY RPL & IT Lab Practical Training Hall',
+      category: 'classroom',
+      location: 'Kasba Khas Central Lab, Ghosi, Mau',
+      date: 'Vocational Training Session',
+      badge: 'PMKVY Lab',
+      img: imgClass5,
+      desc: 'Accredited practical classroom facility hosting PMKVY Recognition of Prior Learning programs, domestic data entry operator modules, and digital office automation.',
+      gps: 'Practical Wing 02',
+    },
+    {
       id: 12,
       title: 'PMKVY RPL & Teachers Day Milestone Celebration Cake Ceremony',
       category: 'pmkvy',
@@ -218,13 +206,12 @@ export default function GalleryPage() {
   ];
 
   const categories = [
-    { id: 'all', label: 'All 17 Events & Portfolios' },
-    { id: 'infrastructure', label: 'Campus & Infrastructure' },
-    { id: 'felicitations', label: 'Ceremonies & Felicitations' },
-    { id: 'pmkvy', label: 'PMKVY & Teachers Day' },
+    { id: 'all', label: 'All 16 Campus Moments & Sessions' },
     { id: 'classroom', label: 'Classroom & Labs' },
+    { id: 'pmkvy', label: 'PMKVY & Teachers Day' },
+    { id: 'felicitations', label: 'Ceremonies & Felicitations' },
+    { id: 'infrastructure', label: 'Campus & Infrastructure' },
     { id: 'leadership', label: 'Leadership & Administration' },
-    { id: 'badges', label: 'Seals & Badges' },
   ];
 
   const allItems = reduxGallery && reduxGallery.length > 0 ? reduxGallery : galleryItems;
@@ -351,61 +338,59 @@ export default function GalleryPage() {
           {filteredItems.map((item) => (
             <div
               key={item.id}
-              className="bg-surface-container-lowest rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-all border border-outline-variant/30 flex flex-col justify-between group"
+              onClick={() => setActiveModalImg(item)}
+              className="group relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[16/10] sm:aspect-[16/11] bg-surface-container-high border border-outline-variant/30 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer select-none"
             >
-              <div>
-                {/* Photo Display */}
-                <div className="relative w-full aspect-[16/10] bg-primary-container overflow-hidden">
-                  <img
-                    alt={item.title}
-                    src={item.img}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
-                  <div className="absolute top-3 left-3 bg-primary/90 text-white backdrop-blur-md px-2.5 py-1 rounded-lg text-[10px] font-bold flex items-center gap-1 shadow-sm">
-                    <span className="material-symbols-outlined text-[14px] text-tertiary-fixed">verified</span>
-                    <span>{item.badge}</span>
-                  </div>
-                  <button
-                    onClick={() => setActiveModalImg(item)}
-                    className="absolute bottom-3 right-3 bg-white/90 hover:bg-white text-primary p-1.5 rounded-lg shadow-sm transition-transform active:scale-95"
-                    title="Zoom Canvas"
-                  >
-                    <span className="material-symbols-outlined text-sm">open_in_full</span>
-                  </button>
-                </div>
+              {/* Rectangular Image */}
+              <img
+                alt={item.title}
+                src={item.img}
+                className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
+              />
 
-                {/* Content */}
-                <div className="p-5 space-y-2">
-                  <div className="flex items-center justify-between text-[11px] text-on-surface-variant">
-                    <span className="flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-secondary">calendar_today</span>
-                      <span>{item.date}</span>
-                    </span>
-                    <span className="font-mono text-emerald-700 font-semibold">{item.gps}</span>
-                  </div>
-
-                  <h3 className="font-headline text-base font-bold text-primary group-hover:text-secondary transition-colors leading-snug">
-                    {item.title}
-                  </h3>
-
-                  <p className="text-xs text-on-surface-variant leading-relaxed">
-                    {item.desc}
-                  </p>
-                </div>
+              {/* Default Subtle Top Badge (Visible before hover) */}
+              <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/10 flex items-center gap-1 shadow-sm transition-opacity duration-300 group-hover:opacity-0">
+                <span className="material-symbols-outlined text-[13px] text-secondary-fixed">verified</span>
+                <span>{item.badge}</span>
               </div>
 
-              {/* Bottom Address Strip */}
-              <div className="p-4 bg-surface-container-low border-t border-outline-variant/20 flex items-center justify-between text-xs">
-                <span className="text-[11px] text-on-surface-variant truncate max-w-[220px]">
-                  {item.location}
-                </span>
-                <button
-                  onClick={() => setActiveModalImg(item)}
-                  className="text-secondary font-bold text-xs hover:underline inline-flex items-center gap-0.5"
-                >
-                  <span>Details</span>
-                  <span className="material-symbols-outlined text-sm">arrow_forward</span>
-                </button>
+              {/* Glassy Black Hover Overlay with Full Content */}
+              <div className="absolute inset-0 bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out p-5 sm:p-6 flex flex-col justify-between text-white border border-white/10">
+                
+                {/* Top Meta Strip */}
+                <div className="flex items-center justify-between gap-2 transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
+                    <span className="material-symbols-outlined text-[12px]">verified</span>
+                    {item.badge}
+                  </span>
+                  <div className="flex items-center gap-1 text-[11px] text-white/80 font-mono">
+                    <span className="material-symbols-outlined text-[14px] text-secondary-fixed">calendar_today</span>
+                    <span>{item.date}</span>
+                  </div>
+                </div>
+
+                {/* Center Content */}
+                <div className="space-y-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <h3 className="font-headline text-base sm:text-lg font-bold text-white leading-snug line-clamp-2">
+                    {item.title}
+                  </h3>
+                  <p className="text-xs text-white/80 line-clamp-3 leading-relaxed">
+                    {item.desc}
+                  </p>
+                  <div className="flex items-center gap-1.5 text-[11px] text-secondary-fixed pt-1 truncate">
+                    <span className="material-symbols-outlined text-sm shrink-0">pin_drop</span>
+                    <span className="truncate">{item.location}</span>
+                  </div>
+                </div>
+
+                {/* Bottom Action Bar */}
+                <div className="pt-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
+                  <div className="w-full py-2 px-3.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-2 transition-colors shadow-sm">
+                    <span className="material-symbols-outlined text-base text-secondary-fixed">open_in_full</span>
+                    <span>Click to View Full Size</span>
+                  </div>
+                </div>
+
               </div>
             </div>
           ))}
@@ -414,29 +399,44 @@ export default function GalleryPage() {
 
       {/* Zoom Modal */}
       {activeModalImg && (
-        <div className="fixed inset-0 z-50 bg-primary/70 backdrop-blur-md flex items-center justify-center p-4">
-          <div className="bg-surface-container-lowest rounded-3xl max-w-2xl w-full overflow-hidden shadow-2xl border border-outline-variant/40 space-y-4">
-            <div className="relative aspect-video bg-primary">
+        <div
+          role="dialog"
+          aria-modal="true"
+          onClick={() => setActiveModalImg(null)}
+          className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-center justify-center p-4"
+        >
+          <div
+            onClick={(e) => e.stopPropagation()}
+            className="bg-surface-container-lowest rounded-3xl max-w-3xl w-full overflow-hidden shadow-2xl border border-outline-variant/40 space-y-4 max-h-[92vh] flex flex-col"
+          >
+            <div className="relative aspect-video bg-black flex items-center justify-center overflow-hidden">
               <img
                 alt={activeModalImg.title}
                 src={activeModalImg.img}
-                className="w-full h-full object-cover"
+                className="w-full h-full object-contain"
               />
               <button
+                type="button"
                 onClick={() => setActiveModalImg(null)}
-                className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white w-9 h-9 rounded-full flex items-center justify-center"
+                className="absolute top-4 right-4 bg-black/60 hover:bg-black/90 text-white w-9 h-9 rounded-full flex items-center justify-center transition-colors cursor-pointer"
+                title="Close Viewer"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
-            <div className="p-6 space-y-2">
-              <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-bold uppercase tracking-wider">
-                {activeModalImg.badge}
-              </span>
+            <div className="p-6 space-y-2 overflow-y-auto">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <span className="text-[10px] px-2.5 py-0.5 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant font-bold uppercase tracking-wider">
+                  {activeModalImg.badge}
+                </span>
+                <span className="text-xs text-on-surface-variant font-mono">
+                  {activeModalImg.date} • {activeModalImg.gps}
+                </span>
+              </div>
               <h3 className="font-headline text-xl font-bold text-primary">
                 {activeModalImg.title}
               </h3>
-              <p className="text-xs text-on-surface-variant leading-relaxed">
+              <p className="text-xs sm:text-sm text-on-surface-variant leading-relaxed">
                 {activeModalImg.desc}
               </p>
               <div className="pt-2 text-xs text-primary font-medium flex items-center gap-1.5">
