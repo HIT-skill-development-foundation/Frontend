@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAdmin, useLoader } from '../store/hooks';
 import logo2 from '../assets/images/logo2.jpeg';
+import loginSvg from '../assets/images/Login.svg';
 import { registeredStudentsList } from '../data/mockData';
 
 export default function AdminDashboardPage() {
@@ -236,71 +237,120 @@ export default function AdminDashboardPage() {
           </div>
         </div>
 
-        <div className="max-w-md mx-auto w-full px-4 pt-16">
-          <div className="bg-surface-container-lowest rounded-3xl p-8 sm:p-10 shadow-2xl border border-outline-variant/30 text-center">
-            <div className="w-20 h-20 rounded-full bg-primary text-white flex items-center justify-center mx-auto mb-4 shadow-lg border-2 border-secondary/40">
-              <span className="material-symbols-outlined text-4xl">admin_panel_settings</span>
+        <div className="max-w-5xl mx-auto w-full px-margin-sm lg:px-margin-lg py-10 sm:py-16">
+          <div className="bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
+            
+            {/* LEFT HALF: Login.svg Illustration & Admin Details (6 cols on lg) */}
+            <div className="lg:col-span-6 bg-gradient-to-br from-primary via-[#241544] to-primary p-8 sm:p-10 flex flex-col justify-between text-white relative overflow-hidden">
+              <div className="absolute -top-20 -left-20 w-64 h-64 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute -bottom-20 -right-20 w-64 h-64 bg-rose-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+              {/* Header */}
+              <div className="relative z-10 space-y-2">
+                <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
+                  <span className="material-symbols-outlined text-sm">shield_person</span>
+                  <span>Super Admin Console</span>
+                </div>
+                <h2 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
+                  Central Secretariat & Governance
+                </h2>
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                  Institutional administration for candidate verification, admissions, financial ledgers, course catalog, and government reporting.
+                </p>
+              </div>
+
+              {/* Center SVG Vector Illustration */}
+              <div className="relative z-10 py-6 my-auto flex items-center justify-center">
+                <img
+                  src={loginSvg}
+                  alt="Super Admin Login Illustration"
+                  className="w-full max-w-[280px] sm:max-w-[320px] h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Bottom Security Info */}
+              <div className="relative z-10 pt-4 border-t border-white/10 flex items-center justify-between text-[11px] text-white/70">
+                <span className="flex items-center gap-1.5 text-emerald-300 font-semibold">
+                  <span className="material-symbols-outlined text-sm">verified_user</span>
+                  <span>Node: 275105-MAU-HQ</span>
+                </span>
+                <span>256-Bit SSL Encrypted Protocol</span>
+              </div>
             </div>
-            <h2 className="font-headline text-2xl font-bold text-primary">Super Admin Login</h2>
-            <p className="text-xs text-on-surface-variant mt-1 mb-6">
-              Enter administrative credentials to manage students, donations, expenses, courses & certificates.
-            </p>
 
-            <form onSubmit={handleAdminLoginSubmit} className="space-y-4 text-left">
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-1">
-                  Administrator Email / Username
-                </label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">
-                    person
-                  </span>
-                  <input
-                    type="email"
-                    required
-                    value={adminCreds.email}
-                    onChange={(e) => setAdminCreds({ ...adminCreds, email: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                  />
+            {/* RIGHT HALF: Admin Login Form (6 cols on lg) */}
+            <div className="lg:col-span-6 p-8 sm:p-10 flex flex-col justify-center bg-surface-container-lowest">
+              <div className="max-w-md mx-auto w-full space-y-5">
+                <div className="text-center sm:text-left">
+                  <div className="w-14 h-14 rounded-2xl bg-primary text-white flex items-center justify-center shadow-lg border border-secondary/40 mb-3">
+                    <span className="material-symbols-outlined text-3xl">admin_panel_settings</span>
+                  </div>
+                  <h3 className="font-headline text-2xl font-bold text-primary">Super Admin Login</h3>
+                  <p className="text-xs text-on-surface-variant mt-1">
+                    Enter administrative credentials to manage students, donations, expenses, courses & certificates.
+                  </p>
                 </div>
-              </div>
 
-              <div>
-                <label className="text-xs font-bold text-on-surface-variant block mb-1">Security PIN / Password</label>
-                <div className="relative">
-                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">
-                    lock
-                  </span>
-                  <input
-                    type="password"
-                    required
-                    value={adminCreds.password}
-                    onChange={(e) => setAdminCreds({ ...adminCreds, password: e.target.value })}
-                    className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                  />
-                </div>
-              </div>
+                <form onSubmit={handleAdminLoginSubmit} className="space-y-4 text-left">
+                  <div>
+                    <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                      Administrator Email / Username
+                    </label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">
+                        person
+                      </span>
+                      <input
+                        type="email"
+                        required
+                        value={adminCreds.email}
+                        onChange={(e) => setAdminCreds({ ...adminCreds, email: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  </div>
 
-              <button
-                type="submit"
-                className="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
-              >
-                <span className="material-symbols-outlined text-base">login</span>
-                <span>Enter Admin Console</span>
-              </button>
+                  <div>
+                    <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                      Security PIN / Password
+                    </label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-base">
+                        lock
+                      </span>
+                      <input
+                        type="password"
+                        required
+                        value={adminCreds.password}
+                        onChange={(e) => setAdminCreds({ ...adminCreds, password: e.target.value })}
+                        className="w-full pl-10 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                      />
+                    </div>
+                  </div>
 
-              <div className="pt-4 border-t border-outline-variant/20 text-center">
-                <span className="text-[11px] text-on-surface-variant block mb-2">Evaluation or Demo Login?</span>
-                <button
-                  type="button"
-                  onClick={handleDemoAdminLogin}
-                  className="w-full py-2.5 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary font-bold text-xs transition-colors cursor-pointer border border-secondary/30 flex items-center justify-center gap-1.5"
-                >
-                  <span className="material-symbols-outlined text-base">bolt</span>
-                  <span>1-Click Demo Super Admin Login</span>
-                </button>
+                  <button
+                    type="submit"
+                    className="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    <span className="material-symbols-outlined text-base">login</span>
+                    <span>Enter Admin Console</span>
+                  </button>
+
+                  <div className="pt-4 border-t border-outline-variant/20 text-center">
+                    <span className="text-[11px] text-on-surface-variant block mb-2">Evaluation or Demo Login?</span>
+                    <button
+                      type="button"
+                      onClick={handleDemoAdminLogin}
+                      className="w-full py-2.5 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary font-bold text-xs transition-colors cursor-pointer border border-secondary/30 flex items-center justify-center gap-1.5"
+                    >
+                      <span className="material-symbols-outlined text-base">bolt</span>
+                      <span>1-Click Demo Super Admin Login</span>
+                    </button>
+                  </div>
+                </form>
               </div>
-            </form>
+            </div>
+
           </div>
         </div>
       </div>

@@ -24,7 +24,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
   };
 
   return (
-    <header className="fixed top-0 w-full z-50 bg-gradient-to-r from-[#001438] via-[#092252] to-[#153478] text-white shadow-[0_4px_25px_rgba(0,18,51,0.25)] border-b border-white/10 backdrop-blur-md">
+    <header className="sticky top-0 w-full z-50 bg-gradient-to-r from-[#001438] via-[#092252] to-[#153478] text-white shadow-[0_4px_25px_rgba(0,18,51,0.25)] border-b border-white/10 backdrop-blur-md">
       {/* Top Notification Strip */}
       <div className="bg-black/25 text-white/90 px-margin-sm lg:px-margin-lg py-1.5 flex items-center justify-between text-label-sm font-label-sm border-b border-white/10">
         <div className="flex items-center gap-space-md flex-wrap">

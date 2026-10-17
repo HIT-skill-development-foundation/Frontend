@@ -5,6 +5,7 @@ import studentService from '../services/studentService';
 import admissionService from '../services/admissionService';
 import { coursesList, universityProgramsList, centresList, initialStudentData } from '../data/mockData';
 import logo2 from '../assets/images/logo2.jpeg';
+import loginSvg from '../assets/images/Login.svg';
 
 export default function StudentPortalPage() {
   const { student, isLoggedIn, logIn, logOut, enrollNewStudent, logDownload } = useStudent();
@@ -125,57 +126,89 @@ export default function StudentPortalPage() {
           </div>
         </div>
 
-        <div className="max-w-4xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-10">
-          {/* Brand Header */}
-          <div className="text-center mb-8">
-            <div className="w-20 h-20 rounded-full overflow-hidden mx-auto bg-white p-1 border-2 border-secondary/40 shadow-xl mb-3">
-              <img src={logo2} alt="HIT Logo" className="w-full h-full object-contain rounded-full" />
-            </div>
-            <h1 className="font-headline text-2xl sm:text-3xl font-extrabold text-primary">
-              HIT Student Portal
-            </h1>
-            <p className="text-xs sm:text-sm text-on-surface-variant font-medium mt-1">
-              Sign in to access your digital ID card, academic marksheet, fees, and course registrations.
-            </p>
-          </div>
+        <div className="max-w-6xl mx-auto w-full px-margin-sm lg:px-margin-lg py-8 sm:py-12">
+          <div className="bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
+            
+            {/* LEFT HALF: Login.svg Illustration & Branding */}
+            <div className="lg:col-span-5 bg-gradient-to-br from-primary via-[#241544] to-primary p-6 sm:p-10 flex flex-col justify-between text-white relative overflow-hidden">
+              <div className="absolute -top-24 -left-24 w-72 h-72 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
+              <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
-          {/* Tab Selector: Login vs Sign Up */}
-          <div className="bg-surface-container-low p-1.5 rounded-2xl max-w-md mx-auto flex items-center mb-8 shadow-xs border border-outline-variant/30">
-            <button
-              onClick={() => setAuthMode('login')}
-              className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                authMode === 'login'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-on-surface-variant hover:text-primary'
-              }`}
-            >
-              <span className="material-symbols-outlined text-base">login</span>
-              <span>Student Sign In</span>
-            </button>
-            <button
-              onClick={() => setAuthMode('signup')}
-              className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
-                authMode === 'signup'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'text-on-surface-variant hover:text-primary'
-              }`}
-            >
-              <span className="material-symbols-outlined text-base">how_to_reg</span>
-              <span>New Student Sign Up (₹100)</span>
-            </button>
-          </div>
-
-          {/* Form Container */}
-          <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-10 shadow-xl border border-outline-variant/30">
-            {authMode === 'login' ? (
-              /* LOGIN TAB */
-              <form onSubmit={handleLoginSubmit} className="max-w-md mx-auto space-y-4">
-                <div className="text-center pb-2">
-                  <h3 className="font-headline text-xl font-bold text-primary">Sign In to Your Dossier</h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">
-                    Enter your Permanent Roll Number or registered Mobile/Email
-                  </p>
+              {/* Top Branding */}
+              <div className="relative z-10 space-y-2">
+                <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
+                  <span className="material-symbols-outlined text-sm">school</span>
+                  <span>Student Gateway</span>
                 </div>
+                <h2 className="font-headline text-2xl sm:text-3xl font-extrabold tracking-tight leading-tight">
+                  HIT Student Portal
+                </h2>
+                <p className="text-xs sm:text-sm text-white/80 leading-relaxed">
+                  Sign in to access your digital ID card, academic marksheet, fee receipts, and course registrations.
+                </p>
+              </div>
+
+              {/* Center SVG Vector Illustration */}
+              <div className="relative z-10 py-6 my-auto flex items-center justify-center">
+                <img
+                  src={loginSvg}
+                  alt="Student Login & Registration Illustration"
+                  className="w-full max-w-[280px] sm:max-w-[340px] h-auto object-contain drop-shadow-2xl hover:scale-105 transition-transform duration-500"
+                />
+              </div>
+
+              {/* Bottom Trust Badges */}
+              <div className="relative z-10 pt-4 border-t border-white/10 space-y-2 text-xs">
+                <div className="flex items-center gap-2 text-emerald-300">
+                  <span className="material-symbols-outlined text-sm">verified_user</span>
+                  <span className="font-semibold text-[11px]">256-Bit SSL Encrypted Student Portal</span>
+                </div>
+                <div className="flex items-center gap-2 text-white/80">
+                  <span className="material-symbols-outlined text-sm text-secondary-fixed">badge</span>
+                  <span className="text-[11px]">Instant PVC Student ID Card & Academic Ledger</span>
+                </div>
+              </div>
+            </div>
+
+            {/* RIGHT HALF: Form & Tab Controls */}
+            <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-surface-container-lowest">
+              {/* Tab Selector: Login vs Sign Up */}
+              <div className="bg-surface-container-low p-1.5 rounded-2xl flex items-center mb-6 shadow-xs border border-outline-variant/30">
+                <button
+                  type="button"
+                  onClick={() => setAuthMode('login')}
+                  className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    authMode === 'login'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">login</span>
+                  <span>Student Sign In</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setAuthMode('signup')}
+                  className={`flex-1 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+                    authMode === 'signup'
+                      ? 'bg-primary text-white shadow-md'
+                      : 'text-on-surface-variant hover:text-primary'
+                  }`}
+                >
+                  <span className="material-symbols-outlined text-base">how_to_reg</span>
+                  <span>New Student Sign Up (₹100)</span>
+                </button>
+              </div>
+
+              {authMode === 'login' ? (
+                /* LOGIN TAB */
+                <form onSubmit={handleLoginSubmit} className="max-w-md mx-auto w-full space-y-4">
+                  <div className="text-center pb-2">
+                    <h3 className="font-headline text-xl font-bold text-primary">Sign In to Your Dossier</h3>
+                    <p className="text-xs text-on-surface-variant mt-0.5">
+                      Enter your Permanent Roll Number or registered Mobile/Email
+                    </p>
+                  </div>
 
                 <div>
                   <label className="text-xs font-bold text-on-surface-variant block mb-1">
@@ -425,6 +458,7 @@ export default function StudentPortalPage() {
                 </button>
               </form>
             )}
+            </div>
           </div>
         </div>
       </div>

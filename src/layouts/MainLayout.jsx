@@ -20,8 +20,8 @@ export default function MainLayout() {
       {/* Top Navbar */}
       <Navbar />
 
-      {/* Main Routed Page Content with offset for fixed top nav */}
-      <main className="flex-1 pt-24 sm:pt-28">
+      {/* Main Routed Page Content flush under sticky top nav */}
+      <main className="flex-1">
         <Outlet />
       </main>
 
