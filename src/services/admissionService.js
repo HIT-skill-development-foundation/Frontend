@@ -1,10 +1,7 @@
 import { admissionService as apiAdmissionService } from './hitApi';
 
 export const admissionService = {
-  /**
-   * Submit online student admission application to live backend API
-   */
-  async submitApplication(formData) {
+    async submitApplication(formData) {
     const payload = {
       fullName: formData.fullName,
       fatherName: formData.fatherName,

@@ -59,7 +59,7 @@ export default function GalleryPage() {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Top Breadcrumb & Metadata Strip */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin sm:px-margin-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-xs text-xs sm:text-sm">
           <div className="flex items-center gap-2 text-white/80">
@@ -78,12 +78,12 @@ export default function GalleryPage() {
         </div>
       </div>
 
-      {/* Filter & Search Toolbar */}
+      
       <section className="w-full py-6 sm:py-8 px-margin sm:px-margin-lg bg-surface">
         <div className="max-w-7xl mx-auto">
           <div className="bg-surface-container p-4 rounded-2xl shadow-sm space-y-4">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-3">
-              {/* Search Input */}
+              
               <div className="relative flex-1 max-w-md">
                 <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">
                   search
@@ -97,7 +97,7 @@ export default function GalleryPage() {
                 />
               </div>
 
-              {/* Action Buttons */}
+              
               <div className="flex items-center gap-2 flex-wrap">
                 <button
                   onClick={() => window.print()}
@@ -109,7 +109,7 @@ export default function GalleryPage() {
               </div>
             </div>
 
-            {/* Filter Category Chips */}
+            
             <div className="flex items-center gap-2 overflow-x-auto pb-1 scrollbar-none">
               {categories.map((c) => (
                 <button
@@ -129,7 +129,7 @@ export default function GalleryPage() {
         </div>
       </section>
 
-      {/* Gallery Cards Grid */}
+      
       <section className="max-w-7xl mx-auto w-full px-margin sm:px-margin-lg">
         {isLoading ? (
           <div className="py-20 flex flex-col items-center justify-center text-on-surface-variant gap-3">
@@ -152,22 +152,22 @@ export default function GalleryPage() {
                 onClick={() => setActiveModalImg(item)}
                 className="group relative rounded-2xl sm:rounded-3xl overflow-hidden aspect-[16/10] sm:aspect-[16/11] bg-surface-container-high border border-outline-variant/30 shadow-md hover:shadow-2xl transition-all duration-300 cursor-pointer select-none"
               >
-                {/* Image */}
+                
                 <img
                   alt={item.title}
                   src={item.img || item.photoUrl}
                   className="w-full h-full object-cover transition-transform duration-700 ease-out group-hover:scale-110"
                 />
 
-                {/* Default Subtle Top Badge */}
+                
                 <div className="absolute top-3 left-3 px-2.5 py-1 rounded-lg bg-black/60 backdrop-blur-md text-white text-[10px] font-bold border border-white/10 flex items-center gap-1 shadow-sm transition-opacity duration-300 group-hover:opacity-0">
                   <span className="material-symbols-outlined text-[13px] text-secondary-fixed">verified</span>
                   <span>{item.badge || item.category || 'Event'}</span>
                 </div>
 
-                {/* Glassy Black Hover Overlay */}
+                
                 <div className="absolute inset-0 bg-black/80 backdrop-blur-md opacity-0 group-hover:opacity-100 transition-all duration-300 ease-in-out p-5 sm:p-6 flex flex-col justify-between text-white border border-white/10">
-                  {/* Top Meta Strip */}
+                  
                   <div className="flex items-center justify-between gap-2 transform -translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-secondary-fixed text-on-secondary-fixed-variant text-[10px] font-extrabold uppercase tracking-wider shadow-sm">
                       <span className="material-symbols-outlined text-[12px]">verified</span>
@@ -179,7 +179,7 @@ export default function GalleryPage() {
                     </div>
                   </div>
 
-                  {/* Center Content */}
+                  
                   <div className="space-y-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                     <h3 className="font-headline text-base sm:text-lg font-bold text-white leading-snug line-clamp-2">
                       {item.title}
@@ -193,7 +193,7 @@ export default function GalleryPage() {
                     </div>
                   </div>
 
-                  {/* Bottom Action Bar */}
+                  
                   <div className="pt-2 transform translate-y-2 group-hover:translate-y-0 transition-transform duration-300">
                     <div className="w-full py-2 px-3.5 rounded-xl bg-white/15 hover:bg-white/25 border border-white/20 text-white text-xs font-bold backdrop-blur-sm flex items-center justify-center gap-2 transition-colors shadow-sm">
                       <span className="material-symbols-outlined text-base text-secondary-fixed">open_in_full</span>
@@ -207,7 +207,7 @@ export default function GalleryPage() {
         )}
       </section>
 
-      {/* Zoom Modal */}
+      
       {activeModalImg && (
         <div
           role="dialog"

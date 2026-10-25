@@ -14,7 +14,6 @@
   }
 }
 
-/* Material Symbols formatting */
 .material-symbols-outlined {
   font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
   vertical-align: middle;
@@ -27,7 +26,6 @@
   line-height: 1;
 }
 
-/* Custom Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
@@ -44,36 +42,32 @@
 }
 
 @layer components {
-  /* ==========================================================================
-     Unified Enterprise Button System
-     Consistent border-radius (rounded-lg), font-weights, and hover transitions.
-     ========================================================================== */
+  
   .btn-base {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-semibold text-xs sm:text-sm tracking-wide transition-all duration-150 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none;
   }
 
-  /* Primary Action Button (Deep Institutional Navy -> Deep Cobalt Navy) */
+  
   .btn-primary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-semibold text-xs sm:text-sm tracking-wide transition-all duration-150 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none bg-[#00163d] hover:bg-[#072a6b] text-white shadow-sm;
   }
 
-  /* Secondary / Companion Button on Light Background */
+  
   .btn-secondary {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-semibold text-xs sm:text-sm tracking-wide transition-all duration-150 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none bg-white hover:bg-slate-50 text-slate-800 border border-slate-300 hover:border-slate-400 shadow-sm;
   }
 
-  /* Secondary / Companion Button on Dark Navy Surface */
+  
   .btn-outline-dark {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-semibold text-xs sm:text-sm tracking-wide transition-all duration-150 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none bg-white/5 hover:bg-white/10 text-white border border-white/20 hover:border-white/30;
   }
 
-  /* Accent Highlight Button (Key CTA / 80G Donation) */
+  
   .btn-accent {
     @apply inline-flex items-center justify-center gap-2 rounded-lg font-bold text-xs sm:text-sm tracking-wide transition-all duration-150 active:scale-[0.98] cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed select-none bg-amber-500 hover:bg-amber-400 text-slate-950 shadow-sm;
   }
 }
 
-/* Brand Gradient Utilities */
 .bg-brand-gradient {
   background: linear-gradient(135deg, #000d29 0%, #072a6b 35%, #0d4499 70%, #1a62c6 100%);
 }
@@ -91,7 +85,6 @@
   background: linear-gradient(135deg, #0a3582 0%, #104fa8 50%, #2563eb 100%);
 }
 
-/* Card flip 3D utility */
 .perspective-1000 {
   perspective: 1000px;
 }

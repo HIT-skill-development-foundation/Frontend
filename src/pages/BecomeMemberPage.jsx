@@ -45,7 +45,7 @@ export default function BecomeMemberPage() {
       try {
         confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
       } catch {
-        // ignore
+        
       }
       notify('success', `Congratulations! Membership confirmed. ID: ${allocatedId}`);
     }, 'Registering Foundation Membership & Issuing Digital Credential Card...');
@@ -53,7 +53,7 @@ export default function BecomeMemberPage() {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Header Banner */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
@@ -68,7 +68,7 @@ export default function BecomeMemberPage() {
         </div>
       </div>
 
-      {/* Hero Showcase */}
+      
       <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-12 px-margin-sm lg:px-margin-lg shadow-inner">
         <div className="max-w-7xl mx-auto text-center max-w-3xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider mb-3">
@@ -84,7 +84,7 @@ export default function BecomeMemberPage() {
         </div>
       </section>
 
-      {/* Tiers Grid */}
+      
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg -mt-6">
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {membershipTiers.map((tier, i) => (
@@ -110,10 +110,10 @@ export default function BecomeMemberPage() {
         </div>
       </div>
 
-      {/* Form & Preview Area */}
+      
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-12">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Left Form */}
+          
           <div className="lg:col-span-7 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/30">
             {isRegistered ? (
               <div className="text-center py-6">
@@ -236,7 +236,7 @@ export default function BecomeMemberPage() {
             )}
           </div>
 
-          {/* Right Live Digital Membership Card Preview */}
+          
           <div className="lg:col-span-5 flex flex-col items-center">
             <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider mb-3">
               Live Digital Membership Card Preview

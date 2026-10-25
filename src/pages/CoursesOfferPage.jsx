@@ -32,10 +32,10 @@ export default function CoursesOfferPage() {
     });
   }, [dispatch]);
 
-  // Primary Tab: 'vocational' | 'university'
+  
   const [activeCatalogTab, setActiveCatalogTab] = useState('vocational');
 
-  // Vocational Filter & Search
+  
   const [filterDuration, setFilterDuration] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCourseModal, setSelectedCourseModal] = useState(null);
@@ -112,7 +112,7 @@ export default function CoursesOfferPage() {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Top Breadcrumb & Trust Banner */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
@@ -131,7 +131,7 @@ export default function CoursesOfferPage() {
         </div>
       </div>
 
-      {/* Hero Header */}
+      
       <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-12 px-margin-sm lg:px-margin-lg shadow-inner">
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="max-w-3xl">
@@ -159,7 +159,7 @@ export default function CoursesOfferPage() {
         </div>
       </section>
 
-      {/* Primary Section Switcher Tabs */}
+      
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg -mt-6">
         <div className="bg-surface-container-lowest p-2 rounded-2xl shadow-lg border border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -197,7 +197,7 @@ export default function CoursesOfferPage() {
             </button>
           </div>
 
-          {/* Search Box */}
+          
           <div className="relative w-full sm:w-80">
             <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
               search
@@ -217,12 +217,12 @@ export default function CoursesOfferPage() {
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* TAB 1: VOCATIONAL & IT COMPUTER COURSES                  */}
-      {/* ======================================================== */}
+      
+      
+      
       {activeCatalogTab === 'vocational' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-          {/* Duration Filters */}
+          
           <div className="flex items-center justify-between flex-wrap gap-3 pb-6 border-b border-outline-variant/20">
             <div className="flex items-center gap-1.5 flex-wrap">
               <span className="text-xs font-bold text-on-surface-variant mr-1">Duration Filter:</span>
@@ -252,14 +252,14 @@ export default function CoursesOfferPage() {
             </span>
           </div>
 
-          {/* Courses Grid */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
             {filteredVocationalCourses.map((course) => (
               <div
                 key={course.id}
                 className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all border border-outline-variant/30 flex flex-col justify-between group relative overflow-hidden"
               >
-                {/* Top strip for formula-based bundle courses like ADCA, DCPA, DTP */}
+                
                 {course.formula && (
                   <div className="absolute top-0 inset-x-0 bg-primary/5 py-1 px-4 border-b border-outline-variant/20">
                     <span className="text-[10px] font-bold text-primary truncate block">
@@ -269,7 +269,7 @@ export default function CoursesOfferPage() {
                 )}
 
                 <div className={course.formula ? 'pt-3' : ''}>
-                  {/* Top Badge & Icon */}
+                  
                   <div className="flex items-start justify-between mb-3">
                     <div className="w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors shadow-xs">
                       <span className="material-symbols-outlined text-2xl">{course.icon || 'terminal'}</span>
@@ -287,7 +287,7 @@ export default function CoursesOfferPage() {
                     </div>
                   </div>
 
-                  {/* Course Code & Duration */}
+                  
                   <div className="flex items-center gap-2 mb-1.5">
                     <span className="font-mono text-xs font-extrabold px-2 py-0.5 rounded bg-surface-container text-secondary">
                       {course.code}
@@ -297,17 +297,17 @@ export default function CoursesOfferPage() {
                     </span>
                   </div>
 
-                  {/* Title */}
+                  
                   <h3 className="font-headline text-lg font-bold text-primary group-hover:text-secondary transition-colors mb-1.5 leading-snug">
                     {course.name}
                   </h3>
 
-                  {/* Eligibility */}
+                  
                   <p className="text-xs text-on-surface-variant font-medium mb-3">
                     Eligibility: <span className="text-on-surface font-semibold">{course.eligibility}</span>
                   </p>
 
-                  {/* Modules list */}
+                  
                   <div className="space-y-1.5 pt-3 border-t border-outline-variant/20 mb-4">
                     <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
                       Curriculum Modules:
@@ -331,7 +331,7 @@ export default function CoursesOfferPage() {
                   </div>
                 </div>
 
-                {/* Bottom Actions & Fee */}
+                
                 <div className="pt-4 border-t border-outline-variant/20 flex items-center justify-between gap-2">
                   <div>
                     <span className="text-[10px] text-on-surface-variant block uppercase tracking-wider font-semibold">
@@ -363,12 +363,12 @@ export default function CoursesOfferPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* TAB 2: UNIVERSITY PROGRAMS (ONLINE & DISTANCE)          */}
-      {/* ======================================================== */}
+      
+      
+      
       {activeCatalogTab === 'university' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-          {/* Recognition Banner */}
+          
           <div className="bg-gradient-to-r from-secondary/15 via-primary/10 to-secondary/15 p-6 rounded-3xl border border-secondary/30 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
             <div className="space-y-1">
               <div className="flex items-center gap-2">
@@ -399,7 +399,7 @@ export default function CoursesOfferPage() {
             </div>
           </div>
 
-          {/* University Cards Grid */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {filteredUnivPrograms.map((univ) => (
               <div
@@ -469,9 +469,9 @@ export default function CoursesOfferPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* DETAILED VOCATIONAL COURSE SYLLABUS MODAL                */}
-      {/* ======================================================== */}
+      
+      
+      
       {selectedCourseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
           <div className="bg-surface-container-lowest max-w-xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-scale-up">
@@ -562,9 +562,9 @@ export default function CoursesOfferPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* UNIVERSITY PROGRAM ADMISSION COUNSELING MODAL           */}
-      {/* ======================================================== */}
+      
+      
+      
       {selectedUnivModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
           <div className="bg-surface-container-lowest max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-scale-up">

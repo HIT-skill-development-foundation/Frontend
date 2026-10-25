@@ -1,8 +1,3 @@
-/**
- * Route Configuration conforming to the Open/Closed Principle (OCP).
- * Configured specifically for the requested navigation layout:
- * Home, Gallery, Course Offer, About Us, Student Portal, Admin Portal, Donate Now, Become Member
- */
 export const ROUTES_CONFIG = [
   {
     path: '/',
@@ -95,7 +90,7 @@ export const ROUTES_CONFIG = [
       },
     ],
   },
-  // Sub-routes & supplementary pages
+  
   {
     path: '/admission',
     id: 'admission',

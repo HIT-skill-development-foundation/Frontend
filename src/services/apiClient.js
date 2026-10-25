@@ -9,13 +9,12 @@ const apiClient = axios.create({
   headers: {
     'Content-Type': 'application/json',
   },
-  timeout: 30000, // 30s timeout to accommodate Render free-tier cold starts
+  timeout: 30000, 
 });
 
-// Automatic Bearer Token Interceptor
 apiClient.interceptors.request.use(
   (config) => {
-    // Check for admin token first, then student token
+    
     const token =
       localStorage.getItem('hit_admin_token') ||
       localStorage.getItem('hit_student_token');
@@ -27,7 +26,6 @@ apiClient.interceptors.request.use(
   (error) => Promise.reject(error)
 );
 
-// Centralized Error Handling Interceptor
 apiClient.interceptors.response.use(
   (response) => response.data,
   (error) => {
@@ -37,7 +35,7 @@ apiClient.interceptors.response.use(
       error.message ||
       'An unexpected error occurred. Please verify your connection.';
 
-    // Auto remove tokens on 401 Unauthorized
+    
     if (error.response?.status === 401) {
       localStorage.removeItem('hit_admin_token');
       localStorage.removeItem('hit_student_token');

@@ -46,7 +46,7 @@ export default function VerificationPage({ initialQuery = '' }) {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Header Banner */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex items-center justify-between text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
@@ -74,7 +74,7 @@ export default function VerificationPage({ initialQuery = '' }) {
           </p>
         </div>
 
-        {/* Verification Form */}
+        
         <form onSubmit={handleVerify} className="bg-surface-container-lowest p-6 rounded-2xl shadow-sm border border-outline-variant/30 mb-8">
           <div className="flex flex-col sm:flex-row gap-3">
             <div className="relative flex-1">
@@ -96,11 +96,11 @@ export default function VerificationPage({ initialQuery = '' }) {
           </div>
         </form>
 
-        {/* Verification Result Card */}
+        
         {searched && (
           result ? (
             <div className="bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 overflow-hidden">
-              {/* Top Dual-Zone Authoritative Header */}
+              
               <div className="bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] p-6 text-white flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 rounded-full bg-white p-0.5 flex items-center justify-center shadow-sm shrink-0 overflow-hidden border border-secondary/30">
@@ -129,7 +129,7 @@ export default function VerificationPage({ initialQuery = '' }) {
                 </div>
               </div>
 
-              {/* Credential Data Grid */}
+              
               <div className="p-6 sm:p-8 grid grid-cols-1 md:grid-cols-2 gap-6 bg-surface-container-lowest">
                 <div className="space-y-4">
                   <div>
@@ -164,7 +164,7 @@ export default function VerificationPage({ initialQuery = '' }) {
                 </div>
               </div>
 
-              {/* Bottom Cryptographic Ledger Proof */}
+              
               <div className="bg-surface-container-low p-6 border-t border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-12 h-12 bg-white p-1 rounded-lg border border-outline-variant flex items-center justify-center shrink-0">

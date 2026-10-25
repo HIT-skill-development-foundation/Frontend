@@ -48,7 +48,7 @@ export const adminSlice = createSlice({
         localStorage.removeItem('hit_admin_token');
         localStorage.removeItem('hit_admin_user');
       } catch {
-        // ignore
+        
       }
     },
     setAdminStats: (state, action) => {

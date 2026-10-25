@@ -44,10 +44,10 @@ export default function StudentPortalPage() {
       .catch(() => null);
   }, []);
 
-  // Auth gate state (when not logged in)
-  const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup'
+  
+  const [authMode, setAuthMode] = useState('login'); 
 
-  // Login form state
+  
   const [loginCreds, setLoginCreds] = useState({
     rollOrEmail: '',
     password: '',
@@ -73,12 +73,12 @@ export default function StudentPortalPage() {
     paymentMode: 'upi',
   });
 
-  // Authenticated Dashboard Sub-tabs
-  const [activePortalTab, setActivePortalTab] = useState('id_card'); // 'id_card' | 'course_reg' | 'academic' | 'certificate'
-  const [cardSide, setCardSide] = useState('front'); // 'front' | 'back'
+  
+  const [activePortalTab, setActivePortalTab] = useState('id_card'); 
+  const [cardSide, setCardSide] = useState('front'); 
   const [downloadSuccess, setDownloadSuccess] = useState(false);
 
-  // Handle Login
+  
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
     if (!loginCreds.rollOrEmail || !loginCreds.password) {
@@ -105,7 +105,7 @@ export default function StudentPortalPage() {
     }, 'Authenticating Student with Central Registry Ledger...');
   };
 
-  // Demo Quick Login
+  
   const handleDemoLogin = async () => {
     await withLoader(async () => {
       try {
@@ -125,7 +125,7 @@ export default function StudentPortalPage() {
     }, 'Accessing Student Dossier...');
   };
 
-  // Handle Student Registration & Payment (Sign Up)
+  
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     if (!signUpData.fullName || !signUpData.mobile) {
@@ -140,7 +140,7 @@ export default function StudentPortalPage() {
         try {
           confetti({ particleCount: 100, spread: 70, origin: { y: 0.6 } });
         } catch {
-          // ignore
+          
         }
         notify(
           'success',
@@ -150,7 +150,7 @@ export default function StudentPortalPage() {
     }, 'Registering Student, Allocating Roll Number & Processing ₹100 Fee...');
   };
 
-  // Handle ID Card Download
+  
   const handleDownloadId = async () => {
     await withLoader(async () => {
       await studentService.generateIdCardDownload(student.rollNo);
@@ -161,13 +161,13 @@ export default function StudentPortalPage() {
     }, 'Compiling Cryptographic PVC Student ID Card...');
   };
 
-  // ==========================================
-  // VIEW 1: UNAUTHENTICATED LOGIN / SIGN UP GATE
-  // ==========================================
+  
+  
+  
   if (!isLoggedIn) {
     return (
       <div className="flex flex-col w-full pb-space-xl">
-        {/* Header Ribbon */}
+        
         <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
             <div className="flex items-center gap-space-xs">
@@ -185,12 +185,12 @@ export default function StudentPortalPage() {
         <div className="max-w-6xl mx-auto w-full px-margin-sm lg:px-margin-lg py-8 sm:py-12">
           <div className="bg-surface-container-lowest rounded-3xl shadow-2xl border border-outline-variant/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[640px]">
             
-            {/* LEFT HALF: Login.svg Illustration & Branding */}
+            
             <div className="lg:col-span-5 bg-gradient-to-br from-primary via-[#241544] to-primary p-6 sm:p-10 flex flex-col justify-between text-white relative overflow-hidden">
               <div className="absolute -top-24 -left-24 w-72 h-72 bg-secondary/15 rounded-full blur-3xl pointer-events-none"></div>
               <div className="absolute -bottom-24 -right-24 w-72 h-72 bg-emerald-400/10 rounded-full blur-3xl pointer-events-none"></div>
 
-              {/* Top Branding */}
+              
               <div className="relative z-10 space-y-2">
                 <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider backdrop-blur-sm">
                   <span className="material-symbols-outlined text-sm">school</span>
@@ -204,7 +204,7 @@ export default function StudentPortalPage() {
                 </p>
               </div>
 
-              {/* Center SVG Vector Illustration */}
+              
               <div className="relative z-10 py-6 my-auto flex items-center justify-center">
                 <img
                   src={loginSvg}
@@ -213,7 +213,7 @@ export default function StudentPortalPage() {
                 />
               </div>
 
-              {/* Bottom Trust Badges */}
+              
               <div className="relative z-10 pt-4 border-t border-white/10 space-y-2 text-xs">
                 <div className="flex items-center gap-2 text-emerald-300">
                   <span className="material-symbols-outlined text-sm">verified_user</span>
@@ -226,9 +226,9 @@ export default function StudentPortalPage() {
               </div>
             </div>
 
-            {/* RIGHT HALF: Form & Tab Controls */}
+            
             <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-surface-container-lowest">
-              {/* Tab Selector: Login vs Sign Up */}
+              
               <div className="bg-surface-container-low p-1.5 rounded-2xl flex items-center mb-6 shadow-xs border border-outline-variant/30">
                 <button
                   type="button"
@@ -257,8 +257,7 @@ export default function StudentPortalPage() {
               </div>
 
               {authMode === 'login' ? (
-                /* LOGIN TAB */
-                <form onSubmit={handleLoginSubmit} className="max-w-md mx-auto w-full space-y-4">
+                                <form onSubmit={handleLoginSubmit} className="max-w-md mx-auto w-full space-y-4">
                   <div className="text-center pb-2">
                     <h3 className="font-headline text-xl font-bold text-primary">Sign In to Your Dossier</h3>
                     <p className="text-xs text-on-surface-variant mt-0.5">
@@ -322,7 +321,7 @@ export default function StudentPortalPage() {
                   <span>Sign In to Student Portal</span>
                 </button>
 
-                {/* 1-Click Quick Demo Login */}
+                
                 <div className="pt-4 border-t border-outline-variant/20 text-center">
                   <span className="text-[11px] text-on-surface-variant block mb-2">Want to test the portal instantly?</span>
                   <button
@@ -335,8 +334,7 @@ export default function StudentPortalPage() {
                 </div>
               </form>
             ) : (
-              /* SIGN UP / COURSE REGISTRATION TAB */
-              <form onSubmit={handleSignUpSubmit} className="space-y-6">
+                            <form onSubmit={handleSignUpSubmit} className="space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
                   <div>
                     <h3 className="font-headline text-xl font-bold text-primary">
@@ -351,7 +349,7 @@ export default function StudentPortalPage() {
                   </span>
                 </div>
 
-                {/* Personal Details */}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
                   <div>
                     <label className="text-xs font-bold text-on-surface-variant block mb-1">Full Legal Name *</label>
@@ -425,7 +423,7 @@ export default function StudentPortalPage() {
                   </div>
                 </div>
 
-                {/* Course & Centre Allocation */}
+                
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2 border-t border-outline-variant/20">
                   <div>
                     <label className="text-xs font-bold text-on-surface-variant block mb-1">Select Course *</label>
@@ -481,7 +479,7 @@ export default function StudentPortalPage() {
                   </div>
                 </div>
 
-                {/* Payment Simulation Section */}
+                
                 <div className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-lg">
@@ -520,12 +518,12 @@ export default function StudentPortalPage() {
     );
   }
 
-  // ==========================================
-  // VIEW 2: AUTHENTICATED STUDENT PORTAL DASHBOARD
-  // ==========================================
+  
+  
+  
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Top Welcome Dossier Header */}
+      
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
         <div className="relative overflow-hidden bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] rounded-3xl text-white p-6 sm:p-8 shadow-xl">
           <div className="absolute -right-12 -bottom-16 w-80 h-80 rounded-full bg-secondary opacity-15 blur-3xl pointer-events-none"></div>
@@ -550,7 +548,7 @@ export default function StudentPortalPage() {
               </p>
             </div>
 
-            {/* Logout button */}
+            
             <div className="flex items-center gap-3">
               <button
                 onClick={() => {
@@ -568,7 +566,7 @@ export default function StudentPortalPage() {
         </div>
       </div>
 
-      {/* Sub-portal Navigation Tabs */}
+      
       <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-outline-variant/30">
           {[
@@ -593,7 +591,7 @@ export default function StudentPortalPage() {
         </div>
       </div>
 
-      {/* Tab 1: DIGITAL PVC ID CARD */}
+      
       {activePortalTab === 'id_card' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
@@ -611,7 +609,7 @@ export default function StudentPortalPage() {
                 </button>
               </div>
 
-              {/* CARD PREVIEW */}
+              
               {cardSide === 'front' ? (
                 <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-primary via-primary-container to-primary text-white p-6 shadow-2xl border-2 border-secondary/30 relative overflow-hidden">
                   <div className="flex items-center justify-between pb-3 border-b border-white/20">
@@ -674,7 +672,7 @@ export default function StudentPortalPage() {
               </div>
             </div>
 
-            {/* Quick Summary Pod */}
+            
             <div className="lg:col-span-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/30 space-y-4">
               <h3 className="font-headline text-lg font-bold text-primary pb-2 border-b border-outline-variant/20">
                 Enrollment Dossier Details
@@ -710,7 +708,7 @@ export default function StudentPortalPage() {
         </div>
       )}
 
-      {/* Tab 2: COURSE REGISTRATION & FEES */}
+      
       {activePortalTab === 'course_reg' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
           <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6">
@@ -743,7 +741,7 @@ export default function StudentPortalPage() {
         </div>
       )}
 
-      {/* Tab 3: ACADEMIC GRADES & ATTENDANCE */}
+      
       {activePortalTab === 'academic' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
           <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6">
@@ -782,7 +780,7 @@ export default function StudentPortalPage() {
         </div>
       )}
 
-      {/* Tab 4: CERTIFICATE & ROLL VERIFICATION */}
+      
       {activePortalTab === 'certificate' && (
         <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
           <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 text-center max-w-2xl mx-auto space-y-4">

@@ -15,9 +15,9 @@ export default function Footer({ setActiveTab }) {
   return (
     <footer className="w-full bg-[#001338]/95 backdrop-blur-xl text-slate-300 border-t border-white/10 relative">
       <div className="max-w-7xl mx-auto px-6 lg:px-8 py-12 lg:py-16">
-        {/* Main Grid */}
+        
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10 lg:gap-12 pb-12 border-b border-white/10">
-          {/* Brand info */}
+          
           <div className="lg:col-span-2 space-y-4">
             <div 
               onClick={() => handleNav('/', 'home')}
@@ -61,7 +61,7 @@ export default function Footer({ setActiveTab }) {
             </div>
           </div>
 
-          {/* Academic Portals */}
+          
           <div className="space-y-3">
             <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary-fixed">
               Portals
@@ -95,7 +95,7 @@ export default function Footer({ setActiveTab }) {
             </ul>
           </div>
 
-          {/* Programs */}
+          
           <div className="space-y-3">
             <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary-fixed">
               Programs
@@ -129,7 +129,7 @@ export default function Footer({ setActiveTab }) {
             </ul>
           </div>
 
-          {/* Foundation */}
+          
           <div className="space-y-3">
             <h4 className="text-xs font-mono font-semibold uppercase tracking-wider text-secondary-fixed">
               Foundation
@@ -164,7 +164,7 @@ export default function Footer({ setActiveTab }) {
           </div>
         </div>
 
-        {/* Simple Bottom Strip */}
+        
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
           <p>© 2026 H.I.T India Skill Development Foundation. All rights reserved.</p>
           <p className="flex flex-wrap items-center gap-2 font-mono text-[11px] text-slate-400">

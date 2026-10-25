@@ -1,9 +1,3 @@
-/**
- * Purged mock data module.
- * All application layers are now 100% integrated with the live backend API
- * via src/services/hitApi.js.
- */
-
 export const initialStudentData = null;
 export const coursesList = [];
 export const universityProgramsList = [];

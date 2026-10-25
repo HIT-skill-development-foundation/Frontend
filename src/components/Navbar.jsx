@@ -57,7 +57,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
         ? 'bg-[#001338]/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,14,40,0.35)] border-b border-white/15 py-1' 
         : 'bg-[#001338] border-b border-white/10 py-0'
     } text-white`}>
-      {/* Top Notification Strip */}
+      
       <div className={`transition-all duration-300 overflow-hidden ${
         scrolled ? 'max-h-0 opacity-0 py-0 border-transparent' : 'max-h-12 opacity-100 py-1.5 bg-[#000e26] border-b border-white/10'
       } text-white/90 px-margin-sm lg:px-margin-lg flex items-center justify-between text-[11px] font-medium tracking-wide`}>
@@ -84,9 +84,9 @@ export default function Navbar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* Main Navigation Bar */}
+      
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between py-2.5">
-        {/* Brand Crest */}
+        
         <div 
           onClick={() => handleNavClick({ path: '/', id: 'home' })}
           className="flex items-center gap-3 cursor-pointer select-none group shrink-0"
@@ -113,7 +113,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
           </div>
         </div>
 
-        {/* Desktop Navigation Links */}
+        
         <nav className="hidden lg:flex items-center gap-1 xl:gap-2 ml-auto">
           {NAV_LINKS.map((link) => {
             const active = isLinkActive(link);
@@ -132,7 +132,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
                     <span>{link.label}</span>
                   </button>
 
-                  {/* Dropdown Menu on Hover */}
+                  
                   <div className="absolute right-0 top-full pt-2 w-60 z-50 pointer-events-none group-hover:pointer-events-auto opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
                     <div className="bg-[#001030]/95 backdrop-blur-2xl border border-white/15 rounded-lg shadow-2xl p-1.5 flex flex-col gap-1 ring-1 ring-black/40">
                       {link.children.map((child) => (
@@ -195,7 +195,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
           })}
         </nav>
 
-        {/* Mobile Toggle Button (Visible on smaller screens) */}
+        
         <div className="flex items-center lg:hidden">
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -209,7 +209,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu with Matching Glass Effect */}
+      
       {mobileMenuOpen && (
         <div className="lg:hidden bg-[#001030]/95 backdrop-blur-2xl border-t border-white/10 px-4 py-3 shadow-2xl max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-2">

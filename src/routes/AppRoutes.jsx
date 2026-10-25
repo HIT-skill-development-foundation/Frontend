@@ -2,7 +2,6 @@ import React, { Suspense, lazy } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import MainLayout from '../layouts/MainLayout';
 
-// Lazy-loaded page components for optimal performance and separation of concerns
 const HomePage = lazy(() => import('../pages/HomePage'));
 const GalleryPage = lazy(() => import('../pages/GalleryPage'));
 const CoursesOfferPage = lazy(() => import('../pages/CoursesOfferPage'));
@@ -12,12 +11,10 @@ const AdminDashboardPage = lazy(() => import('../pages/AdminDashboardPage'));
 const DonationPage = lazy(() => import('../pages/DonationPage'));
 const BecomeMemberPage = lazy(() => import('../pages/BecomeMemberPage'));
 
-// Supplementary sub-routes
 const AdmissionPage = lazy(() => import('../pages/AdmissionPage'));
 const VerificationPage = lazy(() => import('../pages/VerificationPage'));
 const DonationReceiptPage = lazy(() => import('../pages/DonationReceiptPage'));
 
-// Fallback loader while lazy bundle loads
 function RouteSuspenseFallback() {
   return (
     <div className="w-full min-h-[60vh] flex flex-col items-center justify-center py-20">
@@ -34,7 +31,7 @@ export default function AppRoutes() {
     <Suspense fallback={<RouteSuspenseFallback />}>
       <Routes>
         <Route path="/" element={<MainLayout />}>
-          {/* Main 8 Nav Routes */}
+          
           <Route index element={<HomePage />} />
           <Route path="gallery" element={<GalleryPage />} />
           <Route path="courses" element={<CoursesOfferPage />} />
@@ -44,14 +41,14 @@ export default function AppRoutes() {
           <Route path="donation" element={<DonationPage />} />
           <Route path="become-member" element={<BecomeMemberPage />} />
 
-          {/* Supplementary / Aliased Routes */}
+          
           <Route path="admission" element={<AdmissionPage />} />
           <Route path="verification" element={<VerificationPage />} />
           <Route path="receipt" element={<DonationReceiptPage />} />
           <Route path="student_portal" element={<Navigate to="/student-portal" replace />} />
           <Route path="admin-portal" element={<Navigate to="/admin" replace />} />
 
-          {/* Wildcard redirect to home */}
+          
           <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>

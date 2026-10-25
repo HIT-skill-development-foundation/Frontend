@@ -4,10 +4,7 @@ import {
 } from './hitApi';
 
 export const studentService = {
-  /**
-   * Verify roll number or certificate identifier against live backend central registry
-   */
-  async verifyRollNumber(rollNumber) {
+    async verifyRollNumber(rollNumber) {
     const sanitized = (rollNumber || '').trim();
     if (!sanitized) {
       return {

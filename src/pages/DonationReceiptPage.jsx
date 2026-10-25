@@ -52,7 +52,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Status Confirmation Strip */}
+      
       <section className="w-full bg-surface-container-low py-space-md shadow-sm border-b border-outline-variant/20">
         <div className="max-w-5xl mx-auto px-margin sm:px-margin-lg">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-space-md bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-outline-variant/30">
@@ -99,9 +99,9 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
         </div>
       </section>
 
-      {/* Main Voucher Container */}
+      
       <main className="w-full max-w-5xl mx-auto px-margin sm:px-margin-lg py-8">
-        {/* Fast Action Command Toolbar */}
+        
         <div className="flex flex-wrap items-center justify-between gap-space-md mb-6">
           <div className="flex items-center gap-2 text-on-surface-variant text-xs sm:text-sm">
             <span className="material-symbols-outlined text-secondary text-lg">verified_user</span>
@@ -125,9 +125,9 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
           </div>
         </div>
 
-        {/* Official Verifiable 80G Certificate Document Card */}
+        
         <article className="relative bg-surface-container-lowest rounded-2xl shadow-xl border border-outline-variant/40 overflow-hidden p-6 sm:p-10">
-          {/* Watermark Simulation Layer */}
+          
           <div className="absolute inset-0 flex items-center justify-center pointer-events-none opacity-[0.03] select-none">
             <div className="text-center transform -rotate-12">
               <div className="text-9xl font-extrabold tracking-widest text-primary">H.I.T</div>
@@ -137,7 +137,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </div>
           </div>
 
-          {/* Institutional Crest Header */}
+          
           <header className="relative pb-6 bg-surface-container-low -mx-6 -mt-6 sm:-mx-10 sm:-mt-10 p-6 sm:p-8 border-b border-outline-variant/30">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
               <div className="flex items-center gap-4">
@@ -172,7 +172,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </div>
           </header>
 
-          {/* Statutory Registration Line */}
+          
           <div className="py-4 border-b border-outline-variant/20 grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
             <div>
               <span className="text-[10px] text-on-surface-variant uppercase font-semibold block">Company CIN / MCA</span>
@@ -192,7 +192,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </div>
           </div>
 
-          {/* Donor & Receipt Particulars */}
+          
           <div className="py-6 grid grid-cols-1 md:grid-cols-2 gap-6 border-b border-outline-variant/20 text-xs">
             <div className="space-y-3">
               <div>
@@ -225,7 +225,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </div>
           </div>
 
-          {/* Receipt Financial Breakdown Table */}
+          
           <div className="py-6">
             <table className="w-full text-xs">
               <thead>
@@ -267,7 +267,7 @@ export default function DonationReceiptPage({ setActiveTab, donationData: donati
             </table>
           </div>
 
-          {/* Cryptographic Ledger & Signatures Bottom Area */}
+          
           <footer className="pt-6 border-t border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-6">
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 bg-white p-1 rounded-xl border border-outline-variant flex items-center justify-center shrink-0">

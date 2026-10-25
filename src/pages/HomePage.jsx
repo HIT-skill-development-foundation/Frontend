@@ -9,7 +9,6 @@ import certificateImg from '../assets/images/certificate.jpeg';
 import isoImg from '../assets/images/iso.jpeg';
 import { centreService } from '../services/hitApi';
 
-// Animated count-up counter with easing and IntersectionObserver support
 function CountUp({ end, duration = 2000, decimals = 0, prefix = '', suffix = '' }) {
   const [count, setCount] = useState(0);
   const ref = useRef(null);
@@ -85,7 +84,7 @@ function CountUp({ end, duration = 2000, decimals = 0, prefix = '', suffix = '' 
 export default function HomePage({ setActiveTab }) {
   const navigate = useNavigate();
 
-  // Franchise Form State
+  
   const [franchiseForm, setFranchiseForm] = useState({
     name: '',
     phone: '',
@@ -120,7 +119,7 @@ export default function HomePage({ setActiveTab }) {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
 
-  // Auto-play swipe interval with particular delay (4.5s)
+  
   useEffect(() => {
     if (isPaused) return;
     const timer = setInterval(() => {
@@ -187,13 +186,13 @@ export default function HomePage({ setActiveTab }) {
     try {
       confetti({ particleCount: 90, spread: 60, origin: { y: 0.7 } });
     } catch {
-      // ignore
+      
     }
   };
 
   return (
     <div className="flex flex-col w-full">
-      {/* Full-Bleed Animated Carousel (main.jpeg & main2.jpeg) */}
+      
       <section
         className="w-full p-0 m-0 bg-primary overflow-hidden shadow-md relative group select-none"
         onMouseEnter={() => setIsPaused(true)}
@@ -202,7 +201,7 @@ export default function HomePage({ setActiveTab }) {
         onTouchMove={handleTouchMove}
         onTouchEnd={handleTouchEnd}
       >
-        {/* Animated Swipe Track */}
+        
         <div
           className="flex w-full transition-transform duration-700 ease-in-out"
           style={{ transform: `translateX(-${currentSlide * 100}%)` }}
@@ -218,7 +217,7 @@ export default function HomePage({ setActiveTab }) {
           ))}
         </div>
 
-        {/* Previous Button */}
+        
         <button
           onClick={prevSlide}
           aria-label="Previous Slide"
@@ -227,7 +226,7 @@ export default function HomePage({ setActiveTab }) {
           <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_left</span>
         </button>
 
-        {/* Next Button */}
+        
         <button
           onClick={nextSlide}
           aria-label="Next Slide"
@@ -236,7 +235,7 @@ export default function HomePage({ setActiveTab }) {
           <span className="material-symbols-outlined text-2xl sm:text-3xl">chevron_right</span>
         </button>
 
-        {/* Slide Indicators */}
+        
         <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-2 z-20">
           {slides.map((_, idx) => (
             <button
@@ -252,13 +251,13 @@ export default function HomePage({ setActiveTab }) {
           ))}
         </div>
 
-        {/* Slide Counter Badge */}
+        
         <div className="absolute top-3 right-3 px-2.5 py-1 rounded-full bg-black/50 backdrop-blur-md text-white text-[11px] font-mono font-bold tracking-wider z-20 border border-white/20">
           {currentSlide + 1} / {slides.length}
         </div>
       </section>
 
-      {/* Action & Quick Access Bar */}
+      
       <div className="w-full bg-surface-container-low py-3.5 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20 shadow-xs">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -299,7 +298,7 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </div>
 
-      {/* Trust & Impact Counters */}
+      
       <section className="w-full bg-surface-container-low py-8 border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto px-margin-sm lg:px-margin-lg">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-6 text-center">
@@ -331,12 +330,12 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Director's Master Training & Specialized Wings Section */}
+      
       <section className="w-full bg-slate-50 py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
-            {/* LEFT HALF: Content on Hardware Training, PGDCA Teacher Training & Director's Mentorship */}
+            
             <motion.div
               className="lg:col-span-7 flex flex-col justify-center space-y-8"
               initial={{ opacity: 0, y: 24 }}
@@ -344,7 +343,7 @@ export default function HomePage({ setActiveTab }) {
               transition={{ duration: 0.6, ease: 'easeOut' }}
               viewport={{ once: true, margin: '-40px' }}
             >
-              {/* Institutional Section Header */}
+              
               <div className="space-y-3">
                 <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest font-mono">
                   DIRECTOR'S DESK / MASTER TRAINING WING
@@ -357,16 +356,16 @@ export default function HomePage({ setActiveTab }) {
                 </p>
               </div>
 
-              {/* Narrative Context */}
+              
               <p className="font-body-md text-base text-slate-600 leading-relaxed max-w-2xl">
                 At HIT Computer Education, our Director actively leads specialized practical training sessions.
                 Rather than relying on abstract slides, trainees work on live diagnostic benches under direct
                 one-on-one guidance—mastering chip-level motherboard servicing, system architecture, and pedagogical methods to qualify as certified IT faculty.
               </p>
 
-              {/* 2 Focused Training Modules (Clean Editorial Cards) */}
+              
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
-                {/* Module 1: Computer Hardware Training */}
+                
                 <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3 group cursor-default">
                   <span className="text-[11px] font-mono font-bold text-slate-400 group-hover:text-secondary uppercase tracking-wider block transition-colors">
                     MODULE 01
@@ -382,7 +381,7 @@ export default function HomePage({ setActiveTab }) {
                   </div>
                 </div>
 
-                {/* Module 2: PGDCA & Teacher Training */}
+                
                 <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3 group cursor-default">
                   <span className="text-[11px] font-mono font-bold text-slate-400 group-hover:text-emerald-700 uppercase tracking-wider block transition-colors">
                     MODULE 02
@@ -399,7 +398,7 @@ export default function HomePage({ setActiveTab }) {
                 </div>
               </div>
 
-              {/* Direct Mentor Highlights */}
+              
               <div className="p-5 rounded-xl bg-slate-100/80 border border-slate-200 space-y-3">
                 <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
                   Why Train Directly Under the Director?
@@ -424,7 +423,7 @@ export default function HomePage({ setActiveTab }) {
                 </div>
               </div>
 
-              {/* CTA Buttons */}
+              
               <div className="flex flex-wrap items-center gap-3 pt-1">
                 <button
                   onClick={() => handleNavigate('/courses', 'courses')}
@@ -441,7 +440,7 @@ export default function HomePage({ setActiveTab }) {
               </div>
             </motion.div>
 
-            {/* RIGHT HALF: Director Image Frame */}
+            
             <motion.div
               className="lg:col-span-5 flex justify-center items-center"
               initial={{ opacity: 0, y: 24 }}
@@ -451,20 +450,20 @@ export default function HomePage({ setActiveTab }) {
             >
               <div className="w-full max-w-md bg-white p-3 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 group">
                 <div className="relative rounded-xl overflow-hidden aspect-[4/5] bg-slate-100">
-                  {/* Photo with subtle zoom on card hover */}
+                  
                   <img
                     src={directorImg}
                     alt="Institute Director conducting training and institutional oversight"
                     className="w-full h-full object-cover object-top block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                   />
 
-                  {/* Atmospheric Tint Layer (Refined Navy/Slate photographic glaze) */}
+                  
                   <div className="absolute inset-0 bg-[#001338]/15 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-40 pointer-events-none"></div>
 
-                  {/* Subtle Top-Right Ambient Specular Glow on Hover */}
+                  
                   <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
 
-                  {/* Glass Frost Caption Overlay */}
+                  
                   <div className="absolute inset-x-0 bottom-0 bg-[#001030]/80 backdrop-blur-md p-4 text-white border-t border-white/10 transition-colors duration-300 group-hover:bg-[#001030]/90">
                     <div className="flex items-center justify-between">
                       <span className="text-[10px] font-mono uppercase tracking-widest text-slate-300 block">
@@ -481,7 +480,7 @@ export default function HomePage({ setActiveTab }) {
                   </div>
                 </div>
 
-                {/* Bottom Spec Matrix with Hover Lift */}
+                
                 <div className="grid grid-cols-2 gap-3 pt-3 px-1 text-center">
                   <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/60 transition-colors duration-200 group-hover:bg-slate-100/70">
                     <span className="text-[10px] font-mono uppercase text-slate-500 font-bold block">SPECIALIZATION</span>
@@ -499,11 +498,11 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Franchise Purchase & Center Affiliation Contact Section */}
+      
       <section id="franchise-contact" className="w-full bg-[#f1f4f9] py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative overflow-hidden">
         <div className="max-w-7xl mx-auto space-y-12">
           
-          {/* Section Header */}
+          
           <div className="text-center max-w-3xl mx-auto space-y-3">
             <p className="text-[11px] font-mono font-bold text-secondary uppercase tracking-widest">
               AUTHORIZED TRAINING CENTRE (ATC) FRANCHISE
@@ -516,10 +515,10 @@ export default function HomePage({ setActiveTab }) {
             </p>
           </div>
 
-          {/* 2-Column Main Layout */}
+          
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            {/* LEFT COLUMN: Clean Editorial Franchise Form */}
+            
             <motion.div
               className="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_10px_30px_rgba(15,23,42,0.05)] flex flex-col justify-between h-full"
               initial={{ opacity: 0, y: 24 }}
@@ -574,7 +573,7 @@ export default function HomePage({ setActiveTab }) {
                 </div>
               ) : (
                 <form onSubmit={handleFranchiseSubmit} className="space-y-5 text-xs">
-                  {/* Row 1: Name & Phone */}
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="font-semibold text-slate-700 block">
@@ -604,7 +603,7 @@ export default function HomePage({ setActiveTab }) {
                     </div>
                   </div>
 
-                  {/* Row 2: Email & District/City */}
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
                       <label className="font-semibold text-slate-700 block">
@@ -633,7 +632,7 @@ export default function HomePage({ setActiveTab }) {
                     </div>
                   </div>
 
-                  {/* Row 3: Centre Status & Infrastructure */}
+                  
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="space-y-1.5">
                       <label className="font-semibold text-slate-700 block">
@@ -683,7 +682,7 @@ export default function HomePage({ setActiveTab }) {
                     </div>
                   </div>
 
-                  {/* Message */}
+                  
                   <div className="space-y-1.5">
                     <label className="font-semibold text-slate-700 block">
                       Specific Requirements / Premises Details
@@ -697,7 +696,7 @@ export default function HomePage({ setActiveTab }) {
                     />
                   </div>
 
-                  {/* Submit Button & Assurance */}
+                  
                   <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 pt-4">
                     <span className="text-[11px] font-mono text-slate-500">
                       Zero royalty on student fees • Direct Head Office affiliation
@@ -713,7 +712,7 @@ export default function HomePage({ setActiveTab }) {
               )}
             </motion.div>
 
-            {/* RIGHT COLUMN: Official Credentials & Direct Helpdesk Dossier */}
+            
             <motion.div
               className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-[0_10px_30px_rgba(15,23,42,0.04)] flex flex-col justify-between h-full"
               initial={{ opacity: 0, y: 24 }}
@@ -740,7 +739,7 @@ export default function HomePage({ setActiveTab }) {
                 </div>
 
                 <div className="space-y-3.5 text-xs">
-                  {/* Telephone Support */}
+                  
                   <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-2">
                     <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
                       TELEPHONE & WHATSAPP DESK
@@ -761,7 +760,7 @@ export default function HomePage({ setActiveTab }) {
                     </div>
                   </div>
 
-                  {/* Registered Address */}
+                  
                   <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-1">
                     <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
                       REGISTERED HEADQUARTERS
@@ -771,7 +770,7 @@ export default function HomePage({ setActiveTab }) {
                     </p>
                   </div>
 
-                  {/* Affiliation Emails */}
+                  
                   <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-1.5">
                     <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
                       OFFICIAL INQUIRY EMAILS
@@ -788,7 +787,7 @@ export default function HomePage({ setActiveTab }) {
                 </div>
               </div>
 
-              {/* Instant Actions (Bottom aligned, matching the left card's button height) */}
+              
               <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 mt-4">
                 <a
                   href="https://wa.me/919616764675?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
@@ -813,10 +812,10 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Giving & Donation Callout */}
+      
       <section className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg py-16">
         <div className="bg-[#001338] border border-white/10 text-white rounded-2xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
-          {/* Subtle architectural background accent */}
+          
           <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
           <div className="absolute top-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-secondary/40 to-transparent" />
 
@@ -865,7 +864,7 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Certificate Lightbox Modal */}
+      
       {activeCertificateModal && (
         <div
           role="dialog"
@@ -918,4 +917,3 @@ export default function HomePage({ setActiveTab }) {
     </div>
   );
 }
-

@@ -71,13 +71,9 @@ import {
   setGalleryCategory,
 } from './slices/gallerySlice';
 
-// Base hooks
 export const useAppDispatch = () => useDispatch();
 export const useAppSelector = useSelector;
 
-// Interface Segregated Hooks (ISP)
-
-/** Hook for global loader and notification interactions */
 export function useLoader() {
   const dispatch = useAppDispatch();
   const isLoading = useAppSelector(selectIsLoading);
@@ -92,8 +88,7 @@ export function useLoader() {
     setTimeout(() => dispatch(clearNotification()), 4000);
   };
 
-  /** Execute an async operation with automated loader lifecycle */
-  const withLoader = async (asyncFn, message = 'Processing...') => {
+    const withLoader = async (asyncFn, message = 'Processing...') => {
     try {
       showLoader(message);
       const result = await asyncFn();
@@ -114,7 +109,6 @@ export function useLoader() {
   };
 }
 
-/** Hook for student dossier & portal operations */
 export function useStudent() {
   const dispatch = useAppDispatch();
   const currentStudent = useAppSelector(selectCurrentStudent);
@@ -141,7 +135,6 @@ export function useStudent() {
   };
 }
 
-/** Hook for donor and 80G tax receipt operations */
 export function useDonation() {
   const dispatch = useAppDispatch();
   const currentDonation = useAppSelector(selectCurrentDonation);
@@ -158,7 +151,6 @@ export function useDonation() {
   };
 }
 
-/** Hook for central ledger certificate verification */
 export function useVerification() {
   const dispatch = useAppDispatch();
   const query = useAppSelector(selectSearchQuery);
@@ -181,7 +173,6 @@ export function useVerification() {
   };
 }
 
-/** Hook for Super Admin console management */
 export function useAdmin() {
   const dispatch = useAppDispatch();
   const isAdminLoggedIn = useAppSelector(selectIsAdminLoggedIn);

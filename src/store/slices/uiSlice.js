@@ -4,7 +4,7 @@ const initialState = {
   isLoading: false,
   loadingMessage: 'Processing...',
   mobileMenuOpen: false,
-  notification: null, // { type: 'success' | 'error' | 'info', message: string }
+  notification: null, 
 };
 
 export const uiSlice = createSlice({

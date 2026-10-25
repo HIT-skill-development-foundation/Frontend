@@ -12,7 +12,7 @@ export default function AboutUsPage() {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Header Banner */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
           <div className="flex items-center gap-space-xs">
@@ -27,7 +27,7 @@ export default function AboutUsPage() {
         </div>
       </div>
 
-      {/* Hero Showcase */}
+      
       <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-16 px-margin-sm lg:px-margin-lg shadow-inner">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-10">
           <div className="max-w-3xl">
@@ -87,7 +87,7 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      {/* Official Government Accreditations & ISO 9001:2015 Section */}
+      
       <section className="w-full bg-surface-container-low py-16 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto space-y-10">
           
@@ -103,10 +103,10 @@ export default function AboutUsPage() {
             </p>
           </div>
 
-          {/* 2-Column Certificate Cards */}
+          
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch">
             
-            {/* MCA Govt. of India Certificate */}
+            
             <div className="bg-surface rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:shadow-lg transition-all group">
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
@@ -127,7 +127,7 @@ export default function AboutUsPage() {
                   Section 8 of the Companies Act, 2013 • CIN: <strong>U85500UP2026NPL250943</strong>
                 </p>
                 
-                {/* Certificate Thumbnail */}
+                
                 <div 
                   onClick={() => setActiveModal({
                     title: "Government of India — Ministry of Corporate Affairs",
@@ -168,7 +168,7 @@ export default function AboutUsPage() {
               </div>
             </div>
 
-            {/* ISO 9001:2015 Certificate */}
+            
             <div className="bg-surface rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 flex flex-col justify-between hover:shadow-lg transition-all group">
               <div>
                 <div className="flex items-center justify-between gap-3 mb-4">
@@ -189,7 +189,7 @@ export default function AboutUsPage() {
                   Accreditation: <strong>Vocational, Professional Skill & Educational Training</strong>
                 </p>
 
-                {/* Certificate Thumbnail */}
+                
                 <div 
                   onClick={() => setActiveModal({
                     title: "ISO 9001:2015 Quality Management System Certificate",
@@ -232,7 +232,7 @@ export default function AboutUsPage() {
 
           </div>
 
-          {/* Statutory Credential Badges */}
+          
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 pt-2">
             <div className="p-4 rounded-2xl bg-surface border border-outline-variant/30 text-center shadow-xs">
               <span className="text-lg font-extrabold text-primary block">Govt. of India</span>
@@ -255,10 +255,10 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      {/* Leadership & Institutional Infrastructure Grid */}
+      
       <section className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg py-16">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">
-          {/* Director Desk */}
+          
           <div className="bg-surface-container-lowest rounded-3xl p-8 shadow-sm border border-outline-variant/30 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             <div className="w-36 h-48 rounded-2xl overflow-hidden shrink-0 shadow-md border-2 border-primary/20 bg-primary">
               <img src={imgDirector} alt="Centre Director" className="w-full h-full object-cover" />
@@ -281,7 +281,7 @@ export default function AboutUsPage() {
             </div>
           </div>
 
-          {/* Central Headquarters & Secretariat */}
+          
           <div className="bg-surface-container-lowest rounded-3xl p-8 shadow-sm border border-outline-variant/30 flex flex-col sm:flex-row gap-6 items-center sm:items-start">
             <div className="w-36 h-48 rounded-2xl overflow-hidden shrink-0 shadow-md border-2 border-primary/20 bg-primary">
               <img src={imgHeadOffice} alt="Central Secretariat" className="w-full h-full object-cover" />
@@ -305,7 +305,7 @@ export default function AboutUsPage() {
           </div>
         </div>
 
-        {/* Vision & Mission Pillars */}
+        
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-12">
           <div className="p-6 rounded-2xl bg-surface-container-lowest shadow-sm border border-outline-variant/30">
             <div className="w-12 h-12 rounded-xl bg-primary-container text-white flex items-center justify-center mb-4">
@@ -339,7 +339,7 @@ export default function AboutUsPage() {
         </div>
       </section>
 
-      {/* Full-Screen Certificate Lightbox Modal */}
+      
       {activeModal && (
         <div
           role="dialog"

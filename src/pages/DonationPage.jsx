@@ -80,7 +80,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
 
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      {/* Top Subtle Trust Indicator Banner */}
+      
       <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-2 px-margin sm:px-margin-lg border-b border-white/10">
         <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-xs font-label-md text-xs sm:text-sm">
           <div className="flex items-center gap-space-sm flex-wrap">
@@ -100,7 +100,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
         </div>
       </div>
 
-      {/* Hero Header & Mission Callout Area */}
+      
       <section className="relative w-full bg-gradient-to-b from-surface-container-low to-surface py-12 sm:py-16 overflow-hidden">
         <div className="absolute -top-24 right-1/4 w-96 h-96 rounded-full bg-secondary-fixed/30 blur-3xl pointer-events-none"></div>
         <div className="absolute top-1/2 -left-20 w-80 h-80 rounded-full bg-tertiary-fixed/20 blur-3xl pointer-events-none"></div>
@@ -121,7 +121,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
                 Support <strong className="text-on-surface font-semibold">H.I.T India Skill Development Foundation</strong>, a Section 8 Non-Profit Organisation based in Kasba Khas, Ghosi, Mau, Uttar Pradesh. Your donation directly equips underprivileged youth with high-demand digital skills and verified industry diplomas.
               </p>
 
-              {/* Badges Strip */}
+              
               <div className="pt-2 flex flex-wrap gap-3">
                 <div className="flex items-center gap-2 bg-surface-container-lowest shadow-sm rounded-xl px-3.5 py-2 border border-outline-variant/30">
                   <span className="material-symbols-outlined text-secondary text-2xl">account_balance</span>
@@ -147,7 +147,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
               </div>
             </div>
 
-            {/* Metric Accent Mini-Card */}
+            
             <div className="lg:col-span-4 bg-surface-container-lowest p-6 rounded-2xl shadow-md border border-outline-variant/30 space-y-4">
               <div className="flex items-center justify-between">
                 <span className="text-xs uppercase tracking-wider text-secondary font-bold">Purvanchal Impact 2026</span>
@@ -173,7 +173,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
         </div>
       </section>
 
-      {/* Main Interactive Donation Form Section */}
+      
       <div className="max-w-5xl mx-auto w-full px-margin-sm lg:px-margin-lg py-12">
         <form onSubmit={handleSubmit} className="bg-surface-container-lowest rounded-3xl p-6 sm:p-10 shadow-xl border border-outline-variant/30 space-y-8">
           <div>
@@ -185,7 +185,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             </p>
           </div>
 
-          {/* Preset Buttons Grid */}
+          
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
             {presetAmounts.map((p) => {
               const isSelected = !customAmount && amount === p.value;
@@ -216,7 +216,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             })}
           </div>
 
-          {/* Custom Amount Field */}
+          
           <div>
             <label className="text-xs font-semibold text-on-surface block mb-1.5">
               Or Enter Custom Contribution Amount (₹)
@@ -235,7 +235,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             </div>
           </div>
 
-          {/* Live Section 80G Benefit Indicator */}
+          
           <div className="bg-surface-container-low p-5 rounded-2xl border border-secondary/20 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center shrink-0">
@@ -255,7 +255,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             </span>
           </div>
 
-          {/* Donor Identification Form */}
+          
           <div className="pt-4 border-t border-outline-variant/20 space-y-4">
             <h3 className="font-headline text-lg font-bold text-primary">
               Donor Information (Required for CBDT Form 10BD & 80G Certificate)
@@ -343,7 +343,7 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             </div>
           </div>
 
-          {/* Submit Action */}
+          
           <div className="pt-4 border-t border-outline-variant/20 flex flex-col sm:flex-row items-center justify-between gap-4">
             <div>
               <span className="text-xs text-on-surface-variant block">Total Contribution:</span>

@@ -14,6 +14,7 @@ import {
   galleryService,
 } from '../services/hitApi';
 import courseApi from '../services/courseApi';
+import ImageUploader from '../components/common/ImageUploader';
 
 export default function AdminDashboardPage() {
   const {
@@ -49,11 +50,11 @@ export default function AdminDashboardPage() {
 
   const { withLoader, notify } = useLoader();
 
-  // Navigation tab state: 'overview', 'students', 'donations', 'expenses', 'courses', 'gallery', 'certificates'
+  
   const [activeTab, setActiveTab] = useState('overview');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
-  // Login form state
+  
   const [adminCreds, setAdminCreds] = useState({
     email: '',
     password: '',
@@ -95,7 +96,7 @@ export default function AdminDashboardPage() {
     isActive: true,
   });
 
-  // University Program Modal & Form
+  
   const [showAddUnivModal, setShowAddUnivModal] = useState(false);
   const [editingUnivProgram, setEditingUnivProgram] = useState(null);
   const [newUnivProgramForm, setNewUnivProgramForm] = useState({
@@ -120,6 +121,7 @@ export default function AdminDashboardPage() {
     date: 'October 2026',
     badge: 'Event Photo',
     desc: '',
+    img: '',
   });
 
   // Tooltip state for interactive charts
@@ -251,9 +253,9 @@ export default function AdminDashboardPage() {
     }, 'Recording Institutional Expenditure into Ledger...');
   };
 
-  // ==========================================
-  // DYNAMIC MODULE TAG INPUT HANDLERS
-  // ==========================================
+  
+  
+  
   const handleAddModule = () => {
     const trimmed = moduleInput.trim();
     if (!trimmed) return;
@@ -280,9 +282,9 @@ export default function AdminDashboardPage() {
     }
   };
 
-  // ==========================================
-  // VOCATIONAL COURSES CRUD HANDLERS
-  // ==========================================
+  
+  
+  
   const handleSaveCourse = async (e) => {
     e.preventDefault();
     if (!newCourseForm.name || !newCourseForm.code) return;
@@ -294,7 +296,7 @@ export default function AdminDashboardPage() {
         name: newCourseForm.name.trim(),
         duration: newCourseForm.duration || '12 Months',
         eligibility: newCourseForm.eligibility || '10th / 12th Pass',
-        fee: Number(newCourseForm.fee) || 0, // NUMBER ONLY (NO formula, NO feeAmount)
+        fee: Number(newCourseForm.fee) || 0, 
         modules: newCourseForm.modules || [],
         icon: newCourseForm.icon || 'terminal',
         popular: Boolean(newCourseForm.popular),
@@ -351,9 +353,9 @@ export default function AdminDashboardPage() {
     }, `Deleting Course ${code}...`);
   };
 
-  // ==========================================
-  // UNIVERSITY PROGRAMS CRUD HANDLERS
-  // ==========================================
+  
+  
+  
   const handleSaveUnivProgram = async (e) => {
     e.preventDefault();
     if (!newUnivProgramForm.name || !newUnivProgramForm.code) return;
@@ -424,7 +426,7 @@ export default function AdminDashboardPage() {
     }, `Deleting University Program ${code}...`);
   };
 
-  // Quick search filtering for courses & university programs
+  
   const filteredVocationalCourses = useMemo(() => {
     if (!courses) return [];
     const q = courseCatalogSearch.trim().toLowerCase();
@@ -453,7 +455,14 @@ export default function AdminDashboardPage() {
 
   const handleCreateGalleryItem = async (e) => {
     e.preventDefault();
-    if (!newGalleryForm.title) return;
+    if (!newGalleryForm.title) {
+      notify('error', 'Please enter a title for the event photograph.');
+      return;
+    }
+    if (!newGalleryForm.img) {
+      notify('error', 'Please upload a photograph to Cloudinary before publishing.');
+      return;
+    }
 
     await withLoader(async () => {
       try {
@@ -464,8 +473,8 @@ export default function AdminDashboardPage() {
           date: newGalleryForm.date || 'October 2026',
           badge: newGalleryForm.badge || 'Campus Event',
           desc: newGalleryForm.desc || 'Free computer awareness session for rural youth.',
-          img: 'https://images.unsplash.com/photo-1517245386807-bb43f82c33c4',
-          gps: 'Ghosi Campus Hall',
+          img: newGalleryForm.img,
+          gps: newGalleryForm.location || 'Ghosi Campus Hall',
           isFeatured: true,
         };
         const res = await galleryService.addItem(payload);
@@ -478,8 +487,9 @@ export default function AdminDashboardPage() {
           date: 'October 2026',
           badge: 'Event Photo',
           desc: '',
+          img: '',
         });
-        notify('success', 'New photograph and event description added to Gallery.');
+        notify('success', 'New photograph published to Cloudinary & Gallery.');
       } catch (err) {
         notify('error', err.message || 'Failed to upload photo to server.');
       }
@@ -502,10 +512,10 @@ export default function AdminDashboardPage() {
     }, `Validating Dossier & Issuing Certificate for ${studentName || id}...`);
   };
 
-  // Live Database Students
+  
   const studentsSource = liveStudents || [];
 
-  // Filtered Students
+  
   const filteredStudents = useMemo(() => {
     return studentsSource.filter((st) => {
       const matchCourse =
@@ -527,7 +537,7 @@ export default function AdminDashboardPage() {
     });
   }, [studentsSource, selectedCourseFilter, studentSearch]);
 
-  // Financial & KPI Computations from Live Database
+  
   const totalDonationsAmount = useMemo(() => {
     return (adminDonations || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   }, [adminDonations]);
@@ -538,7 +548,7 @@ export default function AdminDashboardPage() {
 
   const totalStudentsCount = adminStats?.totalStudents || studentsSource.length;
 
-  // Real Dynamic Monthly Flow Data from Database
+  
   const monthlyFlowData = useMemo(() => {
     const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     const map = {};
@@ -575,7 +585,7 @@ export default function AdminDashboardPage() {
     return monthlyFlowData.some((d) => d.donations > 0 || d.expenses > 0);
   }, [monthlyFlowData]);
 
-  // Real Dynamic Enrolment by Course from Live Database
+  
   const categoryDistribution = useMemo(() => {
     if (!courses || courses.length === 0) return [];
     return courses.map((c) => {
@@ -598,7 +608,7 @@ export default function AdminDashboardPage() {
     return categoryDistribution.some((c) => c.amount > 0);
   }, [categoryDistribution]);
 
-  // Real Dynamic Program Allocation from Live Expenses
+  
   const programAllocation = useMemo(() => {
     if (!expenses || expenses.length === 0) return [];
     const catMap = {};
@@ -615,7 +625,7 @@ export default function AdminDashboardPage() {
     }));
   }, [expenses]);
 
-  // Real Dynamic Activity Feed from Live Ledger Actions
+  
   const recentActivity = useMemo(() => {
     const list = [];
     (expenses || []).slice(0, 3).forEach((e) => {
@@ -657,7 +667,7 @@ export default function AdminDashboardPage() {
     return list;
   }, [expenses, adminDonations, pendingApprovals, liveStudents]);
 
-  // Helper barcode generator
+  
   const renderBarcode = (bars = 28) => {
     const lines = [];
     for (let i = 0; i < bars; i++) {
@@ -676,7 +686,7 @@ export default function AdminDashboardPage() {
     return <span className="inline-flex items-stretch gap-[1.5px] h-3.5">{lines}</span>;
   };
 
-  // Nav items configuration
+  
   const navItems = [
     { id: 'overview', label: 'Executive Overview', icon: 'dashboard', category: 'Console' },
     { id: 'students', label: '1. Students by Course', icon: 'groups', category: 'Operations' },
@@ -687,13 +697,13 @@ export default function AdminDashboardPage() {
     { id: 'certificates', label: '6. Certificate Approvals', icon: 'verified', category: 'Operations' },
   ];
 
-  // ==========================================
-  // VIEW 1: UNAUTHENTICATED ADMIN LOGIN GATE
-  // ==========================================
+  
+  
+  
   if (!isAdminLoggedIn) {
     return (
       <div className="min-h-screen bg-[#FAF8F4] text-[#1C1917] flex flex-col justify-between antialiased selection:bg-[#065F46]/10 selection:text-[#065F46]">
-        {/* Top Minimal Brand Bar */}
+        
         <header className="h-16 border-b border-[#E7E0D4] bg-[#FAF8F4]/80 backdrop-blur-md px-6 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <span className="flex h-9 w-9 items-center justify-center rounded-full bg-[#065F46] text-white shadow-sm">
@@ -717,10 +727,10 @@ export default function AdminDashboardPage() {
           </Link>
         </header>
 
-        {/* Center Card */}
+        
         <main className="flex-1 flex items-center justify-center p-4 sm:p-8">
           <div className="max-w-4xl w-full bg-white rounded-2xl border border-[#E7E0D4] shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12">
-            {/* Left Col: Editorial Visual */}
+            
             <div className="lg:col-span-5 bg-gradient-to-br from-[#065F46] to-[#044432] p-8 text-white flex flex-col justify-between relative overflow-hidden">
               <div className="relative z-10 space-y-3">
                 <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/10 text-white text-[11px] font-mono uppercase tracking-wider backdrop-blur-sm">
@@ -748,7 +758,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Right Col: Login Form */}
+            
             <div className="lg:col-span-7 p-8 sm:p-10 flex flex-col justify-center bg-white">
               <div className="max-w-sm mx-auto w-full space-y-6">
                 <div>
@@ -827,12 +837,12 @@ export default function AdminDashboardPage() {
     );
   }
 
-  // ==========================================
-  // VIEW 2: AUTHENTICATED ADMIN CONSOLE
-  // ==========================================
+  
+  
+  
   return (
     <div className="min-h-screen bg-[#FAF8F4] text-[#1C1917] antialiased flex flex-col font-['Inter',sans-serif] selection:bg-[#065F46]/10 selection:text-[#065F46]">
-      {/* Inline Scoped Styles for Tag-Card & Barcode */}
+      
       <style>{`
         .tag-card {
           position: relative;
@@ -861,12 +871,12 @@ export default function AdminDashboardPage() {
       `}</style>
 
       <div className="flex min-h-screen">
-        {/* ======================================================== */}
-        {/* LEFT SIDEBAR (Maren & Co style) */}
-        {/* ======================================================== */}
+        
+        
+        
         <aside className="hidden w-64 shrink-0 flex-col border-r border-[#E7E0D4] bg-[#FAF8F4] lg:flex justify-between">
           <div>
-            {/* Brand Header */}
+            
             <div className="flex h-16 items-center gap-2.5 border-b border-[#E7E0D4] px-6">
               <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#065F46] text-white shadow-xs">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className="h-4 w-4">
@@ -883,7 +893,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Nav Items */}
+            
             <nav className="flex-1 space-y-1 p-4">
               <p className="px-3 pb-2 pt-2 text-[10px] font-semibold uppercase tracking-wider text-[#7A7168]/80 font-mono">
                 Secretariat Desk
@@ -935,7 +945,7 @@ export default function AdminDashboardPage() {
             </nav>
           </div>
 
-          {/* Bottom Callout Tag Card (Institutional Node) */}
+          
           <div className="m-4 rounded-xl border border-[#E7E0D4] bg-[#065F46] p-4 text-white shadow-xs">
             <div className="mb-1.5 flex items-center gap-2">
               <span className="inline-flex h-5 w-5 items-center justify-center rounded-md bg-[#DB2759] text-white">
@@ -958,13 +968,13 @@ export default function AdminDashboardPage() {
           </div>
         </aside>
 
-        {/* ======================================================== */}
-        {/* RIGHT MAIN CONTENT AREA */}
-        {/* ======================================================== */}
+        
+        
+        
         <div className="flex min-w-0 flex-1 flex-col">
-          {/* STICKY TOP HEADER BAR */}
+          
           <header className="sticky top-0 z-30 flex h-16 items-center gap-3 border-b border-[#E7E0D4] bg-[#FAF8F4]/90 px-4 backdrop-blur-xl sm:px-6 lg:px-8 justify-between">
-            {/* Search Input */}
+            
             <div className="flex items-center gap-3 flex-1 max-w-md">
               <button
                 type="button"
@@ -992,7 +1002,7 @@ export default function AdminDashboardPage() {
               </div>
             </div>
 
-            {/* Right Tools & Admin Profile */}
+            
             <div className="flex items-center gap-3">
               <div className="hidden md:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-[#F3EFE7] border border-[#E7E0D4] text-[11px] font-mono text-[#065F46] font-semibold">
                 <span className="h-1.5 w-1.5 rounded-full bg-[#065F46] animate-pulse"></span>
@@ -1010,7 +1020,7 @@ export default function AdminDashboardPage() {
 
               <div className="h-6 w-px bg-[#E7E0D4]"></div>
 
-              {/* Admin Avatar & Label */}
+              
               <div className="flex items-center gap-2.5">
                 <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#065F46] text-xs font-semibold text-white shadow-xs uppercase">
                   {adminUser?.name
@@ -1029,7 +1039,7 @@ export default function AdminDashboardPage() {
             </div>
           </header>
 
-          {/* MOBILE DRAWER (For small screens) */}
+          
           {mobileMenuOpen && (
             <div className="lg:hidden border-b border-[#E7E0D4] bg-[#FAF8F4] p-4 space-y-1 shadow-md animate-fade-in">
               <p className="px-3 pb-1 text-[10px] font-mono text-[#7A7168] uppercase font-bold">Admin Navigation</p>
@@ -1051,16 +1061,16 @@ export default function AdminDashboardPage() {
             </div>
           )}
 
-          {/* MAIN WORKSPACE BODY */}
+          
           <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
             <div className="mx-auto flex max-w-[1400px] flex-col gap-6">
 
-              {/* ======================================================== */}
-              {/* TAB 0: EXECUTIVE OVERVIEW (Maren & Co Master Dashboard) */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'overview' && (
                 <>
-                  {/* Greeting & Header Actions */}
+                  
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                       <p className="text-xs font-mono uppercase tracking-wider text-[#7A7168]">
@@ -1121,9 +1131,9 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* 4 KPI TAG CARDS */}
+                  
                   <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                    {/* Card 1 */}
+                    
                     <div className="tag-card group relative overflow-hidden rounded-xl border border-[#E7E0D4] bg-white py-5 pr-5 transition-shadow hover:shadow-sm">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-medium text-[#7A7168]">Total Enrolled Students</p>
@@ -1142,7 +1152,7 @@ export default function AdminDashboardPage() {
                       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#DB2759]/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     </div>
 
-                    {/* Card 2 */}
+                    
                     <div className="tag-card group relative overflow-hidden rounded-xl border border-[#E7E0D4] bg-white py-5 pr-5 transition-shadow hover:shadow-sm">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-medium text-[#7A7168]">80G Donations Received</p>
@@ -1161,7 +1171,7 @@ export default function AdminDashboardPage() {
                       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#DB2759]/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     </div>
 
-                    {/* Card 3 */}
+                    
                     <div className="tag-card group relative overflow-hidden rounded-xl border border-[#E7E0D4] bg-white py-5 pr-5 transition-shadow hover:shadow-sm">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-medium text-[#7A7168]">Total Expenses</p>
@@ -1180,7 +1190,7 @@ export default function AdminDashboardPage() {
                       <div className="absolute inset-x-0 bottom-0 h-px bg-gradient-to-r from-transparent via-[#DB2759]/40 to-transparent opacity-0 transition-opacity group-hover:opacity-100"></div>
                     </div>
 
-                    {/* Card 4 */}
+                    
                     <div className="tag-card group relative overflow-hidden rounded-xl border border-[#E7E0D4] bg-white py-5 pr-5 transition-shadow hover:shadow-sm">
                       <div className="flex items-center justify-between">
                         <p className="text-xs font-medium text-[#7A7168]">Active Courses & Programs</p>
@@ -1200,9 +1210,9 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* 2-COLUMN SECTION: DUAL AREA CHART & FUND UTILIZATION SHARE */}
+                  
                   <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                    {/* Left: Dual Area Chart (Donations vs Expenses) */}
+                    
                     <section className="xl:col-span-2 rounded-xl border border-[#E7E0D4] bg-white p-5 sm:p-6">
                       <header className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                         <div>
@@ -1225,7 +1235,7 @@ export default function AdminDashboardPage() {
                         </div>
                       </header>
 
-                      {/* Interactive SVG Area Chart */}
+                      
                       <div className="relative mt-6 h-72 w-full">
                         {!hasFlowData ? (
                           <div className="h-full w-full flex items-center justify-center bg-[#FAF8F4]/50 rounded-xl border border-dashed border-[#E7E0D4]">
@@ -1250,7 +1260,7 @@ export default function AdminDashboardPage() {
                               </linearGradient>
                             </defs>
 
-                            {/* Dynamic Grid Ticks */}
+                            
                             {(() => {
                               const maxVal = Math.max(...monthlyFlowData.flatMap((d) => [d.donations, d.expenses]), 1000);
                               const niceMax = Math.ceil(maxVal / 10000) * 10000 || 10000;
@@ -1311,7 +1321,7 @@ export default function AdminDashboardPage() {
                           </svg>
                         )}
 
-                        {/* Interactive Floating Tooltip */}
+                        
                         {areaTooltip && (
                           <div
                             className="pointer-events-none absolute z-20 rounded-lg border border-[#E7E0D4] bg-white p-3 text-xs shadow-md backdrop-blur-sm transition-all"
@@ -1336,7 +1346,7 @@ export default function AdminDashboardPage() {
                       </div>
                     </section>
 
-                    {/* Right: Program Fund Utilization & Sources */}
+                    
                     <section className="rounded-xl border border-[#E7E0D4] bg-white p-5 sm:p-6 flex flex-col justify-between">
                       <div>
                         <header className="flex items-start justify-between">
@@ -1394,9 +1404,9 @@ export default function AdminDashboardPage() {
                     </section>
                   </div>
 
-                  {/* 2-COLUMN LOWER SECTION: RECENT CANDIDATE REGISTRATIONS & CATEGORY / ACTIVITY */}
+                  
                   <div className="grid grid-cols-1 gap-6 xl:grid-cols-3">
-                    {/* Left: Recent Student Enrolments & Transactions */}
+                    
                     <section className="xl:col-span-2 rounded-xl border border-[#E7E0D4] bg-white flex flex-col justify-between">
                       <div>
                         <header className="flex flex-col gap-3 border-b border-[#E7E0D4] px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
@@ -1494,9 +1504,9 @@ export default function AdminDashboardPage() {
                       </div>
                     </section>
 
-                    {/* Right: Bar Chart & Recent Activity */}
+                    
                     <div className="flex flex-col gap-6">
-                      {/* Bar Chart: Enrolment by Course Category */}
+                      
                       <section className="rounded-xl border border-[#E7E0D4] bg-white p-5 sm:p-6">
                         <header className="flex items-start justify-between">
                           <div>
@@ -1510,7 +1520,7 @@ export default function AdminDashboardPage() {
                           </span>
                         </header>
 
-                        {/* Interactive SVG Bar Chart */}
+                        
                         <div className="relative mt-4 h-48 w-full">
                           {!hasCategoryDistribution ? (
                             <div className="h-full w-full flex items-center justify-center bg-[#FAF8F4]/50 rounded-xl border border-dashed border-[#E7E0D4]">
@@ -1583,7 +1593,7 @@ export default function AdminDashboardPage() {
                         </div>
                       </section>
 
-                      {/* Foundation Activity Log */}
+                      
                       <section className="rounded-xl border border-[#E7E0D4] bg-white p-5 sm:p-6">
                         <header className="flex items-start justify-between">
                           <div>
@@ -1624,9 +1634,9 @@ export default function AdminDashboardPage() {
                 </>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 1: STUDENTS REGISTERED BY PARTICULAR COURSE */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'students' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-[#E7E0D4]">
@@ -1647,7 +1657,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* Course Filter Pills */}
+                  
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-xs font-semibold text-[#7A7168] mr-1">Filter by Course:</span>
                     <button
@@ -1687,7 +1697,7 @@ export default function AdminDashboardPage() {
                     })}
                   </div>
 
-                  {/* Students Registry Table */}
+                  
                   <div className="overflow-x-auto rounded-xl border border-[#E7E0D4]">
                     <table className="w-full text-left text-xs">
                       <thead>
@@ -1737,9 +1747,9 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 2: DONATIONS & 80G TAX EXEMPTION LEDGER */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'donations' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E7E0D4]">
@@ -1801,9 +1811,9 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 3: EXPENSES */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'expenses' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E7E0D4]">
@@ -1890,9 +1900,9 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 4: ACADEMIC CURRICULA & UNIVERSITY PROGRAMS */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'courses' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-[#E7E0D4]">
@@ -1906,7 +1916,7 @@ export default function AdminDashboardPage() {
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      {/* Sub-tab Switcher: Tab 1 & Tab 2 */}
+                      
                       <div className="inline-flex rounded-xl border border-[#E7E0D4] bg-[#FAF8F4] p-1 text-xs">
                         <button
                           type="button"
@@ -1934,7 +1944,7 @@ export default function AdminDashboardPage() {
                         </button>
                       </div>
 
-                      {/* Add Action Button */}
+                      
                       {courseCatalogSubTab === 'vocational' ? (
                         <button
                           type="button"
@@ -1988,7 +1998,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* QUICK SEARCH BAR */}
+                  
                   <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FAF8F4] p-3 rounded-xl border border-[#E7E0D4]">
                     <div className="relative flex-1">
                       <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-base text-[#7A7168]">
@@ -2026,7 +2036,7 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* TAB 1: VOCATIONAL COURSES GRID */}
+                  
                   {courseCatalogSubTab === 'vocational' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {(!filteredVocationalCourses || filteredVocationalCourses.length === 0) ? (
@@ -2121,7 +2131,7 @@ export default function AdminDashboardPage() {
                     </div>
                   )}
 
-                  {/* TAB 2: UNIVERSITY PROGRAMS GRID */}
+                  
                   {courseCatalogSubTab === 'university' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                       {(!filteredUniversityPrograms || filteredUniversityPrograms.length === 0) ? (
@@ -2219,9 +2229,9 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 5: GALLERY MANAGEMENT (Add & Update Gallery) */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'gallery' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-[#E7E0D4]">
@@ -2286,9 +2296,9 @@ export default function AdminDashboardPage() {
                 </div>
               )}
 
-              {/* ======================================================== */}
-              {/* TAB 6: CERTIFICATE APPROVAL */}
-              {/* ======================================================== */}
+              
+              
+              
               {activeTab === 'certificates' && (
                 <div className="bg-white rounded-2xl border border-[#E7E0D4] p-6 sm:p-8 space-y-6 shadow-xs">
                   <div className="pb-4 border-b border-[#E7E0D4]">
@@ -2372,9 +2382,9 @@ export default function AdminDashboardPage() {
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* MODAL 1: RECORD NEW EXPENDITURE */}
-      {/* ======================================================== */}
+      
+      
+      
       {showAddExpenseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
           <div className="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-[#E7E0D4] animate-scale-up">
@@ -2476,9 +2486,9 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* MODAL 2: ADD / EDIT VOCATIONAL COURSE */}
-      {/* ======================================================== */}
+      
+      
+      
       {showAddCourseModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
           <div className="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-[#E7E0D4] animate-scale-up max-h-[90vh] overflow-y-auto">
@@ -2563,7 +2573,7 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
 
-              {/* Dynamic Tag/Pill Input for Modules */}
+              
               <div>
                 <label className="font-semibold text-[#1C1917] block mb-1">
                   Syllabus Modules (Type topic and press Enter or click "Add Tag")
@@ -2587,7 +2597,7 @@ export default function AdminDashboardPage() {
                   </button>
                 </div>
 
-                {/* Modules Tags Chips */}
+                
                 <div className="flex flex-wrap gap-1.5 min-h-[42px] p-2.5 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4]">
                   {newCourseForm.modules && newCourseForm.modules.length > 0 ? (
                     newCourseForm.modules.map((mod, idx) => (
@@ -2647,9 +2657,9 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* MODAL 3: ADD / EDIT UNIVERSITY PROGRAM */}
-      {/* ======================================================== */}
+      
+      
+      
       {showAddUnivModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
           <div className="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-[#E7E0D4] animate-scale-up max-h-[90vh] overflow-y-auto">
@@ -2805,9 +2815,9 @@ export default function AdminDashboardPage() {
         </div>
       )}
 
-      {/* ======================================================== */}
-      {/* MODAL 3: ADD GALLERY EVENT PHOTO */}
-      {/* ======================================================== */}
+      
+      
+      
       {showAddGalleryModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
           <div className="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-[#E7E0D4] animate-scale-up">
@@ -2823,6 +2833,14 @@ export default function AdminDashboardPage() {
             </div>
 
             <form onSubmit={handleCreateGalleryItem} className="space-y-4 pt-4 text-xs">
+              <ImageUploader
+                label="Photograph Media File (Cloudinary)"
+                value={newGalleryForm.img}
+                onChange={(url) => setNewGalleryForm({ ...newGalleryForm, img: url })}
+                folder="gallery"
+                required
+              />
+
               <div>
                 <label className="font-semibold text-[#1C1917] block mb-1">Event / Photo Title *</label>
                 <input
