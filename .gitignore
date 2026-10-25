@@ -37,3 +37,8 @@ Desktop.ini
 ehthumbs.db
 $RECYCLE.BIN/
 .tempmediaStorage
+*.backup
+*.backup.*
+*.bak
+*.tmp
+

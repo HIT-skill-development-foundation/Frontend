@@ -353,9 +353,8 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
             </div>
             <button
               type="submit"
-              className="w-full sm:w-auto h-12 px-8 rounded-xl bg-tertiary-container hover:bg-primary text-white font-bold text-base shadow-md transition-all flex items-center justify-center gap-2 transform active:scale-95"
+              className="btn-accent h-12 px-8 text-sm sm:text-base w-full sm:w-auto"
             >
-              <span className="material-symbols-outlined text-xl">favorite</span>
               <span>Proceed to Donate & Generate 80G Receipt</span>
             </button>
           </div>

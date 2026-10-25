@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { NAV_LINKS } from '../routes/routesConfig';
 import logo from '../assets/images/logo.jpeg';
 
 export default function Navbar({ activeTab, setActiveTab }) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [scrolled, setScrolled] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 20);
+    };
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
 
   const handleNavClick = (link) => {
     if (setActiveTab) {
@@ -43,61 +52,69 @@ export default function Navbar({ activeTab, setActiveTab }) {
   };
 
   return (
-    <header className="sticky top-0 w-full z-50 bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white shadow-[0_4px_30px_rgba(0,18,51,0.35)] border-b border-white/15 backdrop-blur-md">
+    <header className={`sticky top-0 w-full z-50 transition-all duration-300 ${
+      scrolled 
+        ? 'bg-[#001338]/80 backdrop-blur-2xl shadow-[0_8px_32px_rgba(0,14,40,0.35)] border-b border-white/15 py-1' 
+        : 'bg-[#001338] border-b border-white/10 py-0'
+    } text-white`}>
       {/* Top Notification Strip */}
-      <div className="bg-black/25 text-white/90 px-margin-sm lg:px-margin-lg py-1.5 flex items-center justify-between text-label-sm font-label-sm border-b border-white/10">
+      <div className={`transition-all duration-300 overflow-hidden ${
+        scrolled ? 'max-h-0 opacity-0 py-0 border-transparent' : 'max-h-12 opacity-100 py-1.5 bg-[#000e26] border-b border-white/10'
+      } text-white/90 px-margin-sm lg:px-margin-lg flex items-center justify-between text-[11px] font-medium tracking-wide`}>
         <div className="flex items-center gap-space-md flex-wrap">
-          <span className="flex items-center gap-space-xs text-secondary-fixed font-semibold">
-            <span className="material-symbols-outlined text-sm">verified</span>
+          <span className="text-secondary-fixed font-semibold text-[11px] uppercase tracking-wider">
             Govt. Registered Skill Initiative | NITI Aayog & MCA Approved
           </span>
-          <span className="hidden md:inline text-white/30">|</span>
-          <span className="hidden md:flex items-center gap-space-xs text-white/80">
-            <span className="material-symbols-outlined text-sm">pin_drop</span>
+          <span className="hidden md:inline text-white/20">|</span>
+          <span className="hidden md:inline text-white/70">
             Kasba Khas, Ghosi, Mau, UP - 275105
           </span>
         </div>
-        <div className="flex items-center gap-space-md">
+        <div className="flex items-center gap-4">
           <a
             href="tel:1800HITSKILL"
-            className="flex items-center gap-space-xs text-white hover:text-secondary-fixed transition-colors"
+            className="text-white/85 hover:text-white transition-colors"
           >
-            <span className="material-symbols-outlined text-sm">call</span>
-            Toll-Free: 1800-HIT-SKILL
+            <span className="font-semibold">Toll-Free: 1800-HIT-SKILL</span>
           </a>
-          <span className="hidden sm:inline text-white/30">|</span>
-          <a href="tel:+919616764675" className="hidden sm:inline text-white/80 hover:text-secondary-fixed transition-colors">
-            Direct: +91 96167-64675 / 81155-07046
+          <span className="hidden sm:inline text-white/20">|</span>
+          <a href="tel:+919616764675" className="hidden sm:inline text-white/70 hover:text-white transition-colors">
+            Direct: +91 96167-64675
           </a>
         </div>
       </div>
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-margin-sm lg:px-margin-lg w-full flex items-center justify-between py-2.5">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full flex items-center justify-between py-2.5">
         {/* Brand Crest */}
         <div 
           onClick={() => handleNavClick({ path: '/', id: 'home' })}
-          className="flex items-center gap-3.5 sm:gap-4 mr-6 lg:mr-10 xl:mr-12 cursor-pointer select-none group shrink-0"
+          className="flex items-center gap-3 cursor-pointer select-none group shrink-0"
         >
-          <div className="w-12 h-12 sm:w-14 sm:h-14 rounded-full overflow-hidden shadow-lg group-hover:scale-105 transition-transform shrink-0 border-2 border-secondary-fixed/80 bg-white flex items-center justify-center">
+          <div className="w-11 h-11 sm:w-12 sm:h-12 rounded-xl overflow-hidden p-0.5 bg-white/10 ring-1 ring-white/20 shadow-sm group-hover:scale-105 transition-all shrink-0 flex items-center justify-center">
             <img
               src={logo}
               alt="HIT Computer Education Official Logo"
-              className="w-full h-full object-cover scale-[1.03] block"
+              className="w-full h-full object-cover rounded-[10px] block"
             />
           </div>
           <div className="flex flex-col">
-            <span className="font-headline text-base sm:text-lg font-extrabold tracking-tight text-white leading-tight drop-shadow-xs">
-              HIT COMPUTER EDUCATION
-            </span>
-            <span className="text-[11px] text-secondary-fixed/90 font-medium hidden sm:inline">
+            <div className="flex items-center gap-2">
+              <span className="font-headline text-base sm:text-lg font-black tracking-tight text-white leading-tight">
+                HIT COMPUTER EDUCATION
+              </span>
+              <span className="text-[10px] font-semibold text-secondary-fixed tracking-wider">
+                ISO 9001
+              </span>
+            </div>
+            <span className="text-[10.5px] text-white/60 font-normal tracking-wide hidden sm:inline">
               Academic Wing of H.I.T India Skill Development Foundation
             </span>
           </div>
         </div>
 
         {/* Desktop Navigation Links */}
-        <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 ml-auto lg:ml-6 xl:ml-10">
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2 ml-auto">
           {NAV_LINKS.map((link) => {
             const active = isLinkActive(link);
 
@@ -106,39 +123,30 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 <div key={link.id} className="relative group">
                   <button
                     onClick={() => handleNavClick(link.children[0])}
-                    className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
+                    className={`px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                       active
-                        ? 'bg-secondary text-white shadow-md ring-1 ring-white/30'
-                        : 'text-white/85 hover:bg-white/15 hover:text-white'
+                        ? 'text-white border-b-2 border-secondary-fixed font-bold'
+                        : 'text-white/80 hover:text-white hover:bg-white/5'
                     }`}
                   >
-                    <span className="material-symbols-outlined text-[16px]">{link.icon}</span>
                     <span>{link.label}</span>
-                    <span className="material-symbols-outlined text-sm transition-transform duration-200 group-hover:rotate-180 text-white/70">
-                      expand_more
-                    </span>
                   </button>
 
                   {/* Dropdown Menu on Hover */}
-                  <div className="absolute right-0 top-full pt-2 w-64 z-50 pointer-events-none group-hover:pointer-events-auto opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
-                    <div className="bg-gradient-to-b from-[#0a3582]/95 to-[#001338]/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl p-2 flex flex-col gap-1 ring-1 ring-black/20">
+                  <div className="absolute right-0 top-full pt-2 w-60 z-50 pointer-events-none group-hover:pointer-events-auto opacity-0 translate-y-1 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-200 ease-out">
+                    <div className="bg-[#001030]/95 backdrop-blur-2xl border border-white/15 rounded-lg shadow-2xl p-1.5 flex flex-col gap-1 ring-1 ring-black/40">
                       {link.children.map((child) => (
                         <button
                           key={child.id}
                           onClick={() => handleNavClick(child)}
-                          className="w-full text-left p-2.5 rounded-xl hover:bg-white/15 transition-all flex items-center gap-3 group/item cursor-pointer text-white"
+                          className="w-full text-left p-2.5 rounded hover:bg-white/10 transition-all flex flex-col group/item cursor-pointer text-white"
                         >
-                          <div className="w-8 h-8 rounded-lg bg-white/10 group-hover/item:bg-secondary flex items-center justify-center shrink-0 transition-colors text-white">
-                            <span className="material-symbols-outlined text-base">{child.icon}</span>
-                          </div>
-                          <div className="flex flex-col">
-                            <span className="text-xs font-bold leading-tight group-hover/item:text-secondary-fixed transition-colors">
-                              {child.label}
-                            </span>
-                            <span className="text-[10px] text-white/70 leading-tight mt-0.5">
-                              {child.desc}
-                            </span>
-                          </div>
+                          <span className="text-xs font-semibold leading-tight group-hover/item:text-secondary-fixed transition-colors">
+                            {child.label}
+                          </span>
+                          <span className="text-[10.5px] text-white/60 leading-tight mt-0.5">
+                            {child.desc}
+                          </span>
                         </button>
                       ))}
                     </div>
@@ -147,21 +155,40 @@ export default function Navbar({ activeTab, setActiveTab }) {
               );
             }
 
+            if (link.highlight) {
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => handleNavClick(link)}
+                  className="btn-accent h-8 px-3.5 text-xs ml-1"
+                >
+                  <span>{link.label}</span>
+                </button>
+              );
+            }
+
+            if (link.admin) {
+              return (
+                <button
+                  key={link.id}
+                  onClick={() => handleNavClick(link)}
+                  className="btn-outline-dark h-8 px-3.5 text-xs"
+                >
+                  <span>{link.label}</span>
+                </button>
+              );
+            }
+
             return (
               <button
                 key={link.id}
                 onClick={() => handleNavClick(link)}
-                className={`px-2.5 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer whitespace-nowrap ${
+                className={`relative px-3 py-1.5 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap ${
                   active
-                    ? 'bg-secondary text-white shadow-md ring-1 ring-white/30'
-                    : link.highlight
-                    ? 'bg-amber-400 hover:bg-amber-300 text-slate-950 shadow-xs font-extrabold'
-                    : link.admin
-                    ? 'bg-white/10 hover:bg-white/20 text-white border border-white/20'
-                    : 'text-white/85 hover:bg-white/15 hover:text-white'
+                    ? 'text-white border-b-2 border-secondary-fixed font-bold'
+                    : 'text-white/80 hover:text-white hover:bg-white/5'
                 }`}
               >
-                <span className="material-symbols-outlined text-[16px]">{link.icon}</span>
                 <span>{link.label}</span>
               </button>
             );
@@ -182,9 +209,9 @@ export default function Navbar({ activeTab, setActiveTab }) {
         </div>
       </div>
 
-      {/* Mobile Drawer Menu with Matching Gradient */}
+      {/* Mobile Drawer Menu with Matching Glass Effect */}
       {mobileMenuOpen && (
-        <div className="lg:hidden bg-gradient-to-b from-[#0a3582] via-[#072a6b] to-[#000d29] border-t border-white/15 px-4 py-3 shadow-2xl max-h-[80vh] overflow-y-auto">
+        <div className="lg:hidden bg-[#001030]/95 backdrop-blur-2xl border-t border-white/10 px-4 py-3 shadow-2xl max-h-[80vh] overflow-y-auto">
           <div className="grid grid-cols-2 gap-2">
             {NAV_LINKS.map((link) => {
               if (link.hasDropdown) {
@@ -194,13 +221,12 @@ export default function Navbar({ activeTab, setActiveTab }) {
                     <button
                       key={child.id}
                       onClick={() => handleNavClick(child)}
-                      className={`p-2.5 rounded-xl text-left text-xs sm:text-sm font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
+                      className={`p-2.5 rounded-lg text-left text-xs sm:text-sm font-semibold flex flex-col cursor-pointer transition-colors ${
                         activeChild
-                          ? 'bg-secondary text-white font-bold shadow-md ring-1 ring-white/30'
-                          : 'bg-white/10 text-white hover:bg-white/20'
+                          ? 'bg-secondary text-white font-bold shadow-md'
+                          : 'bg-white/5 text-white hover:bg-white/10'
                       }`}
                     >
-                      <span className="material-symbols-outlined text-[18px]">{child.icon}</span>
                       <span className="truncate">{child.label}</span>
                     </button>
                   );
@@ -211,15 +237,14 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 <button
                   key={link.id}
                   onClick={() => handleNavClick(link)}
-                  className={`p-2.5 rounded-xl text-left text-xs sm:text-sm font-semibold flex items-center gap-2 cursor-pointer transition-colors ${
+                  className={`p-2.5 rounded-lg text-left text-xs sm:text-sm font-semibold flex flex-col cursor-pointer transition-colors ${
                     active
-                      ? 'bg-secondary text-white font-bold shadow-md ring-1 ring-white/30'
+                      ? 'bg-secondary text-white font-bold shadow-md'
                       : link.highlight
                       ? 'bg-amber-400 text-slate-950 font-bold'
-                      : 'bg-white/10 text-white hover:bg-white/20'
+                      : 'bg-white/5 text-white hover:bg-white/10'
                   }`}
                 >
-                  <span className="material-symbols-outlined text-[18px]">{link.icon}</span>
                   <span className="truncate">{link.label}</span>
                 </button>
               );

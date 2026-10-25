@@ -151,9 +151,8 @@ export default function CoursesOfferPage() {
           <div className="flex flex-col sm:flex-row gap-3 shrink-0">
             <button
               onClick={() => navigate('/student-portal')}
-              className="h-12 px-6 rounded-xl bg-tertiary-container hover:bg-primary text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="btn-primary h-11 px-6"
             >
-              <span className="material-symbols-outlined text-lg">how_to_reg</span>
               <span>Enroll / Student Sign Up</span>
             </button>
           </div>
@@ -344,17 +343,15 @@ export default function CoursesOfferPage() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => setSelectedCourseModal(course)}
-                      className="px-3 py-1.5 rounded-lg bg-surface-container hover:bg-surface-container-high text-on-surface text-xs font-semibold transition-all cursor-pointer flex items-center gap-1"
+                      className="btn-secondary h-8 px-3 text-xs"
                     >
-                      <span className="material-symbols-outlined text-sm">visibility</span>
                       <span>Syllabus</span>
                     </button>
                     <button
                       onClick={() => navigate('/student-portal')}
-                      className="px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary-container text-white text-xs font-bold transition-all flex items-center gap-1 shadow-sm cursor-pointer"
+                      className="btn-primary h-8 px-3.5 text-xs"
                     >
                       <span>Apply</span>
-                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
                     </button>
                   </div>
                 </div>

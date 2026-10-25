@@ -44,13 +44,13 @@ export default function AboutUsPage() {
             <div className="pt-6 flex flex-wrap gap-4">
               <button
                 onClick={() => navigate('/courses')}
-                className="h-11 px-6 rounded-xl bg-secondary hover:bg-secondary/90 text-on-secondary font-bold text-sm shadow-md transition-all cursor-pointer"
+                className="btn-accent h-11 px-6"
               >
                 Explore Courses
               </button>
               <button
                 onClick={() => navigate('/donation')}
-                className="h-11 px-6 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm transition-colors border border-white/20 cursor-pointer"
+                className="btn-outline-dark h-11 px-6"
               >
                 Donate for Student Kits
               </button>
@@ -92,10 +92,9 @@ export default function AboutUsPage() {
         <div className="max-w-7xl mx-auto space-y-10">
           
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider shadow-xs">
-              <span className="material-symbols-outlined text-base">verified</span>
-              <span>Official Government & Quality Accreditations</span>
-            </div>
+            <span className="text-secondary font-bold text-xs uppercase tracking-widest block">
+              Official Government & Quality Accreditations
+            </span>
             <h2 className="font-headline text-3xl sm:text-4xl font-extrabold text-primary leading-tight">
               Statutory Incorporation & ISO 9001:2015 Certified
             </h2>

@@ -89,9 +89,8 @@ export default function VerificationPage({ initialQuery = '' }) {
             </div>
             <button
               type="submit"
-              className="h-12 px-6 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 shrink-0 cursor-pointer"
+              className="btn-primary h-12 px-6 shrink-0"
             >
-              <span className="material-symbols-outlined text-lg">fact_check</span>
               <span>Verify Records</span>
             </button>
           </div>
@@ -184,9 +183,8 @@ export default function VerificationPage({ initialQuery = '' }) {
 
                 <button
                   onClick={() => window.print()}
-                  className="h-10 px-5 rounded-lg bg-surface-container-highest hover:bg-surface-container text-primary font-bold text-xs transition-colors flex items-center gap-1.5"
+                  className="btn-secondary h-10 px-5"
                 >
-                  <span className="material-symbols-outlined text-sm">print</span>
                   <span>Print Verification Certificate</span>
                 </button>
               </div>
