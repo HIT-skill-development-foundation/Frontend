@@ -177,6 +177,21 @@ export const courseService = {
     return await apiClient.get('/courses/university-programs');
   },
 
+  // Admin Protected: Create a university program
+  createUniversityProgram: async (programData) => {
+    return await apiClient.post('/courses/university-programs', programData);
+  },
+
+  // Admin Protected: Update a university program
+  updateUniversityProgram: async (id, programData) => {
+    return await apiClient.put(`/courses/university-programs/${id}`, programData);
+  },
+
+  // Admin Protected: Delete a university program
+  deleteUniversityProgram: async (id) => {
+    return await apiClient.delete(`/courses/university-programs/${id}`);
+  },
+
   // Public: Submit admission counseling inquiry for degree course
   submitInquiry: async ({
     programId,

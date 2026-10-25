@@ -36,9 +36,15 @@ import {
 } from './slices/verificationSlice';
 import {
   selectCourses,
+  selectUniversityPrograms,
+  setCourses,
+  setUniversityPrograms,
   addCourse,
   updateCourse,
   deleteCourse,
+  addUniversityProgram,
+  updateUniversityProgram,
+  deleteUniversityProgram,
 } from './slices/coursesSlice';
 import {
   loginAdmin,
@@ -185,6 +191,7 @@ export function useAdmin() {
   const pendingApprovals = useAppSelector(selectPendingApprovals);
   const adminStats = useAppSelector(selectAdminStats);
   const courses = useAppSelector(selectCourses);
+  const universityPrograms = useAppSelector(selectUniversityPrograms);
   const galleryItems = useAppSelector(selectGalleryItems);
 
   const adminLogin = (user) => dispatch(loginAdmin(user));
@@ -193,6 +200,8 @@ export function useAdmin() {
   const syncExpenses = (list) => dispatch(setExpenses(list));
   const syncDonations = (list) => dispatch(setDonations(list));
   const syncPendingApprovals = (list) => dispatch(setPendingApprovals(list));
+  const syncCourses = (list) => dispatch(setCourses(list));
+  const syncUniversityPrograms = (list) => dispatch(setUniversityPrograms(list));
   const recordExpense = (exp) => dispatch(addExpense(exp));
   const removeExpense = (id) => dispatch(deleteExpense(id));
   const approveCert = (id) => dispatch(approveAdmissionOrCert(id));
@@ -200,6 +209,9 @@ export function useAdmin() {
   const addNewCourse = (course) => dispatch(addCourse(course));
   const editCourse = (course) => dispatch(updateCourse(course));
   const removeCourse = (id) => dispatch(deleteCourse(id));
+  const addNewUniversityProgram = (prog) => dispatch(addUniversityProgram(prog));
+  const editUniversityProgram = (prog) => dispatch(updateUniversityProgram(prog));
+  const removeUniversityProgram = (id) => dispatch(deleteUniversityProgram(id));
   const addNewGalleryItem = (item) => dispatch(addGalleryItem(item));
   const removeGalleryItem = (id) => dispatch(deleteGalleryItem(id));
 
@@ -211,6 +223,7 @@ export function useAdmin() {
     pendingApprovals,
     adminStats,
     courses,
+    universityPrograms,
     galleryItems,
     adminLogin,
     adminLogout,
@@ -218,6 +231,8 @@ export function useAdmin() {
     syncExpenses,
     syncDonations,
     syncPendingApprovals,
+    syncCourses,
+    syncUniversityPrograms,
     recordExpense,
     removeExpense,
     approveCert,
@@ -225,6 +240,9 @@ export function useAdmin() {
     addNewCourse,
     editCourse,
     removeCourse,
+    addNewUniversityProgram,
+    editUniversityProgram,
+    removeUniversityProgram,
     addNewGalleryItem,
     removeGalleryItem,
   };

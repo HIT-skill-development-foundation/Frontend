@@ -46,6 +46,22 @@ export const coursesSlice = createSlice({
     deleteCourse: (state, action) => {
       state.courses = state.courses.filter((c) => (c.id || c._id || c.code) !== action.payload);
     },
+    addUniversityProgram: (state, action) => {
+      state.universityPrograms.unshift(action.payload);
+    },
+    updateUniversityProgram: (state, action) => {
+      const index = state.universityPrograms.findIndex(
+        (p) => (p.id || p._id || p.code) === (action.payload.id || action.payload._id || action.payload.code)
+      );
+      if (index !== -1) {
+        state.universityPrograms[index] = { ...state.universityPrograms[index], ...action.payload };
+      }
+    },
+    deleteUniversityProgram: (state, action) => {
+      state.universityPrograms = state.universityPrograms.filter(
+        (p) => (p.id || p._id || p.code) !== action.payload
+      );
+    },
   },
 });
 
@@ -59,6 +75,9 @@ export const {
   addCourse,
   updateCourse,
   deleteCourse,
+  addUniversityProgram,
+  updateUniversityProgram,
+  deleteUniversityProgram,
 } = coursesSlice.actions;
 
 export const selectCourses = (state) => state.courses.courses;
