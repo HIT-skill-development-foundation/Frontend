@@ -282,8 +282,8 @@ export default function CoursesOfferPage() {
                           Popular Choice
                         </span>
                       )}
-                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-extrabold">
-                        {course.fee}
+                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-extrabold font-mono">
+                        {typeof course.fee === 'number' ? `₹${course.fee.toLocaleString('en-IN')}` : course.fee}
                       </span>
                     </div>
                   </div>
@@ -338,7 +338,9 @@ export default function CoursesOfferPage() {
                     <span className="text-[10px] text-on-surface-variant block uppercase tracking-wider font-semibold">
                       Total Course Fee
                     </span>
-                    <span className="text-sm font-extrabold text-primary">{course.fee}</span>
+                    <span className="text-sm font-extrabold text-primary font-mono">
+                      {typeof course.fee === 'number' ? `₹${course.fee.toLocaleString('en-IN')}` : course.fee}
+                    </span>
                   </div>
 
                   <div className="flex items-center gap-1.5">

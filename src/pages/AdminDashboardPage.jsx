@@ -13,6 +13,7 @@ import {
   expenseService,
   galleryService,
 } from '../services/hitApi';
+import courseApi from '../services/courseApi';
 
 export default function AdminDashboardPage() {
   const {
@@ -63,8 +64,10 @@ export default function AdminDashboardPage() {
   const [studentSearch, setStudentSearch] = useState('');
   const [liveStudents, setLiveStudents] = useState([]);
 
-  // Course Catalog Sub-tab ('vocational' | 'university')
+  // Course Catalog Sub-tab ('vocational' | 'university') & Search
   const [courseCatalogSubTab, setCourseCatalogSubTab] = useState('vocational');
+  const [courseCatalogSearch, setCourseCatalogSearch] = useState('');
+  const [moduleInput, setModuleInput] = useState('');
 
   // Modals state
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
@@ -77,7 +80,7 @@ export default function AdminDashboardPage() {
     invoiceNo: '',
   });
 
-  // Vocational Course Modal & Form
+  // Vocational Course Modal & Form (Exact Schema: fee is number, NO formula, NO feeAmount)
   const [showAddCourseModal, setShowAddCourseModal] = useState(false);
   const [editingCourse, setEditingCourse] = useState(null);
   const [newCourseForm, setNewCourseForm] = useState({
@@ -85,12 +88,11 @@ export default function AdminDashboardPage() {
     name: '',
     duration: '12 Months',
     eligibility: '10th / 12th Pass',
-    fee: '₹12,000',
-    feeAmount: 12000,
-    formula: 'Fundamental + MS Office + Tally + Web Design',
-    modulesStr: 'Computer Fundamental & Windows, MS Office 2021, Tally Prime with GST, HTML & CSS',
-    icon: 'desktop_windows',
-    popular: true,
+    fee: 12000,
+    modules: ['Computer Fundamental & Windows', 'MS Office 2021', 'Tally Prime with GST', 'HTML & CSS'],
+    icon: 'terminal',
+    popular: false,
+    isActive: true,
   });
 
   // University Program Modal & Form
@@ -100,13 +102,14 @@ export default function AdminDashboardPage() {
     code: '',
     name: '',
     duration: '3 Years (6 Semesters)',
-    eligibility: '10+2 in any stream (Math/CS preferred)',
+    eligibility: '10+2 Pass in any stream',
     type: 'Undergraduate Degree',
     mode: 'Online & Distance Mode',
-    fee: 'Flexible Semester Slabs',
-    streams: 'Cloud Computing, Web Development, AI/ML',
+    fee: 'Flexible University Slabs',
+    streams: 'Cloud Computing, Data Science, AI/ML',
     icon: 'laptop_chromebook',
     popular: true,
+    isActive: true,
   });
 
   const [showAddGalleryModal, setShowAddGalleryModal] = useState(false);
@@ -249,6 +252,35 @@ export default function AdminDashboardPage() {
   };
 
   // ==========================================
+  // DYNAMIC MODULE TAG INPUT HANDLERS
+  // ==========================================
+  const handleAddModule = () => {
+    const trimmed = moduleInput.trim();
+    if (!trimmed) return;
+    if (!newCourseForm.modules.includes(trimmed)) {
+      setNewCourseForm((prev) => ({
+        ...prev,
+        modules: [...prev.modules, trimmed],
+      }));
+    }
+    setModuleInput('');
+  };
+
+  const handleRemoveModule = (modToRemove) => {
+    setNewCourseForm((prev) => ({
+      ...prev,
+      modules: prev.modules.filter((m) => m !== modToRemove),
+    }));
+  };
+
+  const handleModuleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleAddModule();
+    }
+  };
+
+  // ==========================================
   // VOCATIONAL COURSES CRUD HANDLERS
   // ==========================================
   const handleSaveCourse = async (e) => {
@@ -256,27 +288,23 @@ export default function AdminDashboardPage() {
     if (!newCourseForm.name || !newCourseForm.code) return;
 
     await withLoader(async () => {
-      const modulesArr = newCourseForm.modulesStr
-        ? newCourseForm.modulesStr.split(',').map((m) => m.trim()).filter(Boolean)
-        : [];
-
+      const codeUpper = newCourseForm.code.trim().toUpperCase();
       const payload = {
-        code: newCourseForm.code.trim().toUpperCase(),
+        code: codeUpper,
         name: newCourseForm.name.trim(),
         duration: newCourseForm.duration || '12 Months',
         eligibility: newCourseForm.eligibility || '10th / 12th Pass',
-        fee: newCourseForm.fee || '₹12,000',
-        feeAmount: Number(newCourseForm.feeAmount) || 0,
-        formula: newCourseForm.formula || '',
-        modules: modulesArr,
-        icon: newCourseForm.icon || 'desktop_windows',
+        fee: Number(newCourseForm.fee) || 0, // NUMBER ONLY (NO formula, NO feeAmount)
+        modules: newCourseForm.modules || [],
+        icon: newCourseForm.icon || 'terminal',
         popular: Boolean(newCourseForm.popular),
+        isActive: Boolean(newCourseForm.isActive ?? true),
       };
 
       if (editingCourse) {
         const courseId = editingCourse.id || editingCourse._id || editingCourse.code;
         try {
-          const res = await courseService.updateCourse(courseId, payload);
+          const res = await courseApi.updateCourse(courseId, payload);
           const updated = res?.data || { ...editingCourse, ...payload };
           editCourse(updated);
           notify('success', `Course ${payload.code} updated successfully.`);
@@ -287,39 +315,40 @@ export default function AdminDashboardPage() {
         }
       } else {
         try {
-          const res = await courseService.createCourse(payload);
-          const savedCourse = res?.data || { ...payload, id: payload.code.toLowerCase() };
+          const res = await courseApi.createCourse(payload);
+          const savedCourse = res?.data || { ...payload, id: codeUpper.toLowerCase() };
           addNewCourse(savedCourse);
           notify('success', `New course ${payload.name} created successfully.`);
         } catch (err) {
           console.warn('Backend course create error, adding locally:', err.message);
-          addNewCourse({ ...payload, id: payload.code.toLowerCase() });
+          addNewCourse({ ...payload, id: codeUpper.toLowerCase() });
           notify('success', `New course ${payload.name} created locally.`);
         }
       }
 
       setShowAddCourseModal(false);
       setEditingCourse(null);
-    }, editingCourse ? 'Updating Vocational Course...' : 'Publishing New Vocational Course...');
+    }, editingCourse ? 'Updating Vocational Course...' : 'Creating Vocational Course...');
   };
 
   const handleDeleteCourse = async (course) => {
+    const code = course.code || course.id;
     const courseId = course.id || course._id || course.code;
-    if (!window.confirm(`Are you sure you want to delete "${course.name}" (${course.code})?`)) {
+    if (!window.confirm(`Are you sure you want to delete course ${code}?`)) {
       return;
     }
 
     await withLoader(async () => {
       try {
-        await courseService.deleteCourse(courseId);
+        await courseApi.deleteCourse(courseId);
         removeCourse(courseId);
-        notify('success', `Course ${course.code} removed successfully.`);
+        notify('success', `Course ${code} deleted successfully.`);
       } catch (err) {
         console.warn('Backend delete error, removing locally:', err.message);
         removeCourse(courseId);
-        notify('success', `Course ${course.code} removed locally.`);
+        notify('success', `Course ${code} removed locally.`);
       }
-    }, `Deleting Course ${course.code}...`);
+    }, `Deleting Course ${code}...`);
   };
 
   // ==========================================
@@ -330,23 +359,25 @@ export default function AdminDashboardPage() {
     if (!newUnivProgramForm.name || !newUnivProgramForm.code) return;
 
     await withLoader(async () => {
+      const codeUpper = newUnivProgramForm.code.trim().toUpperCase();
       const payload = {
-        code: newUnivProgramForm.code.trim().toUpperCase(),
+        code: codeUpper,
         name: newUnivProgramForm.name.trim(),
         duration: newUnivProgramForm.duration || '3 Years (6 Semesters)',
-        eligibility: newUnivProgramForm.eligibility || '10+2 in any stream (Math/CS preferred)',
+        eligibility: newUnivProgramForm.eligibility || '10+2 Pass in any stream',
         type: newUnivProgramForm.type || 'Undergraduate Degree',
         mode: newUnivProgramForm.mode || 'Online & Distance Mode',
-        fee: newUnivProgramForm.fee || 'Flexible Semester Slabs',
-        streams: newUnivProgramForm.streams || 'Cloud Computing, Web Development, AI/ML',
+        fee: newUnivProgramForm.fee || 'Flexible University Slabs',
+        streams: newUnivProgramForm.streams || '',
         icon: newUnivProgramForm.icon || 'laptop_chromebook',
         popular: Boolean(newUnivProgramForm.popular),
+        isActive: Boolean(newUnivProgramForm.isActive ?? true),
       };
 
       if (editingUnivProgram) {
         const progId = editingUnivProgram.id || editingUnivProgram._id || editingUnivProgram.code;
         try {
-          const res = await courseService.updateUniversityProgram(progId, payload);
+          const res = await courseApi.updateUniversityProgram(progId, payload);
           const updated = res?.data || { ...editingUnivProgram, ...payload };
           editUniversityProgram(updated);
           notify('success', `University Program ${payload.code} updated successfully.`);
@@ -357,13 +388,13 @@ export default function AdminDashboardPage() {
         }
       } else {
         try {
-          const res = await courseService.createUniversityProgram(payload);
-          const savedProg = res?.data || { ...payload, id: `univ-${payload.code.toLowerCase()}` };
+          const res = await courseApi.createUniversityProgram(payload);
+          const savedProg = res?.data || { ...payload, id: `univ-${codeUpper.toLowerCase()}` };
           addNewUniversityProgram(savedProg);
           notify('success', `University Program ${payload.name} created successfully.`);
         } catch (err) {
           console.warn('Backend program create error, adding locally:', err.message);
-          addNewUniversityProgram({ ...payload, id: `univ-${payload.code.toLowerCase()}` });
+          addNewUniversityProgram({ ...payload, id: `univ-${codeUpper.toLowerCase()}` });
           notify('success', `University Program ${payload.name} created locally.`);
         }
       }
@@ -374,23 +405,51 @@ export default function AdminDashboardPage() {
   };
 
   const handleDeleteUnivProgram = async (program) => {
+    const code = program.code || program.id;
     const progId = program.id || program._id || program.code;
-    if (!window.confirm(`Are you sure you want to delete university program "${program.name}" (${program.code})?`)) {
+    if (!window.confirm(`Are you sure you want to delete course ${code}?`)) {
       return;
     }
 
     await withLoader(async () => {
       try {
-        await courseService.deleteUniversityProgram(progId);
+        await courseApi.deleteUniversityProgram(progId);
         removeUniversityProgram(progId);
-        notify('success', `University Program ${program.code} removed successfully.`);
+        notify('success', `University Program ${code} deleted successfully.`);
       } catch (err) {
         console.warn('Backend delete error, removing locally:', err.message);
         removeUniversityProgram(progId);
-        notify('success', `University Program ${program.code} removed locally.`);
+        notify('success', `University Program ${code} removed locally.`);
       }
-    }, `Deleting University Program ${program.code}...`);
+    }, `Deleting University Program ${code}...`);
   };
+
+  // Quick search filtering for courses & university programs
+  const filteredVocationalCourses = useMemo(() => {
+    if (!courses) return [];
+    const q = courseCatalogSearch.trim().toLowerCase();
+    if (!q) return courses;
+    return courses.filter(
+      (c) =>
+        c.name?.toLowerCase().includes(q) ||
+        c.code?.toLowerCase().includes(q) ||
+        c.duration?.toLowerCase().includes(q) ||
+        (Array.isArray(c.modules) && c.modules.some((m) => m.toLowerCase().includes(q)))
+    );
+  }, [courses, courseCatalogSearch]);
+
+  const filteredUniversityPrograms = useMemo(() => {
+    if (!universityPrograms) return [];
+    const q = courseCatalogSearch.trim().toLowerCase();
+    if (!q) return universityPrograms;
+    return universityPrograms.filter(
+      (p) =>
+        p.name?.toLowerCase().includes(q) ||
+        p.code?.toLowerCase().includes(q) ||
+        p.type?.toLowerCase().includes(q) ||
+        p.streams?.toLowerCase().includes(q)
+    );
+  }, [universityPrograms, courseCatalogSearch]);
 
   const handleCreateGalleryItem = async (e) => {
     e.preventDefault();
@@ -1842,12 +1901,12 @@ export default function AdminDashboardPage() {
                         Academic Curricula & Program Management
                       </h2>
                       <p className="text-xs text-[#7A7168] mt-0.5">
-                        Manage vocational skill diplomas, syllabi, and accredited university distance degrees.
+                        Manage vocational skill diplomas, syllabi modules, and accredited university distance degrees.
                       </p>
                     </div>
 
                     <div className="flex flex-wrap items-center gap-3">
-                      {/* Sub-tab Switcher */}
+                      {/* Sub-tab Switcher: Tab 1 & Tab 2 */}
                       <div className="inline-flex rounded-xl border border-[#E7E0D4] bg-[#FAF8F4] p-1 text-xs">
                         <button
                           type="button"
@@ -1859,7 +1918,7 @@ export default function AdminDashboardPage() {
                           }`}
                         >
                           <span className="material-symbols-outlined text-sm">terminal</span>
-                          <span>Vocational Diplomas ({courses?.length || 0})</span>
+                          <span>Tab 1: Vocational Courses ({courses?.length || 0})</span>
                         </button>
                         <button
                           type="button"
@@ -1871,7 +1930,7 @@ export default function AdminDashboardPage() {
                           }`}
                         >
                           <span className="material-symbols-outlined text-sm">school</span>
-                          <span>University Programs ({universityPrograms?.length || 0})</span>
+                          <span>Tab 2: University Programs ({universityPrograms?.length || 0})</span>
                         </button>
                       </div>
 
@@ -1886,13 +1945,13 @@ export default function AdminDashboardPage() {
                               name: '',
                               duration: '12 Months',
                               eligibility: '10th / 12th Pass',
-                              fee: '₹12,000',
-                              feeAmount: 12000,
-                              formula: 'Fundamental + MS Office + Tally + Web Design',
-                              modulesStr: 'Computer Fundamental & Windows, MS Office 2021, Tally Prime with GST, HTML & CSS',
-                              icon: 'desktop_windows',
-                              popular: true,
+                              fee: 12000,
+                              modules: ['Computer Fundamental & Windows', 'MS Office 2021', 'Tally Prime with GST', 'HTML & CSS'],
+                              icon: 'terminal',
+                              popular: false,
+                              isActive: true,
                             });
+                            setModuleInput('');
                             setShowAddCourseModal(true);
                           }}
                           className="h-10 px-4 rounded-lg bg-[#065F46] hover:bg-[#065F46]/90 text-white font-medium text-xs shadow-xs transition-all flex items-center gap-1.5 cursor-pointer"
@@ -1909,13 +1968,14 @@ export default function AdminDashboardPage() {
                               code: '',
                               name: '',
                               duration: '3 Years (6 Semesters)',
-                              eligibility: '10+2 in any stream (Math/CS preferred)',
+                              eligibility: '10+2 Pass in any stream',
                               type: 'Undergraduate Degree',
                               mode: 'Online & Distance Mode',
-                              fee: 'Flexible Semester Slabs',
-                              streams: 'Cloud Computing, Web Development, AI/ML',
+                              fee: 'Flexible University Slabs',
+                              streams: 'Cloud Computing, Data Science, AI/ML',
                               icon: 'laptop_chromebook',
                               popular: true,
+                              isActive: true,
                             });
                             setShowAddUnivModal(true);
                           }}
@@ -1928,15 +1988,55 @@ export default function AdminDashboardPage() {
                     </div>
                   </div>
 
-                  {/* VIEW A: VOCATIONAL COURSES */}
+                  {/* QUICK SEARCH BAR */}
+                  <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 bg-[#FAF8F4] p-3 rounded-xl border border-[#E7E0D4]">
+                    <div className="relative flex-1">
+                      <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-base text-[#7A7168]">
+                        search
+                      </span>
+                      <input
+                        type="text"
+                        placeholder={
+                          courseCatalogSubTab === 'vocational'
+                            ? 'Quick search courses by name or code (e.g. ADCA, CCC, Tally)...'
+                            : 'Quick search university programs by name or code (e.g. BCA, MCA, MBA)...'
+                        }
+                        value={courseCatalogSearch}
+                        onChange={(e) => setCourseCatalogSearch(e.target.value)}
+                        className="w-full pl-9 pr-8 py-2 rounded-lg bg-white border border-[#E7E0D4] text-xs text-[#1C1917] placeholder:text-[#7A7168]/70 focus:outline-none focus:border-[#065F46]"
+                      />
+                      {courseCatalogSearch && (
+                        <button
+                          type="button"
+                          onClick={() => setCourseCatalogSearch('')}
+                          className="absolute right-2.5 top-1/2 -translate-y-1/2 text-[#7A7168] hover:text-[#1C1917] cursor-pointer"
+                        >
+                          <span className="material-symbols-outlined text-sm">cancel</span>
+                        </button>
+                      )}
+                    </div>
+                    <div className="text-[11px] font-mono text-[#7A7168] shrink-0 self-center">
+                      Showing{' '}
+                      <span className="font-bold text-[#065F46]">
+                        {courseCatalogSubTab === 'vocational'
+                          ? filteredVocationalCourses.length
+                          : filteredUniversityPrograms.length}
+                      </span>{' '}
+                      items
+                    </div>
+                  </div>
+
+                  {/* TAB 1: VOCATIONAL COURSES GRID */}
                   {courseCatalogSubTab === 'vocational' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {(!courses || courses.length === 0) ? (
+                      {(!filteredVocationalCourses || filteredVocationalCourses.length === 0) ? (
                         <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl border border-dashed border-[#E7E0D4]">
-                          No vocational courses found in database. Click "Add New Course" to create one.
+                          {courseCatalogSearch
+                            ? `No courses matching "${courseCatalogSearch}".`
+                            : 'No vocational courses found in database. Click "Add New Course" to create one.'}
                         </div>
                       ) : (
-                        courses.map((c) => (
+                        filteredVocationalCourses.map((c) => (
                           <div
                             key={c.id || c._id || c.code}
                             className="bg-[#FAF8F4] rounded-xl p-5 border border-[#E7E0D4] flex flex-col justify-between hover:border-[#065F46]/30 transition-all shadow-2xs"
@@ -1944,37 +2044,40 @@ export default function AdminDashboardPage() {
                             <div>
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-2">
-                                  <span className="font-mono text-xs font-bold text-[#065F46] px-2 py-0.5 rounded bg-white border border-[#E7E0D4]">
+                                  <span className="font-mono text-xs font-bold text-[#065F46] px-2.5 py-0.5 rounded bg-white border border-[#E7E0D4]">
                                     {c.code}
                                   </span>
                                   {c.popular && (
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">
+                                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
                                       Popular
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-xs text-[#7A7168] font-mono">{c.duration}</span>
+                                <span className="text-xs text-[#7A7168] font-mono font-medium">{c.duration}</span>
                               </div>
 
-                              <h4 className="font-['Fraunces'] text-base font-semibold text-[#1C1917]">{c.name}</h4>
-                              <p className="text-xs text-[#7A7168] mt-1">
-                                Fee: <strong className="text-[#065F46] font-mono">{c.fee}</strong>
-                                {c.feeAmount ? ` (₹${Number(c.feeAmount).toLocaleString('en-IN')})` : ''}
+                              <h4 className="font-['Fraunces'] text-base font-semibold text-[#1C1917] leading-snug">{c.name}</h4>
+                              <p className="text-xs text-[#7A7168] mt-2">
+                                Fee: <strong className="text-[#065F46] font-mono text-sm font-bold">₹{Number(c.fee || 0).toLocaleString('en-IN')}</strong>
                               </p>
-                              <p className="text-xs text-[#7A7168] mt-0.5">Eligibility: {c.eligibility}</p>
-                              {c.formula && (
-                                <p className="text-[11px] text-[#7A7168] mt-1 font-mono italic">
-                                  Formula: {c.formula}
-                                </p>
-                              )}
+                              <p className="text-xs text-[#7A7168] mt-0.5">Eligibility: <span className="text-[#1C1917] font-medium">{c.eligibility || '10th / 12th Pass'}</span></p>
 
-                              <div className="pt-2 mt-2 border-t border-[#E7E0D4] text-xs">
-                                <span className="font-mono text-[10px] text-[#7A7168] uppercase tracking-wider block mb-1">
-                                  Syllabus Modules:
+                              <div className="pt-2.5 mt-3 border-t border-[#E7E0D4] text-xs">
+                                <span className="font-mono text-[10px] text-[#7A7168] uppercase tracking-wider block mb-1.5 font-semibold">
+                                  Syllabus Modules ({Array.isArray(c.modules) ? c.modules.length : 0}):
                                 </span>
-                                <p className="text-[#1C1917] truncate text-[11px]">
-                                  {Array.isArray(c.modules) ? c.modules.join(', ') : (c.modules || 'Curriculum modules active')}
-                                </p>
+                                <div className="flex flex-wrap gap-1">
+                                  {Array.isArray(c.modules) && c.modules.length > 0 ? (
+                                    c.modules.map((m, idx) => (
+                                      <span key={idx} className="px-2 py-0.5 rounded bg-white border border-[#E7E0D4] text-[11px] text-[#1C1917]">
+                                        {m}
+                                      </span>
+                                    ))
+                                  ) : (
+                                    <span className="text-[11px] text-[#7A7168] italic">No modules listed</span>
+                                  )}
+                                </div>
                               </div>
                             </div>
 
@@ -1984,20 +2087,20 @@ export default function AdminDashboardPage() {
                                 onClick={() => {
                                   setEditingCourse(c);
                                   setNewCourseForm({
-                                    code: c.code,
-                                    name: c.name,
-                                    duration: c.duration,
-                                    eligibility: c.eligibility,
-                                    fee: c.fee,
-                                    feeAmount: c.feeAmount || 12000,
-                                    formula: c.formula || '',
-                                    modulesStr: Array.isArray(c.modules) ? c.modules.join(', ') : (c.modules || ''),
-                                    icon: c.icon || 'desktop_windows',
+                                    code: c.code || '',
+                                    name: c.name || '',
+                                    duration: c.duration || '12 Months',
+                                    eligibility: c.eligibility || '10th / 12th Pass',
+                                    fee: Number(c.fee) || 0,
+                                    modules: Array.isArray(c.modules) ? [...c.modules] : [],
+                                    icon: c.icon || 'terminal',
                                     popular: Boolean(c.popular),
+                                    isActive: Boolean(c.isActive ?? true),
                                   });
+                                  setModuleInput('');
                                   setShowAddCourseModal(true);
                                 }}
-                                className="px-3 py-1.5 rounded-lg bg-white border border-[#E7E0D4] hover:bg-[#F3EFE7] text-[#065F46] font-medium text-xs flex items-center gap-1 cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg bg-white border border-[#E7E0D4] hover:bg-[#F3EFE7] text-[#065F46] font-medium text-xs flex items-center gap-1 cursor-pointer transition-colors"
                               >
                                 <span className="material-symbols-outlined text-sm">edit</span>
                                 <span>Edit Course</span>
@@ -2006,7 +2109,7 @@ export default function AdminDashboardPage() {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteCourse(c)}
-                                className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 cursor-pointer"
+                                className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
                                 title="Remove Course"
                               >
                                 <span className="material-symbols-outlined text-sm">delete</span>
@@ -2018,15 +2121,17 @@ export default function AdminDashboardPage() {
                     </div>
                   )}
 
-                  {/* VIEW B: UNIVERSITY PROGRAMS */}
+                  {/* TAB 2: UNIVERSITY PROGRAMS GRID */}
                   {courseCatalogSubTab === 'university' && (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                      {(!universityPrograms || universityPrograms.length === 0) ? (
+                      {(!filteredUniversityPrograms || filteredUniversityPrograms.length === 0) ? (
                         <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl border border-dashed border-[#E7E0D4]">
-                          No university programs found in database. Click "Add University Program" to register one.
+                          {courseCatalogSearch
+                            ? `No university programs matching "${courseCatalogSearch}".`
+                            : 'No university programs found in database. Click "Add University Program" to register one.'}
                         </div>
                       ) : (
-                        universityPrograms.map((p) => (
+                        filteredUniversityPrograms.map((p) => (
                           <div
                             key={p.id || p._id || p.code}
                             className="bg-[#FAF8F4] rounded-xl p-5 border border-[#E7E0D4] flex flex-col justify-between hover:border-[#065F46]/30 transition-all shadow-2xs"
@@ -2034,36 +2139,37 @@ export default function AdminDashboardPage() {
                             <div>
                               <div className="flex items-center justify-between mb-2">
                                 <div className="flex items-center gap-1.5">
-                                  <span className="font-mono text-xs font-bold text-[#065F46] px-2 py-0.5 rounded bg-white border border-[#E7E0D4]">
+                                  <span className="font-mono text-xs font-bold text-[#065F46] px-2.5 py-0.5 rounded bg-white border border-[#E7E0D4]">
                                     {p.code}
                                   </span>
                                   <span className="text-[10px] px-2 py-0.5 rounded bg-emerald-50 text-emerald-800 border border-emerald-200 font-medium">
-                                    {p.type || 'Degree'}
+                                    {p.type || 'Undergraduate Degree'}
                                   </span>
                                   {p.popular && (
-                                    <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-800 font-medium">
+                                    <span className="inline-flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-800 font-semibold">
+                                      <span className="h-1.5 w-1.5 rounded-full bg-amber-500"></span>
                                       Popular
                                     </span>
                                   )}
                                 </div>
-                                <span className="text-[11px] text-[#7A7168] font-mono">{p.duration}</span>
+                                <span className="text-[11px] text-[#7A7168] font-mono font-medium">{p.duration}</span>
                               </div>
 
-                              <h4 className="font-['Fraunces'] text-base font-semibold text-[#1C1917]">{p.name}</h4>
-                              <p className="text-xs text-[#7A7168] mt-1">
-                                Mode: <strong className="text-[#1C1917]">{p.mode || 'Online & Distance Mode'}</strong>
+                              <h4 className="font-['Fraunces'] text-base font-semibold text-[#1C1917] leading-snug">{p.name}</h4>
+                              <p className="text-xs text-[#7A7168] mt-2">
+                                Mode: <strong className="text-[#1C1917] font-medium">{p.mode || 'Online & Distance Mode'}</strong>
                               </p>
                               <p className="text-xs text-[#7A7168] mt-0.5">
-                                Fee: <strong className="text-[#065F46] font-mono">{p.fee}</strong>
+                                Fee: <strong className="text-[#065F46] font-mono font-bold">{p.fee || 'Flexible University Slabs'}</strong>
                               </p>
-                              <p className="text-xs text-[#7A7168] mt-0.5">Eligibility: {p.eligibility}</p>
+                              <p className="text-xs text-[#7A7168] mt-0.5">Eligibility: <span className="text-[#1C1917] font-medium">{p.eligibility || '10+2 Pass in any stream'}</span></p>
 
                               {p.streams && (
-                                <div className="pt-2 mt-2 border-t border-[#E7E0D4] text-xs">
-                                  <span className="font-mono text-[10px] text-[#7A7168] uppercase tracking-wider block mb-1">
+                                <div className="pt-2.5 mt-3 border-t border-[#E7E0D4] text-xs">
+                                  <span className="font-mono text-[10px] text-[#7A7168] uppercase tracking-wider block mb-1 font-semibold">
                                     Specialization Streams:
                                   </span>
-                                  <p className="text-[#1C1917] truncate text-[11px]">
+                                  <p className="text-[#1C1917] text-[11px] line-clamp-2">
                                     {p.streams}
                                   </p>
                                 </div>
@@ -2076,20 +2182,21 @@ export default function AdminDashboardPage() {
                                 onClick={() => {
                                   setEditingUnivProgram(p);
                                   setNewUnivProgramForm({
-                                    code: p.code,
-                                    name: p.name,
-                                    duration: p.duration,
-                                    eligibility: p.eligibility,
+                                    code: p.code || '',
+                                    name: p.name || '',
+                                    duration: p.duration || '3 Years (6 Semesters)',
+                                    eligibility: p.eligibility || '10+2 Pass in any stream',
                                     type: p.type || 'Undergraduate Degree',
                                     mode: p.mode || 'Online & Distance Mode',
-                                    fee: p.fee,
+                                    fee: p.fee || 'Flexible University Slabs',
                                     streams: p.streams || '',
                                     icon: p.icon || 'laptop_chromebook',
                                     popular: Boolean(p.popular),
+                                    isActive: Boolean(p.isActive ?? true),
                                   });
                                   setShowAddUnivModal(true);
                                 }}
-                                className="px-3 py-1.5 rounded-lg bg-white border border-[#E7E0D4] hover:bg-[#F3EFE7] text-[#065F46] font-medium text-xs flex items-center gap-1 cursor-pointer"
+                                className="px-3 py-1.5 rounded-lg bg-white border border-[#E7E0D4] hover:bg-[#F3EFE7] text-[#065F46] font-medium text-xs flex items-center gap-1 cursor-pointer transition-colors"
                               >
                                 <span className="material-symbols-outlined text-sm">edit</span>
                                 <span>Edit Program</span>
@@ -2098,7 +2205,7 @@ export default function AdminDashboardPage() {
                               <button
                                 type="button"
                                 onClick={() => handleDeleteUnivProgram(p)}
-                                className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 cursor-pointer"
+                                className="p-1.5 rounded-lg text-rose-600 hover:bg-rose-50 cursor-pointer transition-colors"
                                 title="Remove University Program"
                               >
                                 <span className="material-symbols-outlined text-sm">delete</span>
@@ -2432,30 +2539,18 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Fee Label *</label>
+                  <label className="font-semibold text-[#1C1917] block mb-1">Fee in INR (₹) *</label>
                   <input
-                    type="text"
+                    type="number"
                     required
-                    placeholder="e.g. ₹12,000"
+                    min="0"
+                    placeholder="e.g. 12000"
                     value={newCourseForm.fee}
-                    onChange={(e) => setNewCourseForm({ ...newCourseForm, fee: e.target.value })}
+                    onChange={(e) => setNewCourseForm({ ...newCourseForm, fee: Number(e.target.value) || 0 })}
                     className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] font-mono font-bold text-[#065F46] focus:outline-none focus:border-[#065F46]"
                   />
                 </div>
 
-                <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Fee Amount in INR (₹)</label>
-                  <input
-                    type="number"
-                    placeholder="e.g. 12000"
-                    value={newCourseForm.feeAmount}
-                    onChange={(e) => setNewCourseForm({ ...newCourseForm, feeAmount: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] font-mono text-[#1C1917] focus:outline-none focus:border-[#065F46]"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="font-semibold text-[#1C1917] block mb-1">Eligibility</label>
                   <input
@@ -2466,30 +2561,57 @@ export default function AdminDashboardPage() {
                     className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
                   />
                 </div>
-
-                <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Curriculum Formula</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Fundamental + MS Office + Tally"
-                    value={newCourseForm.formula}
-                    onChange={(e) => setNewCourseForm({ ...newCourseForm, formula: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
-                  />
-                </div>
               </div>
 
+              {/* Dynamic Tag/Pill Input for Modules */}
               <div>
                 <label className="font-semibold text-[#1C1917] block mb-1">
-                  Syllabus Modules (Comma-separated)
+                  Syllabus Modules (Type topic and press Enter or click "Add Tag")
                 </label>
-                <textarea
-                  rows={2}
-                  placeholder="Computer Fundamental & Windows, MS Office 2021, Tally Prime with GST, HTML & CSS"
-                  value={newCourseForm.modulesStr}
-                  onChange={(e) => setNewCourseForm({ ...newCourseForm, modulesStr: e.target.value })}
-                  className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
-                />
+                <div className="flex gap-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. MS Office 2021, Tally Prime with GST"
+                    value={moduleInput}
+                    onChange={(e) => setModuleInput(e.target.value)}
+                    onKeyDown={handleModuleKeyDown}
+                    className="flex-1 px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
+                  />
+                  <button
+                    type="button"
+                    onClick={handleAddModule}
+                    className="px-3.5 py-2 rounded-lg bg-[#065F46] hover:bg-[#065F46]/90 text-white font-medium text-xs shadow-xs transition-all flex items-center gap-1 cursor-pointer"
+                  >
+                    <span className="material-symbols-outlined text-sm">add</span>
+                    <span>Add Tag</span>
+                  </button>
+                </div>
+
+                {/* Modules Tags Chips */}
+                <div className="flex flex-wrap gap-1.5 min-h-[42px] p-2.5 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4]">
+                  {newCourseForm.modules && newCourseForm.modules.length > 0 ? (
+                    newCourseForm.modules.map((mod, idx) => (
+                      <span
+                        key={idx}
+                        className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-white border border-[#E7E0D4] text-[#1C1917] text-xs font-medium shadow-2xs animate-fade-in"
+                      >
+                        <span>{mod}</span>
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveModule(mod)}
+                          className="text-[#7A7168] hover:text-rose-600 cursor-pointer flex items-center"
+                          title="Remove module tag"
+                        >
+                          <span className="material-symbols-outlined text-xs">close</span>
+                        </button>
+                      </span>
+                    ))
+                  ) : (
+                    <span className="text-xs text-[#7A7168] italic self-center">
+                      No modules added yet. Enter topics above one-by-one.
+                    </span>
+                  )}
+                </div>
               </div>
 
               <div className="flex items-center gap-2 pt-1">
