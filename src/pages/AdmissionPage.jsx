@@ -269,16 +269,14 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                   if (setActiveTab) setActiveTab('student_portal');
                   navigate('/student-portal');
                 }}
-                className="w-full sm:w-auto h-12 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                className="btn-primary h-12 px-6 w-full sm:w-auto"
               >
-                <span className="material-symbols-outlined text-lg">badge</span>
                 <span>Open Digital ID Card & Dossier</span>
               </button>
               <button
                 onClick={() => window.print()}
-                className="w-full sm:w-auto h-12 px-6 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-semibold text-sm transition-colors flex items-center justify-center gap-2"
+                className="btn-secondary h-12 px-6 w-full sm:w-auto"
               >
-                <span className="material-symbols-outlined text-lg">print</span>
                 <span>Print Admission Slip</span>
               </button>
             </div>
@@ -455,7 +453,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     <button
                       type="button"
                       onClick={() => setCurrentStep(2)}
-                      className="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-sm transition-all flex items-center gap-2"
+                      className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to Course & Centre</span>
                       <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -553,14 +551,14 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     <button
                       type="button"
                       onClick={() => setCurrentStep(1)}
-                      className="h-11 px-5 rounded-lg bg-surface-container text-primary font-semibold text-sm hover:bg-surface-container-high transition-colors"
+                      className="btn-secondary h-11 px-5"
                     >
                       Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurrentStep(3)}
-                      className="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-sm transition-all flex items-center gap-2"
+                      className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to Documents & Photo</span>
                       <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -632,14 +630,14 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     <button
                       type="button"
                       onClick={() => setCurrentStep(2)}
-                      className="h-11 px-5 rounded-lg bg-surface-container text-primary font-semibold text-sm hover:bg-surface-container-high transition-colors"
+                      className="btn-secondary h-11 px-5"
                     >
                       Back
                     </button>
                     <button
                       type="button"
                       onClick={() => setCurrentStep(4)}
-                      className="h-11 px-6 rounded-lg bg-primary hover:bg-primary-container text-white font-semibold text-sm transition-all flex items-center gap-2"
+                      className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to ₹100 Payment</span>
                       <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -721,16 +719,15 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     <button
                       type="button"
                       onClick={() => setCurrentStep(3)}
-                      className="h-11 px-5 rounded-lg bg-surface-container text-primary font-semibold text-sm hover:bg-surface-container-high transition-colors"
+                      className="btn-secondary h-11 px-5"
                     >
                       Back
                     </button>
                     <button
                       type="button"
                       onClick={handlePaymentSubmit}
-                      className="h-12 px-8 rounded-xl bg-tertiary-fixed hover:bg-tertiary-fixed/90 text-on-tertiary-fixed font-bold text-base shadow-md transition-all flex items-center gap-2 transform active:scale-95"
+                      className="btn-primary h-12 px-8 text-sm sm:text-base"
                     >
-                      <span className="material-symbols-outlined text-xl">lock</span>
                       <span>Pay ₹100.00 & Generate Registration</span>
                     </button>
                   </div>

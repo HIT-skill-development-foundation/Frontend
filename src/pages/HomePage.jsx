@@ -279,23 +279,20 @@ export default function HomePage({ setActiveTab }) {
           <div className="flex items-center gap-2 flex-wrap">
             <button
               onClick={() => handleNavigate('/student-portal', 'student_portal')}
-              className="h-10 px-4 rounded-xl bg-tertiary-container hover:bg-primary text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-1.5 transform active:scale-95 cursor-pointer"
+              className="btn-primary h-10 px-4"
             >
-              <span className="material-symbols-outlined text-base">how_to_reg</span>
               <span>Apply Online (₹100 Fee)</span>
             </button>
             <button
               onClick={() => handleNavigate('/student-portal', 'student_portal')}
-              className="h-10 px-3.5 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-primary font-semibold text-xs sm:text-sm shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer border border-outline-variant/30"
+              className="btn-secondary h-10 px-4"
             >
-              <span className="material-symbols-outlined text-base">badge</span>
               <span>Student Portal</span>
             </button>
             <button
               onClick={() => handleNavigate('/verification', 'verification')}
-              className="h-10 px-3.5 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-secondary font-semibold text-xs sm:text-sm shadow-xs transition-colors flex items-center gap-1.5 cursor-pointer border border-outline-variant/30"
+              className="btn-secondary h-10 px-4"
             >
-              <span className="material-symbols-outlined text-base">verified</span>
               <span>Verify Roll</span>
             </button>
           </div>
@@ -334,203 +331,167 @@ export default function HomePage({ setActiveTab }) {
         </div>
       </section>
 
-      {/* Director's Master Training & Specialized Wings (Split 2-Column with Framer Motion) */}
-      <section className="w-full bg-gradient-to-b from-surface via-surface-container-lowest to-surface-container-low py-16 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20 overflow-hidden">
+      {/* Director's Master Training & Specialized Wings Section */}
+      <section className="w-full bg-slate-50 py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-12 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
             
             {/* LEFT HALF: Content on Hardware Training, PGDCA Teacher Training & Director's Mentorship */}
             <motion.div
-              className="lg:col-span-7 flex flex-col justify-center space-y-6"
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, ease: 'easeOut' }}
-              viewport={{ once: true, margin: '-60px' }}
+              className="lg:col-span-7 flex flex-col justify-center space-y-8"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, ease: 'easeOut' }}
+              viewport={{ once: true, margin: '-40px' }}
             >
-              {/* Badge */}
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider w-fit shadow-xs">
-                <span className="material-symbols-outlined text-base">engineering</span>
-                <span>Director's Desk & Master Training Wing</span>
-              </div>
-
-              {/* Headline */}
-              <div className="space-y-2">
-                <h2 className="font-headline text-2xl sm:text-4xl font-extrabold text-primary leading-tight">
-                  Master-Led <span className="text-secondary">Computer Hardware</span> &{' '}
-                  <span className="text-tertiary-container">PGDCA Teacher Training</span>
+              {/* Institutional Section Header */}
+              <div className="space-y-3">
+                <p className="text-[11px] font-bold text-slate-500 uppercase tracking-widest font-mono">
+                  DIRECTOR'S DESK / MASTER TRAINING WING
+                </p>
+                <h2 className="font-headline text-3xl sm:text-4xl lg:text-[42px] font-black text-slate-900 leading-[1.15] tracking-tight">
+                  Master-Led Computer Hardware & PGDCA Teacher Training
                 </h2>
-                <p className="text-xs sm:text-sm text-secondary font-bold uppercase tracking-wide">
+                <p className="text-sm font-semibold text-secondary uppercase tracking-wider">
                   Direct Practical Mentorship Under the Leadership of the Institute Director
                 </p>
               </div>
 
-              {/* Narrative / Context */}
-              <p className="font-body-lg text-sm sm:text-base text-on-surface-variant leading-relaxed">
+              {/* Narrative Context */}
+              <p className="font-body-md text-base text-slate-600 leading-relaxed max-w-2xl">
                 At HIT Computer Education, our Director actively leads specialized practical training sessions.
-                Rather than relying solely on theoretical slides, students work on live diagnostic benches under his
-                direct personal guidance—mastering chip-level PC hardware and training to become certified computer
-                teachers and institutional faculty.
+                Rather than relying on abstract slides, trainees work on live diagnostic benches under direct
+                one-on-one guidance—mastering chip-level motherboard servicing, system architecture, and pedagogical methods to qualify as certified IT faculty.
               </p>
 
-              {/* 2 Focused Training Modules (Hardware & PGDCA Teacher Training) */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-1">
+              {/* 2 Focused Training Modules (Clean Editorial Cards) */}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 pt-1">
                 {/* Module 1: Computer Hardware Training */}
-                <motion.div
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs hover:shadow-md transition-all space-y-2.5"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center font-bold">
-                    <span className="material-symbols-outlined text-xl">build</span>
+                <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3 group cursor-default">
+                  <span className="text-[11px] font-mono font-bold text-slate-400 group-hover:text-secondary uppercase tracking-wider block transition-colors">
+                    MODULE 01
+                  </span>
+                  <h3 className="font-headline text-base font-bold text-slate-900">
+                    Computer Hardware Training (CHW)
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Complete motherboard diagnostics, PC assembling, SMPS power supplies, CPU/RAM installation, BIOS setup, and live hardware troubleshooting.
+                  </p>
+                  <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-secondary tracking-wide uppercase">
+                    100% Practical Lab Bench Training
                   </div>
-                  <div>
-                    <h3 className="font-headline text-sm font-bold text-primary">
-                      Computer Hardware Training (CHW)
-                    </h3>
-                    <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
-                      Complete motherboard diagnostics, PC assembling, SMPS power supplies, CPU/RAM installation,
-                      BIOS/CMOS setup, OS installation, and real-time troubleshooting.
-                    </p>
-                  </div>
-                  <div className="pt-2 border-t border-outline-variant/20 flex items-center gap-1.5 text-[11px] font-bold text-secondary">
-                    <span className="material-symbols-outlined text-sm">verified</span>
-                    <span>100% Practical Lab Bench Training</span>
-                  </div>
-                </motion.div>
+                </div>
 
                 {/* Module 2: PGDCA & Teacher Training */}
-                <motion.div
-                  whileHover={{ y: -4, transition: { duration: 0.2 } }}
-                  className="p-4 rounded-2xl bg-surface-container-lowest border border-outline-variant/30 shadow-xs hover:shadow-md transition-all space-y-2.5"
-                >
-                  <div className="w-10 h-10 rounded-xl bg-secondary/10 text-secondary flex items-center justify-center font-bold">
-                    <span className="material-symbols-outlined text-xl">school</span>
+                <div className="p-6 rounded-xl bg-white border border-slate-200/80 shadow-xs hover:border-slate-300 hover:shadow-md transition-all duration-200 space-y-3 group cursor-default">
+                  <span className="text-[11px] font-mono font-bold text-slate-400 group-hover:text-emerald-700 uppercase tracking-wider block transition-colors">
+                    MODULE 02
+                  </span>
+                  <h3 className="font-headline text-base font-bold text-slate-900">
+                    PGDCA & Teacher Training (CTT)
+                  </h3>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Advanced diploma curriculum preparing professional educators. Covers pedagogical methodology, IT syllabus delivery, and faculty certification.
+                  </p>
+                  <div className="pt-3 border-t border-slate-100 text-[11px] font-semibold text-emerald-800 tracking-wide uppercase">
+                    Prepares Certified Computer Faculty
                   </div>
-                  <div>
-                    <h3 className="font-headline text-sm font-bold text-primary">
-                      PGDCA & Teacher Training (CTT)
-                    </h3>
-                    <p className="text-[11px] text-on-surface-variant mt-1 leading-relaxed">
-                      Advanced diploma curriculum preparing professional educators. Covers pedagogical methodology,
-                      IT syllabus delivery, lab coordination, and faculty certification.
-                    </p>
-                  </div>
-                  <div className="pt-2 border-t border-outline-variant/20 flex items-center gap-1.5 text-[11px] font-bold text-emerald-700">
-                    <span className="material-symbols-outlined text-sm">verified</span>
-                    <span>Prepares Certified Computer Faculty</span>
-                  </div>
-                </motion.div>
+                </div>
               </div>
 
               {/* Direct Mentor Highlights */}
-              <div className="bg-surface-container-low p-4 rounded-2xl border border-outline-variant/20 space-y-2 text-xs">
-                <span className="font-bold text-primary flex items-center gap-1.5">
-                  <span className="material-symbols-outlined text-base text-secondary">verified_user</span>
-                  <span>Why Train Directly Under the Director?</span>
+              <div className="p-5 rounded-xl bg-slate-100/80 border border-slate-200 space-y-3">
+                <span className="text-xs font-bold text-slate-900 uppercase tracking-wider block">
+                  Why Train Directly Under the Director?
                 </span>
-                <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2 text-on-surface font-medium">
-                  <li className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs text-slate-700 font-medium">
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
                     <span>Live component testing & multimeters</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
                     <span>State-level computer teacher credentials</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
                     <span>Industry internship & repair guidance</span>
-                  </li>
-                  <li className="flex items-center gap-1.5">
-                    <span className="w-1.5 h-1.5 rounded-full bg-secondary shrink-0"></span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="w-1.5 h-1.5 rounded-full bg-slate-500 shrink-0"></span>
                     <span>Personalized career mentorship</span>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
 
               {/* CTA Buttons */}
-              <div className="flex flex-wrap items-center gap-3 pt-2">
+              <div className="flex flex-wrap items-center gap-3 pt-1">
                 <button
                   onClick={() => handleNavigate('/courses', 'courses')}
-                  className="h-11 px-6 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-xs sm:text-sm shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                  className="btn-primary h-11 px-6"
                 >
-                  <span className="material-symbols-outlined text-base">menu_book</span>
-                  <span>Explore Hardware & PGDCA Syllabi</span>
+                  Explore Hardware & PGDCA Syllabi
                 </button>
                 <button
                   onClick={() => handleNavigate('/student-portal', 'student_portal')}
-                  className="h-11 px-5 rounded-xl bg-surface-container-lowest hover:bg-surface-container text-primary font-bold text-xs sm:text-sm shadow-xs border border-outline-variant/30 transition-all flex items-center gap-1.5 cursor-pointer"
+                  className="btn-secondary h-11 px-6"
                 >
-                  <span className="material-symbols-outlined text-base">how_to_reg</span>
-                  <span>Apply for Training</span>
+                  Apply for Training
                 </button>
               </div>
             </motion.div>
 
-            {/* RIGHT HALF: Director Image with Framer Motion Animation & Floating Badges */}
+            {/* RIGHT HALF: Director Image Frame */}
             <motion.div
-              className="lg:col-span-5 relative flex justify-center items-center"
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.2, ease: 'easeOut' }}
-              viewport={{ once: true, margin: '-60px' }}
+              className="lg:col-span-5 flex justify-center items-center"
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: 0.15, ease: 'easeOut' }}
+              viewport={{ once: true, margin: '-40px' }}
             >
-              <div className="relative w-full max-w-md">
-                {/* Background Glow */}
-                <div className="absolute -inset-2 rounded-3xl bg-gradient-to-tr from-secondary/20 via-primary/10 to-tertiary-container/20 blur-xl opacity-70"></div>
-
-                {/* Director Photo Card Frame */}
-                <div className="relative rounded-3xl overflow-hidden border-2 border-outline-variant/30 shadow-2xl bg-surface-container-lowest group">
+              <div className="w-full max-w-md bg-white p-3 rounded-2xl border border-slate-200/90 shadow-sm hover:shadow-xl hover:border-slate-300 transition-all duration-300 group">
+                <div className="relative rounded-xl overflow-hidden aspect-[4/5] bg-slate-100">
+                  {/* Photo with subtle zoom on card hover */}
                   <img
                     src={directorImg}
                     alt="Institute Director conducting training and institutional oversight"
-                    className="w-full h-[400px] sm:h-[480px] object-cover object-top block transition-transform duration-500 group-hover:scale-105"
+                    className="w-full h-full object-cover object-top block transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                   />
 
-                  {/* Gradient Bottom Overlay */}
-                  <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/85 via-black/40 to-transparent p-5 text-white">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-secondary-fixed block">
-                      Leadership & Master Mentorship
-                    </span>
-                    <h3 className="font-headline text-lg sm:text-xl font-extrabold text-white">
+                  {/* Atmospheric Tint Layer (Refined Navy/Slate photographic glaze) */}
+                  <div className="absolute inset-0 bg-[#001338]/15 mix-blend-multiply transition-opacity duration-300 group-hover:opacity-40 pointer-events-none"></div>
+
+                  {/* Subtle Top-Right Ambient Specular Glow on Hover */}
+                  <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-transparent to-white/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none"></div>
+
+                  {/* Glass Frost Caption Overlay */}
+                  <div className="absolute inset-x-0 bottom-0 bg-[#001030]/80 backdrop-blur-md p-4 text-white border-t border-white/10 transition-colors duration-300 group-hover:bg-[#001030]/90">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[10px] font-mono uppercase tracking-widest text-slate-300 block">
+                        LEADERSHIP & MENTORSHIP
+                      </span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                    </div>
+                    <h3 className="font-headline text-base font-bold text-white mt-1">
                       Institute Director
                     </h3>
-                    <p className="text-xs text-white/80 mt-0.5 font-medium">
+                    <p className="text-[11px] text-slate-300/90 mt-0.5">
                       HIT Computer Education • H.I.T India Skill Development Foundation
                     </p>
                   </div>
                 </div>
 
-                {/* Floating Top Badge */}
-                <motion.div
-                  initial={{ y: 0 }}
-                  animate={{ y: [-4, 4, -4] }}
-                  transition={{ repeat: Infinity, duration: 4, ease: 'easeInOut' }}
-                  className="absolute -top-4 -left-4 sm:-left-6 px-4 py-2 rounded-2xl bg-surface-container-lowest/95 backdrop-blur-md shadow-xl border border-outline-variant/30 flex items-center gap-2.5 z-20"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-secondary text-white flex items-center justify-center font-bold">
-                    <span className="material-symbols-outlined text-lg">workspace_premium</span>
+                {/* Bottom Spec Matrix with Hover Lift */}
+                <div className="grid grid-cols-2 gap-3 pt-3 px-1 text-center">
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/60 transition-colors duration-200 group-hover:bg-slate-100/70">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 font-bold block">SPECIALIZATION</span>
+                    <span className="text-xs font-bold text-slate-900 mt-0.5 block">Hardware & PGDCA</span>
                   </div>
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant uppercase font-bold block">Specialist</span>
-                    <span className="text-xs font-extrabold text-primary">Hardware & PGDCA</span>
+                  <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-200/60 transition-colors duration-200 group-hover:bg-slate-100/70">
+                    <span className="text-[10px] font-mono uppercase text-slate-500 font-bold block">STUDENT BASE</span>
+                    <span className="text-xs font-bold text-slate-900 mt-0.5 block">12,500+ Mentored</span>
                   </div>
-                </motion.div>
-
-                {/* Floating Bottom Badge */}
-                <motion.div
-                  initial={{ y: 0 }}
-                  animate={{ y: [4, -4, 4] }}
-                  transition={{ repeat: Infinity, duration: 4.5, ease: 'easeInOut' }}
-                  className="absolute -bottom-4 -right-4 sm:-right-6 px-4 py-2.5 rounded-2xl bg-primary text-white shadow-xl border border-white/20 flex items-center gap-2.5 z-20"
-                >
-                  <div className="w-8 h-8 rounded-xl bg-white/20 text-white flex items-center justify-center font-bold">
-                    <span className="material-symbols-outlined text-lg">verified</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-white/70 uppercase font-bold block">Mentorship</span>
-                    <span className="text-xs font-extrabold text-secondary-fixed">12,500+ Students</span>
-                  </div>
-                </motion.div>
+                </div>
               </div>
             </motion.div>
 
@@ -539,67 +500,65 @@ export default function HomePage({ setActiveTab }) {
       </section>
 
       {/* Franchise Purchase & Center Affiliation Contact Section */}
-      <section id="franchise-contact" className="w-full bg-surface-container-low py-16 px-margin-sm lg:px-margin-lg border-b border-outline-variant/20 relative overflow-hidden">
+      <section id="franchise-contact" className="w-full bg-[#f1f4f9] py-20 px-4 sm:px-6 lg:px-8 border-b border-slate-200 relative overflow-hidden">
         <div className="max-w-7xl mx-auto space-y-12">
           
           {/* Section Header */}
           <div className="text-center max-w-3xl mx-auto space-y-3">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-secondary/10 border border-secondary/20 text-secondary text-xs font-bold uppercase tracking-wider shadow-xs">
-              <span className="material-symbols-outlined text-base">domain_add</span>
-              <span>Authorized Training Centre (ATC) Franchise</span>
-            </div>
-            <h2 className="font-headline text-3xl sm:text-4xl font-extrabold text-primary leading-tight">
+            <p className="text-[11px] font-mono font-bold text-secondary uppercase tracking-widest">
+              AUTHORIZED TRAINING CENTRE (ATC) FRANCHISE
+            </p>
+            <h2 className="font-headline text-3xl sm:text-4xl lg:text-[40px] font-black text-slate-900 leading-tight tracking-tight">
               Start Your Own Computer Center — <span className="text-secondary">Get HIT Franchise</span>
             </h2>
-            <p className="text-sm sm:text-base text-on-surface-variant leading-relaxed">
-              Partner with <strong>H.I.T India Skill Development Foundation</strong> (Registered under Ministry of Corporate Affairs, Govt. of India • ISO 9001:2015 Certified). Launch a prestigious computer training & university counseling centre in your district or town with low investment.
+            <p className="text-sm sm:text-base text-slate-600 leading-relaxed">
+              Partner with <strong>H.I.T India Skill Development Foundation</strong> (Incorporated under MCA, Govt. of India • ISO 9001:2015 Audited). Establish an authorized skill & university counseling centre in your district with turnkey curriculum and student examination software.
             </p>
           </div>
 
           {/* 2-Column Main Layout */}
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
             
-            {/* LEFT COLUMN: Interactive Franchise Application Form */}
+            {/* LEFT COLUMN: Clean Editorial Franchise Form */}
             <motion.div
-              className="lg:col-span-7 bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-md border border-outline-variant/30"
-              initial={{ opacity: 0, y: 30 }}
+              className="lg:col-span-7 bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/90 shadow-[0_10px_30px_rgba(15,23,42,0.05)] flex flex-col justify-between h-full"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6 }}
               viewport={{ once: true }}
             >
-              <div className="flex items-center justify-between pb-4 border-b border-outline-variant/20 mb-6">
+              <div className="flex items-center justify-between pb-5 mb-6 border-b border-slate-100">
                 <div>
-                  <h3 className="font-headline text-xl font-bold text-primary flex items-center gap-2">
-                    <span className="material-symbols-outlined text-secondary">assignment</span>
-                    <span>Franchise Purchase & Affiliation Form</span>
+                  <h3 className="font-headline text-lg sm:text-xl font-bold text-slate-900">
+                    Franchise Purchase & Affiliation Application
                   </h3>
-                  <p className="text-xs text-on-surface-variant mt-0.5">
-                    Fill out the form below. Our Franchise Onboarding Director will contact you within 24 hours.
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Submit institutional details below. Our Head Office onboarding desk responds within 24 hours.
                   </p>
                 </div>
-                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-extrabold hidden sm:inline-block">
-                  Session 2026–2027
+                <span className="text-[10.5px] font-mono font-semibold text-secondary px-2.5 py-1 rounded-md bg-secondary/10 border border-secondary/20 hidden sm:inline-block">
+                  SESSION 2026–2027
                 </span>
               </div>
 
               {franchiseSubmitted ? (
-                <div className="py-10 text-center space-y-4">
-                  <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-md">
-                    <span className="material-symbols-outlined text-4xl">check_circle</span>
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-headline text-2xl font-bold text-primary">
-                      Franchise Application Submitted!
+                <div className="py-12 text-center space-y-4">
+                  <div className="space-y-2">
+                    <span className="text-xs font-mono font-bold text-emerald-700 uppercase tracking-widest block">
+                      APPLICATION RECEIVED
+                    </span>
+                    <h4 className="font-headline text-2xl font-bold text-slate-900">
+                      Franchise Inquiry Submitted Successfully
                     </h4>
-                    <p className="text-sm text-on-surface-variant max-w-md mx-auto">
-                      Thank you <strong>{franchiseForm.name}</strong>. Our Head Office Franchise Coordinator will call you shortly on <strong>{franchiseForm.phone}</strong> with the complete affiliation kit, fee structure, and MoU terms.
+                    <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
+                      Thank you, <strong>{franchiseForm.name}</strong>. Our Head Office Coordinator will connect on <strong>{franchiseForm.phone}</strong> with the prospectus, fee schedule, and draft MoU.
                     </p>
                   </div>
                   <div className="pt-4 flex justify-center gap-3">
                     <button
                       type="button"
                       onClick={() => setFranchiseSubmitted(false)}
-                      className="px-5 py-2.5 rounded-xl bg-surface-container hover:bg-surface-container-high text-primary font-bold text-xs cursor-pointer"
+                      className="btn-secondary h-10 px-5"
                     >
                       Submit Another Inquiry
                     </button>
@@ -607,19 +566,18 @@ export default function HomePage({ setActiveTab }) {
                       href={`https://wa.me/919616764675?text=Hello%20HIT%20Franchise%20Team%2C%20I%20have%20submitted%20my%20application%20for%20${encodeURIComponent(franchiseForm.city || 'Center')}`}
                       target="_blank"
                       rel="noreferrer"
-                      className="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1.5 shadow-md cursor-pointer"
+                      className="btn-primary h-10 px-5"
                     >
-                      <span>Connect on WhatsApp</span>
-                      <span className="material-symbols-outlined text-sm">chat</span>
+                      Instant WhatsApp Desk
                     </a>
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleFranchiseSubmit} className="space-y-4 text-xs">
+                <form onSubmit={handleFranchiseSubmit} className="space-y-5 text-xs">
                   {/* Row 1: Name & Phone */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Director / Centre Owner Name *
                       </label>
                       <input
@@ -628,28 +586,28 @@ export default function HomePage({ setActiveTab }) {
                         placeholder="e.g. Anand Kumar Singh"
                         value={franchiseForm.name}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, name: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-slate-900 transition-all placeholder:text-slate-400"
                       />
                     </div>
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Mobile Number (WhatsApp) *
                       </label>
                       <input
                         type="tel"
                         required
-                        placeholder="e.g. 9616764675 / 8115507046"
+                        placeholder="e.g. 9616764675"
                         value={franchiseForm.phone}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, phone: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-slate-900 transition-all placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   {/* Row 2: Email & District/City */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Email Address
                       </label>
                       <input
@@ -657,34 +615,34 @@ export default function HomePage({ setActiveTab }) {
                         placeholder="centre@email.com"
                         value={franchiseForm.email}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, email: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-slate-900 transition-all placeholder:text-slate-400"
                       />
                     </div>
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Proposed City / Town & District *
                       </label>
                       <input
                         type="text"
                         required
-                        placeholder="e.g. Ghosi / Mau / Azamgarh"
+                        placeholder="e.g. Ghosi, Mau"
                         value={franchiseForm.city}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, city: e.target.value })}
-                        className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface"
+                        className="w-full px-3.5 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-slate-900 transition-all placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   {/* Row 3: Centre Status & Infrastructure */}
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Current Setup Status
                       </label>
                       <select
                         value={franchiseForm.centerType}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, centerType: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                        className="w-full px-3 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary cursor-pointer transition-all"
                       >
                         <option>New Computer Center</option>
                         <option>Already Running Center</option>
@@ -693,14 +651,14 @@ export default function HomePage({ setActiveTab }) {
                       </select>
                     </div>
 
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Computer Systems
                       </label>
                       <select
                         value={franchiseForm.pcCount}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, pcCount: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                        className="w-full px-3 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary cursor-pointer transition-all"
                       >
                         <option>5 to 10 Computers</option>
                         <option>10 to 20 Computers</option>
@@ -709,14 +667,14 @@ export default function HomePage({ setActiveTab }) {
                       </select>
                     </div>
 
-                    <div>
-                      <label className="font-bold text-on-surface-variant block mb-1">
+                    <div className="space-y-1.5">
+                      <label className="font-semibold text-slate-700 block">
                         Lab Space Available
                       </label>
                       <select
                         value={franchiseForm.spaceAvailable}
                         onChange={(e) => setFranchiseForm({ ...franchiseForm, spaceAvailable: e.target.value })}
-                        className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                        className="w-full px-3 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs font-medium text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary cursor-pointer transition-all"
                       >
                         <option>300 to 500 Sq. Ft.</option>
                         <option>500 to 1,000 Sq. Ft.</option>
@@ -726,31 +684,29 @@ export default function HomePage({ setActiveTab }) {
                   </div>
 
                   {/* Message */}
-                  <div>
-                    <label className="font-bold text-on-surface-variant block mb-1">
-                      Location Details / Any Specific Query
+                  <div className="space-y-1.5">
+                    <label className="font-semibold text-slate-700 block">
+                      Specific Requirements / Premises Details
                     </label>
                     <textarea
                       rows={3}
-                      placeholder="Enter exact address, landmark, or your query about franchise fees, kit, and student exams..."
+                      placeholder="Enter exact locality, commercial frontage, or query regarding syllabus, examination portal, and certificates..."
                       value={franchiseForm.message}
                       onChange={(e) => setFranchiseForm({ ...franchiseForm, message: e.target.value })}
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 text-on-surface resize-none"
+                      className="w-full px-3.5 py-2.5 rounded-lg bg-slate-50/80 border border-slate-300 text-xs focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary/20 focus:border-secondary text-slate-900 resize-none transition-all placeholder:text-slate-400"
                     />
                   </div>
 
-                  {/* Submit Button */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-3">
-                    <span className="text-[11px] text-on-surface-variant flex items-center gap-1">
-                      <span className="material-symbols-outlined text-sm text-emerald-600">lock</span>
-                      <span>No Hidden Fees • Direct Head Office Affiliation</span>
+                  {/* Submit Button & Assurance */}
+                  <div className="pt-2 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 pt-4">
+                    <span className="text-[11px] font-mono text-slate-500">
+                      Zero royalty on student fees • Direct Head Office affiliation
                     </span>
                     <button
                       type="submit"
-                      className="w-full sm:w-auto px-7 py-3 rounded-xl bg-gradient-to-r from-[#072a6b] to-[#1a62c6] hover:from-[#0a3582] hover:to-[#2563eb] text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                      className="btn-primary h-11 px-7 w-full sm:w-auto"
                     >
-                      <span className="material-symbols-outlined text-base">send</span>
-                      <span>Submit Franchise Inquiry</span>
+                      Submit Franchise Inquiry
                     </button>
                   </div>
                 </form>
@@ -759,151 +715,98 @@ export default function HomePage({ setActiveTab }) {
 
             {/* RIGHT COLUMN: Official Credentials & Direct Helpdesk Dossier */}
             <motion.div
-              className="lg:col-span-5 space-y-6"
-              initial={{ opacity: 0, y: 30 }}
+              className="lg:col-span-5 bg-white p-6 sm:p-8 rounded-2xl border border-slate-200/90 shadow-[0_10px_30px_rgba(15,23,42,0.04)] flex flex-col justify-between h-full"
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: 0.2 }}
+              transition={{ duration: 0.6, delay: 0.15 }}
               viewport={{ once: true }}
             >
-              {/* Franchise Support Hotlines Card */}
-              <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/30 space-y-4">
-                <div className="flex items-center gap-3 pb-3 border-b border-outline-variant/20">
-                  <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-[#072a6b] to-[#1a62c6] text-white flex items-center justify-center font-bold shadow-md">
-                    <span className="material-symbols-outlined text-2xl">support_agent</span>
-                  </div>
-                  <div>
-                    <span className="text-[10px] text-secondary font-bold uppercase tracking-wider block">
-                      Direct Franchise Desk
+              <div className="space-y-5">
+                <div className="border-b border-slate-100 pb-5">
+                  <div className="flex items-center justify-between">
+                    <span className="text-[10px] font-mono font-bold text-secondary uppercase tracking-widest block">
+                      CENTRAL AFFILIATION WING
                     </span>
-                    <h3 className="font-headline text-lg font-bold text-primary">Head Office Contacts</h3>
+                    <span className="text-[10.5px] font-mono font-semibold text-emerald-700 px-2 py-0.5 rounded bg-emerald-50 border border-emerald-200">
+                      LIVE DESK
+                    </span>
                   </div>
+                  <h3 className="font-headline text-lg sm:text-xl font-bold text-slate-900 mt-1">
+                    Head Office Desk
+                  </h3>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Central franchise dispatch, documentation & direct telephone onboarding.
+                  </p>
                 </div>
 
-                <div className="space-y-3 text-xs">
-                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
-                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">call</span>
-                    <div>
-                      <span className="font-bold text-primary block">Calling & WhatsApp Support:</span>
-                      <div className="flex flex-wrap items-center gap-x-3 gap-y-1 mt-1 font-semibold text-secondary">
-                        <a href="tel:+919616764675" className="hover:underline flex items-center gap-1">
-                          <span className="text-emerald-600 font-bold">●</span>
-                          <span>+91 96167-64675</span>
-                        </a>
-                        <a href="tel:+918115507046" className="hover:underline flex items-center gap-1">
-                          <span className="text-emerald-600 font-bold">●</span>
-                          <span>+91 81155-07046</span>
-                        </a>
-                        <a href="tel:+919452078192" className="text-on-surface-variant hover:underline flex items-center gap-1">
-                          <span>+91 94520-78192</span>
-                        </a>
-                      </div>
+                <div className="space-y-3.5 text-xs">
+                  {/* Telephone Support */}
+                  <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-2">
+                    <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
+                      TELEPHONE & WHATSAPP DESK
+                    </span>
+                    <div className="flex flex-col gap-1.5 text-slate-800 font-semibold">
+                      <a href="tel:+919616764675" className="hover:text-secondary transition-colors flex items-center justify-between">
+                        <span>+91 96167-64675</span>
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded">Primary Desk</span>
+                      </a>
+                      <a href="tel:+918115507046" className="hover:text-secondary transition-colors flex items-center justify-between">
+                        <span>+91 81155-07046</span>
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded">Coordination</span>
+                      </a>
+                      <a href="tel:+919452078192" className="hover:text-secondary transition-colors flex items-center justify-between">
+                        <span>+91 94520-78192</span>
+                        <span className="text-[10px] font-medium text-slate-500 bg-slate-200/70 px-2 py-0.5 rounded">General Inquiry</span>
+                      </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
-                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">pin_drop</span>
-                    <div>
-                      <span className="font-bold text-primary block">Registered HQ Address:</span>
-                      <p className="text-on-surface-variant text-[11px] mt-0.5 leading-relaxed">
-                        H.No.-117A, Malik Tola, Ward-11, Kasba Khas, Ghosi, Jamal Mirja Pur, Mau, Uttar Pradesh - 275105
-                      </p>
-                    </div>
+                  {/* Registered Address */}
+                  <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-1">
+                    <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
+                      REGISTERED HEADQUARTERS
+                    </span>
+                    <p className="text-slate-700 leading-relaxed text-[11.5px]">
+                      H.No.-117A, Malik Tola, Ward-11, Kasba Khas, Ghosi, Jamal Mirja Pur, Mau, Uttar Pradesh - 275105
+                    </p>
                   </div>
 
-                  <div className="flex items-start gap-2.5 p-3 rounded-xl bg-surface-container-low">
-                    <span className="material-symbols-outlined text-primary text-lg shrink-0 mt-0.5">mail</span>
-                    <div className="w-full">
-                      <span className="font-bold text-primary block">Official Franchise & Affiliation Emails:</span>
-                      <div className="flex flex-col gap-1 mt-1 font-semibold text-secondary text-[11px] sm:text-xs">
-                        <a href="mailto:hitindia.ghosi@gmail.com" className="hover:underline flex items-center gap-1.5 break-all">
-                          <span className="material-symbols-outlined text-xs text-primary">send</span>
-                          <span>hitindia.ghosi@gmail.com</span>
-                        </a>
-                        <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:underline flex items-center gap-1.5 break-all">
-                          <span className="material-symbols-outlined text-xs text-primary">send</span>
-                          <span>hitcomputer.ghosi@gmail.com</span>
-                        </a>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Instant WhatsApp Actions */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1">
-                  <a
-                    href="https://wa.me/919616764675?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
-                    target="_blank"
-                    rel="noreferrer"
-                    className="py-2.5 px-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                  >
-                    <span className="material-symbols-outlined text-base">chat</span>
-                    <span>WhatsApp: 9616764675</span>
-                  </a>
-                  <a
-                    href="https://wa.me/918115507046?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
-                    target="_blank"
-                    rel="noreferrer"
-                    className="py-2.5 px-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs shadow-md transition-all flex items-center justify-center gap-1.5 cursor-pointer text-center"
-                  >
-                    <span className="material-symbols-outlined text-base">chat</span>
-                    <span>WhatsApp: 8115507046</span>
-                  </a>
-                </div>
-              </div>
-
-              {/* Official Verification & Registration Certificates Preview */}
-              <div className="bg-surface-container-lowest p-6 rounded-3xl shadow-sm border border-outline-variant/30 space-y-3">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-primary uppercase tracking-wider flex items-center gap-1.5">
-                    <span className="material-symbols-outlined text-sm text-secondary">verified</span>
-                    <span>Govt. Registration & Accreditation</span>
-                  </span>
-                  <span className="text-[10px] text-on-surface-variant font-medium">Click to inspect</span>
-                </div>
-
-                <div className="grid grid-cols-2 gap-3 pt-1">
-                  {/* Certificate 1: MCA Govt. of India */}
-                  <div
-                    onClick={() => setActiveCertificateModal({
-                      title: "Government of India — Ministry of Corporate Affairs",
-                      subtitle: "Certificate of Incorporation • CIN: U85500UP2026NPL250943",
-                      image: certificateImg,
-                    })}
-                    className="group relative rounded-2xl overflow-hidden border border-outline-variant/30 shadow-xs hover:shadow-lg transition-all cursor-pointer bg-black/5"
-                  >
-                    <img
-                      src={certificateImg}
-                      alt="Ministry of Corporate Affairs Certificate of Incorporation"
-                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2.5 text-white">
-                      <span className="text-[10px] font-bold leading-tight line-clamp-1">Govt. MCA Certificate</span>
-                      <span className="text-[9px] text-secondary-fixed">Click to view full</span>
-                    </div>
-                  </div>
-
-                  {/* Certificate 2: ISO 9001:2015 */}
-                  <div
-                    onClick={() => setActiveCertificateModal({
-                      title: "ISO 9001:2015 Certified Quality Management System",
-                      subtitle: "Accredited for Vocational, Professional Skill & Educational Training",
-                      image: isoImg,
-                    })}
-                    className="group relative rounded-2xl overflow-hidden border border-outline-variant/30 shadow-xs hover:shadow-lg transition-all cursor-pointer bg-black/5"
-                  >
-                    <img
-                      src={isoImg}
-                      alt="ISO 9001:2015 Quality Management System Certificate"
-                      className="w-full h-32 object-cover object-top group-hover:scale-105 transition-transform"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-2.5 text-white">
-                      <span className="text-[10px] font-bold leading-tight line-clamp-1">ISO 9001:2015 Seal</span>
-                      <span className="text-[9px] text-secondary-fixed">Click to view full</span>
+                  {/* Affiliation Emails */}
+                  <div className="p-4 rounded-xl bg-[#f8fafc] border border-slate-200 space-y-1.5">
+                    <span className="text-[10px] font-mono font-bold text-slate-500 uppercase tracking-wider block">
+                      OFFICIAL INQUIRY EMAILS
+                    </span>
+                    <div className="flex flex-col gap-1 text-secondary font-medium">
+                      <a href="mailto:hitindia.ghosi@gmail.com" className="hover:underline">
+                        hitindia.ghosi@gmail.com
+                      </a>
+                      <a href="mailto:hitcomputer.ghosi@gmail.com" className="hover:underline">
+                        hitcomputer.ghosi@gmail.com
+                      </a>
                     </div>
                   </div>
                 </div>
               </div>
 
+              {/* Instant Actions (Bottom aligned, matching the left card's button height) */}
+              <div className="grid grid-cols-2 gap-3 pt-4 border-t border-slate-100 mt-4">
+                <a
+                  href="https://wa.me/919616764675?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-primary h-11 px-3 text-[11px] uppercase tracking-wider text-center"
+                >
+                  WhatsApp Desk 1
+                </a>
+                <a
+                  href="https://wa.me/918115507046?text=Hello%20HIT%20Team%2C%20I%20want%20to%20open%20a%20new%20Franchise%20Center."
+                  target="_blank"
+                  rel="noreferrer"
+                  className="btn-secondary h-11 px-3 text-[11px] uppercase tracking-wider text-center"
+                >
+                  WhatsApp Desk 2
+                </a>
+              </div>
             </motion.div>
           </div>
 
@@ -912,33 +815,51 @@ export default function HomePage({ setActiveTab }) {
 
       {/* Giving & Donation Callout */}
       <section className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg py-16">
-        <div className="bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
-          <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-tertiary-fixed text-xs font-bold mb-3">
-              <span className="material-symbols-outlined text-sm">volunteer_activism</span>
-              Section 8 Non-Profit • 50% Tax Exemption
+        <div className="bg-[#001338] border border-white/10 text-white rounded-2xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col lg:flex-row items-center justify-between gap-8">
+          {/* Subtle architectural background accent */}
+          <div className="absolute -right-24 -bottom-24 w-96 h-96 rounded-full bg-secondary/10 blur-3xl pointer-events-none" />
+          <div className="absolute top-0 right-0 w-full h-[1px] bg-gradient-to-r from-transparent via-secondary/40 to-transparent" />
+
+          <div className="max-w-2xl relative z-10">
+            <div className="flex items-center gap-2 mb-3">
+              <span className="w-2 h-2 rounded-full bg-amber-400" />
+              <span className="text-[11px] font-mono font-semibold tracking-widest uppercase text-secondary-fixed">
+                Section 8 Non-Profit • 50% Tax Exemption
+              </span>
             </div>
-            <h2 className="font-headline text-2xl sm:text-3xl font-bold leading-tight">
+            <h2 className="font-headline text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight">
               Support Digital Literacy for Underprivileged Girls & Rural Youths
             </h2>
-            <p className="text-on-primary-container text-sm sm:text-base mt-2 leading-relaxed">
-              Your donation to H.I.T India Skill Development Foundation is eligible for 50% tax exemption under Section 80G(5)(iv) of the Income Tax Act. Every rupee directly funds computer hardware and lab infrastructure.
+            <p className="text-slate-300 text-sm sm:text-base mt-3 leading-relaxed">
+              Your donation to H.I.T India Skill Development Foundation is eligible for 50% tax exemption under Section 80G(5)(iv) of the Income Tax Act. Every contribution directly funds computer hardware, rural lab setups, and certified technical training.
             </p>
+            <div className="flex flex-wrap items-center gap-4 mt-4 pt-3 border-t border-white/10 text-xs text-slate-300 font-mono">
+              <span className="flex items-center gap-1.5">
+                <span className="text-emerald-400">✓</span> Income Tax Sec 80G(5)(iv)
+              </span>
+              <span className="text-slate-600">•</span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-emerald-400">✓</span> Instant Digital 80G Receipt
+              </span>
+              <span className="text-slate-600">•</span>
+              <span className="flex items-center gap-1.5">
+                <span className="text-emerald-400">✓</span> NITI Aayog Darpan Verified
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+
+          <div className="flex flex-col sm:flex-row gap-3 shrink-0 relative z-10 w-full sm:w-auto">
             <button
               onClick={() => handleNavigate('/donation', 'donation')}
-              className="h-12 px-6 rounded-xl bg-tertiary-container hover:bg-tertiary-container/90 text-white font-bold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+              className="btn-accent h-11 px-6 w-full sm:w-auto"
             >
-              <span className="material-symbols-outlined text-lg">volunteer_activism</span>
-              <span>Donate Online (80G)</span>
+              Donate Online (80G)
             </button>
             <button
               onClick={() => handleNavigate('/receipt', 'receipt')}
-              className="h-12 px-5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-medium text-sm transition-colors flex items-center justify-center gap-2 border border-white/20 cursor-pointer"
+              className="btn-outline-dark h-11 px-5 w-full sm:w-auto"
             >
-              <span className="material-symbols-outlined text-lg">receipt_long</span>
-              <span>View 80G Voucher</span>
+              View 80G Voucher
             </button>
           </div>
         </div>
@@ -986,7 +907,7 @@ export default function HomePage({ setActiveTab }) {
               <button
                 type="button"
                 onClick={() => setActiveCertificateModal(null)}
-                className="px-4 py-1.5 rounded-lg bg-primary text-white font-semibold hover:bg-primary/90 transition-colors text-xs cursor-pointer"
+                className="btn-primary h-8 px-4 text-xs"
               >
                 Close
               </button>
