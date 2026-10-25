@@ -316,7 +316,7 @@ export default function StudentPortalPage() {
 
                 <button
                   type="submit"
-                  className="w-full h-11 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="btn-primary w-full h-11"
                 >
                   <span className="material-symbols-outlined text-base">login</span>
                   <span>Sign In to Student Portal</span>
@@ -328,9 +328,8 @@ export default function StudentPortalPage() {
                   <button
                     type="button"
                     onClick={handleDemoLogin}
-                    className="w-full py-2.5 rounded-xl bg-secondary/10 hover:bg-secondary/20 text-secondary font-bold text-xs transition-colors cursor-pointer border border-secondary/30 flex items-center justify-center gap-2"
+                    className="btn-secondary w-full h-10"
                   >
-                    <span className="material-symbols-outlined text-base">bolt</span>
                     <span>1-Click Demo Login as Rahul Kumar Verma (ADCA)</span>
                   </button>
                 </div>
@@ -507,7 +506,7 @@ export default function StudentPortalPage() {
 
                 <button
                   type="submit"
-                  className="w-full h-12 rounded-xl bg-tertiary-container hover:bg-primary text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all cursor-pointer flex items-center justify-center gap-2"
+                  className="btn-primary w-full h-11"
                 >
                   <span className="material-symbols-outlined text-lg">verified</span>
                   <span>Pay ₹100 & Complete Enrollment</span>
@@ -667,7 +666,7 @@ export default function StudentPortalPage() {
               <div className="mt-4 flex gap-3">
                 <button
                   onClick={handleDownloadId}
-                  className="h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-xs uppercase tracking-wider shadow-md transition-all flex items-center gap-2 cursor-pointer"
+                  className="btn-primary h-11 px-6"
                 >
                   <span className="material-symbols-outlined text-base">download</span>
                   <span>Download PVC ID Card (PDF)</span>
