@@ -7,6 +7,7 @@ import main2Banner from '../assets/images/main2.jpeg';
 import directorImg from '../assets/images/director.jpeg';
 import certificateImg from '../assets/images/certificate.jpeg';
 import isoImg from '../assets/images/iso.jpeg';
+import { centreService } from '../services/hitApi';
 
 // Animated count-up counter with easing and IntersectionObserver support
 function CountUp({ end, duration = 2000, decimals = 0, prefix = '', suffix = '' }) {
@@ -161,12 +162,27 @@ export default function HomePage({ setActiveTab }) {
     navigate(path);
   };
 
-  const handleFranchiseSubmit = (e) => {
+  const handleFranchiseSubmit = async (e) => {
     e.preventDefault();
     if (!franchiseForm.name || !franchiseForm.phone) {
       alert('Please provide your name and contact phone number.');
       return;
     }
+
+    try {
+      await centreService.applyFranchise({
+        name: franchiseForm.name,
+        phone: franchiseForm.phone,
+        email: franchiseForm.email,
+        city: franchiseForm.city || 'Mau, Uttar Pradesh',
+        centerType: franchiseForm.centerType,
+        pcCount: franchiseForm.pcCount,
+        spaceAvailable: franchiseForm.spaceAvailable,
+      });
+    } catch (err) {
+      console.warn('Franchise application submission notice:', err.message);
+    }
+
     setFranchiseSubmitted(true);
     try {
       confetti({ particleCount: 90, spread: 60, origin: { y: 0.7 } });

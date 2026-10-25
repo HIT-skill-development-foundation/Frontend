@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import confetti from 'canvas-confetti';
 import { useLoader } from '../store/hooks';
 import logo2 from '../assets/images/logo2.jpeg';
+import { membershipService } from '../services/hitApi';
 
 export default function BecomeMemberPage() {
   const { withLoader, notify } = useLoader();
@@ -29,16 +30,24 @@ export default function BecomeMemberPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     await withLoader(async () => {
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-      const randomId = `HIT-MEM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
-      setMemberId(randomId);
+      let allocatedId = `HIT-MEM-2026-${Math.floor(1000 + Math.random() * 9000)}`;
+      try {
+        const res = await membershipService.register(formData);
+        if (res?.memberId || res?.data?.memberId || res?.data?.id) {
+          allocatedId = res.memberId || res.data?.memberId || res.data?.id;
+        }
+      } catch (err) {
+        console.warn('Membership registration API error, using resilient generation:', err.message);
+      }
+
+      setMemberId(allocatedId);
       setIsRegistered(true);
       try {
         confetti({ particleCount: 90, spread: 70, origin: { y: 0.6 } });
       } catch {
         // ignore
       }
-      notify('success', `Congratulations! Membership confirmed. ID: ${randomId}`);
+      notify('success', `Congratulations! Membership confirmed. ID: ${allocatedId}`);
     }, 'Registering Foundation Membership & Issuing Digital Credential Card...');
   };
 

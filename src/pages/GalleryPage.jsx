@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 // Static Imports for Local Campus & Event Image Assets
 import imgAward from '../assets/images/award.jpeg';
@@ -19,12 +19,24 @@ import imgCake4 from '../assets/images/cake4.jpeg';
 import imgCake5 from '../assets/images/cake5.jpeg';
 import { useSelector } from 'react-redux';
 import { selectGalleryItems } from '../store/slices/gallerySlice';
+import { galleryService } from '../services/hitApi';
 
 export default function GalleryPage() {
   const reduxGallery = useSelector(selectGalleryItems);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalImg, setActiveModalImg] = useState(null);
+  const [liveGallery, setLiveGallery] = useState(null);
+
+  useEffect(() => {
+    galleryService.getItems()
+      .then((res) => {
+        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+          setLiveGallery(res.data);
+        }
+      })
+      .catch(() => null);
+  }, []);
 
   const galleryItems = [
     {
@@ -214,7 +226,9 @@ export default function GalleryPage() {
     { id: 'leadership', label: 'Leadership & Administration' },
   ];
 
-  const allItems = reduxGallery && reduxGallery.length > 0 ? reduxGallery : galleryItems;
+  const allItems = liveGallery && liveGallery.length > 0
+    ? liveGallery
+    : (reduxGallery && reduxGallery.length > 0 ? reduxGallery : galleryItems);
   const filteredItems = allItems.filter((item) => {
     const matchesCat = selectedCategory === 'all' || item.category === selectedCategory;
     const matchesSearch =

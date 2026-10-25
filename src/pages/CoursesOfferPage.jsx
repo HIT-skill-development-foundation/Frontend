@@ -1,19 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { selectCourses, selectUniversityPrograms } from '../store/slices/coursesSlice';
 import { coursesList, universityProgramsList } from '../data/mockData';
+import { courseService } from '../services/hitApi';
 
 export default function CoursesOfferPage() {
   const navigate = useNavigate();
   const reduxCourses = useSelector(selectCourses);
   const reduxUniversityPrograms = useSelector(selectUniversityPrograms);
 
-  const courses = reduxCourses && reduxCourses.length > 0 ? reduxCourses : coursesList;
+  const [liveCourses, setLiveCourses] = useState(null);
+  const [livePrograms, setLivePrograms] = useState(null);
+
+  useEffect(() => {
+    courseService.getAllCourses()
+      .then((res) => {
+        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+          setLiveCourses(res.data);
+        }
+      })
+      .catch(() => null);
+
+    courseService.getUniversityPrograms()
+      .then((res) => {
+        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
+          setLivePrograms(res.data);
+        }
+      })
+      .catch(() => null);
+  }, []);
+
+  const courses = liveCourses || (reduxCourses && reduxCourses.length > 0 ? reduxCourses : coursesList);
   const universityPrograms =
-    reduxUniversityPrograms && reduxUniversityPrograms.length > 0
+    livePrograms ||
+    (reduxUniversityPrograms && reduxUniversityPrograms.length > 0
       ? reduxUniversityPrograms
-      : universityProgramsList;
+      : universityProgramsList);
 
   // Primary Tab: 'vocational' | 'university'
   const [activeCatalogTab, setActiveCatalogTab] = useState('vocational');
@@ -58,8 +81,20 @@ export default function CoursesOfferPage() {
     );
   });
 
-  const handleInquirySubmit = (e) => {
+  const handleInquirySubmit = async (e) => {
     e.preventDefault();
+    try {
+      await courseService.submitInquiry({
+        programId: selectedUnivModal?.id || inquiryData.program,
+        programName: selectedUnivModal?.name || inquiryData.program,
+        name: inquiryData.name,
+        phone: inquiryData.phone,
+        qualification: inquiryData.qualification,
+      });
+    } catch (err) {
+      console.warn('Backend university inquiry submission error:', err.message);
+    }
+
     setInquirySubmitted(true);
     setTimeout(() => {
       setInquirySubmitted(false);

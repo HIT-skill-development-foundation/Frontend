@@ -11,6 +11,8 @@ const initialState = {
     totalStudents: 89,
     totalDonations: 43500,
     totalExpenses: 198350,
+    pendingAdmissions: 12,
+    activeCentres: 18,
   },
 };
 
@@ -30,6 +32,18 @@ export const adminSlice = createSlice({
       state.isAdminLoggedIn = false;
       state.adminUser = null;
     },
+    setAdminStats: (state, action) => {
+      state.stats = { ...state.stats, ...action.payload };
+    },
+    setExpenses: (state, action) => {
+      state.expenses = action.payload;
+    },
+    setDonations: (state, action) => {
+      state.donations = action.payload;
+    },
+    setPendingApprovals: (state, action) => {
+      state.pendingApprovals = action.payload;
+    },
     addExpense: (state, action) => {
       state.expenses.unshift(action.payload);
       state.stats.totalExpenses += Number(action.payload.amount) || 0;
@@ -44,13 +58,17 @@ export const adminSlice = createSlice({
     approveAdmissionOrCert: (state, action) => {
       const id = action.payload;
       state.pendingApprovals = state.pendingApprovals.map((item) =>
-        item.id === id ? { ...item, status: 'Approved', certificateIssued: true } : item
+        item.id === id || item._id === id || item.regId === id
+          ? { ...item, status: 'Approved', certificateIssued: true }
+          : item
       );
     },
     rejectAdmissionOrCert: (state, action) => {
       const id = action.payload;
       state.pendingApprovals = state.pendingApprovals.map((item) =>
-        item.id === id ? { ...item, status: 'Revision Needed' } : item
+        item.id === id || item._id === id || item.regId === id
+          ? { ...item, status: 'Revision Needed' }
+          : item
       );
     },
   },
@@ -59,6 +77,10 @@ export const adminSlice = createSlice({
 export const {
   loginAdmin,
   logoutAdmin,
+  setAdminStats,
+  setExpenses,
+  setDonations,
+  setPendingApprovals,
   addExpense,
   deleteExpense,
   approveAdmissionOrCert,

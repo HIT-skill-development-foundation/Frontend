@@ -43,6 +43,10 @@ import {
 import {
   loginAdmin,
   logoutAdmin,
+  setAdminStats,
+  setExpenses,
+  setDonations,
+  setPendingApprovals,
   addExpense,
   deleteExpense,
   approveAdmissionOrCert,
@@ -185,6 +189,10 @@ export function useAdmin() {
 
   const adminLogin = (user) => dispatch(loginAdmin(user));
   const adminLogout = () => dispatch(logoutAdmin());
+  const syncStats = (stats) => dispatch(setAdminStats(stats));
+  const syncExpenses = (list) => dispatch(setExpenses(list));
+  const syncDonations = (list) => dispatch(setDonations(list));
+  const syncPendingApprovals = (list) => dispatch(setPendingApprovals(list));
   const recordExpense = (exp) => dispatch(addExpense(exp));
   const removeExpense = (id) => dispatch(deleteExpense(id));
   const approveCert = (id) => dispatch(approveAdmissionOrCert(id));
@@ -206,6 +214,10 @@ export function useAdmin() {
     galleryItems,
     adminLogin,
     adminLogout,
+    syncStats,
+    syncExpenses,
+    syncDonations,
+    syncPendingApprovals,
     recordExpense,
     removeExpense,
     approveCert,
