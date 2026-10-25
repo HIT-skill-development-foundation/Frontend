@@ -1,36 +1,61 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useStudent, useLoader } from '../store/hooks';
 import admissionService from '../services/admissionService';
-import { coursesList, centresList } from '../data/mockData';
+import { courseService, centreService } from '../services/hitApi';
 
 export default function AdmissionPage({ setActiveTab, setStudentData }) {
   const navigate = useNavigate();
   const { updateStudent } = useStudent();
   const { withLoader, notify } = useLoader();
 
+  const [coursesList, setCoursesList] = useState([]);
+  const [centresList, setCentresList] = useState([]);
+
+  useEffect(() => {
+    courseService.getAllCourses()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        setCoursesList(list);
+        if (list.length > 0) {
+          setFormData((prev) => ({ ...prev, courseId: prev.courseId || list[0].id || list[0]._id || list[0].code }));
+        }
+      })
+      .catch(() => null);
+
+    centreService.getCentres()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        setCentresList(list);
+        if (list.length > 0) {
+          setFormData((prev) => ({ ...prev, centreId: prev.centreId || list[0].id || list[0]._id }));
+        }
+      })
+      .catch(() => null);
+  }, []);
+
   const [currentStep, setCurrentStep] = useState(1);
   const [formData, setFormData] = useState({
-    fullName: 'Rahul Kumar Verma',
-    fatherName: 'Dinesh Verma',
-    motherName: 'Shanti Devi',
-    dob: '2004-06-14',
+    fullName: '',
+    fatherName: '',
+    motherName: '',
+    dob: '',
     gender: 'Male',
-    category: 'OBC',
-    mobile: '9452078192',
-    email: 'rahul.verma@email.com',
-    address: 'Kasba Khas, Ward 4',
-    district: 'Mau',
+    category: 'General',
+    mobile: '',
+    email: '',
+    address: '',
+    district: '',
     state: 'Uttar Pradesh',
-    pincode: '275105',
-    courseId: 'adca',
-    centreId: 'HIT-CEN-0001',
+    pincode: '',
+    courseId: '',
+    centreId: '',
     batchTime: '08:00 AM - 10:00 AM (Morning)',
-    qualification: '12th Pass (Science Stream)',
-    aadhaarNo: '4829-1928-8472',
-    photoUploaded: true,
-    aadhaarUploaded: true,
+    qualification: '12th Pass',
+    aadhaarNo: '',
+    photoUploaded: false,
+    aadhaarUploaded: false,
     paymentMode: 'upi',
   });
 

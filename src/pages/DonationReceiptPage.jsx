@@ -1,28 +1,52 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useDonation, useLoader } from '../store/hooks';
-import { mockDonationRecord } from '../data/mockData';
 import logo2 from '../assets/images/logo2.jpeg';
 
 export default function DonationReceiptPage({ setActiveTab, donationData: donationDataProp }) {
   const { donation: reduxDonation } = useDonation();
-  const donationData = donationDataProp || reduxDonation || mockDonationRecord;
+  const donationData = donationDataProp || reduxDonation;
   const { withLoader, notify } = useLoader();
   const navigate = useNavigate();
 
   const [copied, setCopied] = useState(false);
 
+  if (!donationData) {
+    return (
+      <div className="max-w-2xl mx-auto py-20 px-4 text-center">
+        <div className="w-16 h-16 rounded-3xl bg-secondary/10 text-secondary flex items-center justify-center mx-auto mb-4">
+          <span className="material-symbols-outlined text-3xl">receipt_long</span>
+        </div>
+        <h2 className="font-headline text-2xl font-bold text-primary mb-2">No Recent Donation Receipt</h2>
+        <p className="text-sm text-on-surface-variant max-w-md mx-auto mb-6">
+          You haven't processed a donation in this session yet. Complete a tax-exempt contribution to generate your official Section 80G receipt.
+        </p>
+        <button
+          onClick={() => {
+            if (setActiveTab) setActiveTab('donation');
+            navigate('/donation');
+          }}
+          className="h-11 px-6 rounded-xl bg-primary hover:bg-primary-container text-white font-bold text-sm shadow-md transition-all cursor-pointer"
+        >
+          Make a Donation
+        </button>
+      </div>
+    );
+  }
+
   const handleCopy = () => {
-    navigator.clipboard.writeText(donationData.txnId);
-    setCopied(true);
-    notify('info', 'Transaction ID copied to clipboard');
-    setTimeout(() => setCopied(false), 2000);
+    if (donationData.txnId) {
+      navigator.clipboard.writeText(donationData.txnId);
+      setCopied(true);
+      notify('info', 'Transaction ID copied to clipboard');
+      setTimeout(() => setCopied(false), 2000);
+    }
   };
 
   const handleDownload = async () => {
     await withLoader(async () => {
       await new Promise((resolve) => setTimeout(resolve, 800));
-      notify('success', `Official 80G Certificate for Receipt ${donationData.receiptNo} downloaded.`);
+      notify('success', `Official 80G Certificate for Receipt ${donationData.receiptNo || 'Record'} downloaded.`);
     }, 'Compiling Official Form 10BD 80G Tax Exemption Certificate...');
   };
 

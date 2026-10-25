@@ -1,42 +1,36 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { selectCourses, selectUniversityPrograms } from '../store/slices/coursesSlice';
-import { coursesList, universityProgramsList } from '../data/mockData';
+import { useSelector, useDispatch } from 'react-redux';
+import {
+  selectCourses,
+  selectUniversityPrograms,
+  setCourses,
+  setUniversityPrograms,
+} from '../store/slices/coursesSlice';
 import { courseService } from '../services/hitApi';
 
 export default function CoursesOfferPage() {
   const navigate = useNavigate();
-  const reduxCourses = useSelector(selectCourses);
-  const reduxUniversityPrograms = useSelector(selectUniversityPrograms);
-
-  const [liveCourses, setLiveCourses] = useState(null);
-  const [livePrograms, setLivePrograms] = useState(null);
+  const dispatch = useDispatch();
+  const courses = useSelector(selectCourses);
+  const universityPrograms = useSelector(selectUniversityPrograms);
+  const [isLoading, setIsLoading] = useState(courses.length === 0);
 
   useEffect(() => {
-    courseService.getAllCourses()
-      .then((res) => {
-        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
-          setLiveCourses(res.data);
-        }
-      })
-      .catch(() => null);
-
-    courseService.getUniversityPrograms()
-      .then((res) => {
-        if (res?.data && Array.isArray(res.data) && res.data.length > 0) {
-          setLivePrograms(res.data);
-        }
-      })
-      .catch(() => null);
-  }, []);
-
-  const courses = liveCourses || (reduxCourses && reduxCourses.length > 0 ? reduxCourses : coursesList);
-  const universityPrograms =
-    livePrograms ||
-    (reduxUniversityPrograms && reduxUniversityPrograms.length > 0
-      ? reduxUniversityPrograms
-      : universityProgramsList);
+    setIsLoading(true);
+    Promise.all([
+      courseService.getAllCourses().catch(() => null),
+      courseService.getUniversityPrograms().catch(() => null),
+    ]).then(([cRes, uRes]) => {
+      if (cRes?.data && Array.isArray(cRes.data)) {
+        dispatch(setCourses(cRes.data));
+      }
+      if (uRes?.data && Array.isArray(uRes.data)) {
+        dispatch(setUniversityPrograms(uRes.data));
+      }
+      setIsLoading(false);
+    });
+  }, [dispatch]);
 
   // Primary Tab: 'vocational' | 'university'
   const [activeCatalogTab, setActiveCatalogTab] = useState('vocational');
@@ -56,28 +50,41 @@ export default function CoursesOfferPage() {
     qualification: '',
   });
 
-  const filteredVocationalCourses = courses.filter((c) => {
+  const filteredVocationalCourses = (courses || []).filter((c) => {
+    if (!c) return false;
+    const name = c.name || '';
+    const code = c.code || '';
+    const formula = c.formula || '';
+    const modules = Array.isArray(c.modules) ? c.modules : [];
+    const duration = c.duration || '';
+    const q = searchQuery.toLowerCase();
+
     const matchesSearch =
-      c.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (c.formula && c.formula.toLowerCase().includes(searchQuery.toLowerCase())) ||
-      (c.modules && c.modules.some((m) => m.toLowerCase().includes(searchQuery.toLowerCase())));
+      name.toLowerCase().includes(q) ||
+      code.toLowerCase().includes(q) ||
+      formula.toLowerCase().includes(q) ||
+      modules.some((m) => typeof m === 'string' && m.toLowerCase().includes(q));
 
     if (!matchesSearch) return false;
     if (filterDuration === 'all') return true;
-    if (filterDuration === '12m') return c.duration.includes('12');
-    if (filterDuration === '6m') return c.duration.includes('6');
-    if (filterDuration === '3m') return c.duration.includes('3');
-    if (filterDuration === '2m') return c.duration.includes('2');
+    if (filterDuration === '12m') return duration.includes('12');
+    if (filterDuration === '6m') return duration.includes('6');
+    if (filterDuration === '3m') return duration.includes('3');
+    if (filterDuration === '2m') return duration.includes('2');
     return true;
   });
 
-  const filteredUnivPrograms = universityPrograms.filter((p) => {
+  const filteredUnivPrograms = (universityPrograms || []).filter((p) => {
+    if (!p) return false;
+    const name = p.name || '';
+    const code = p.code || '';
+    const streams = p.streams || '';
     if (!searchQuery) return true;
+    const q = searchQuery.toLowerCase();
     return (
-      p.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      p.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (p.streams && p.streams.toLowerCase().includes(searchQuery.toLowerCase()))
+      name.toLowerCase().includes(q) ||
+      code.toLowerCase().includes(q) ||
+      streams.toLowerCase().includes(q)
     );
   });
 

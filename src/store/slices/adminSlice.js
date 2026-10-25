@@ -1,18 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { mockExpensesList, mockAdmissionsTable, mockDonationsList } from '../../data/mockData';
 
 const initialState = {
   isAdminLoggedIn: false,
   adminUser: null,
-  expenses: mockExpensesList,
-  donations: mockDonationsList,
-  pendingApprovals: mockAdmissionsTable,
+  expenses: [],
+  donations: [],
+  pendingApprovals: [],
   stats: {
-    totalStudents: 89,
-    totalDonations: 43500,
-    totalExpenses: 198350,
-    pendingAdmissions: 12,
-    activeCentres: 18,
+    totalStudents: 0,
+    totalDonations: 0,
+    totalExpenses: 0,
+    pendingAdmissions: 0,
+    activeCentres: 0,
+    activeCourses: 0,
   },
 };
 
@@ -22,11 +22,7 @@ export const adminSlice = createSlice({
   reducers: {
     loginAdmin: (state, action) => {
       state.isAdminLoggedIn = true;
-      state.adminUser = action.payload || {
-        name: 'Super Admin / Director Desk',
-        email: 'admin@hitindia.org',
-        role: 'Central Trustee & Registrar',
-      };
+      state.adminUser = action.payload || null;
     },
     logoutAdmin: (state) => {
       state.isAdminLoggedIn = false;
@@ -36,24 +32,24 @@ export const adminSlice = createSlice({
       state.stats = { ...state.stats, ...action.payload };
     },
     setExpenses: (state, action) => {
-      state.expenses = action.payload;
+      state.expenses = action.payload || [];
     },
     setDonations: (state, action) => {
-      state.donations = action.payload;
+      state.donations = action.payload || [];
     },
     setPendingApprovals: (state, action) => {
-      state.pendingApprovals = action.payload;
+      state.pendingApprovals = action.payload || [];
     },
     addExpense: (state, action) => {
       state.expenses.unshift(action.payload);
       state.stats.totalExpenses += Number(action.payload.amount) || 0;
     },
     deleteExpense: (state, action) => {
-      const item = state.expenses.find((e) => e.id === action.payload);
+      const item = state.expenses.find((e) => (e.id || e._id) === action.payload);
       if (item) {
         state.stats.totalExpenses -= Number(item.amount) || 0;
       }
-      state.expenses = state.expenses.filter((e) => e.id !== action.payload);
+      state.expenses = state.expenses.filter((e) => (e.id || e._id) !== action.payload);
     },
     approveAdmissionOrCert: (state, action) => {
       const id = action.payload;

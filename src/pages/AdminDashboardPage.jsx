@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useAdmin, useLoader } from '../store/hooks';
 import logo2 from '../assets/images/logo2.jpeg';
 import loginSvg from '../assets/images/Login.svg';
-import { registeredStudentsList } from '../data/mockData';
 import {
   authService,
   adminService,
@@ -49,14 +48,14 @@ export default function AdminDashboardPage() {
 
   // Login form state
   const [adminCreds, setAdminCreds] = useState({
-    email: 'admin@hitindia.org',
-    password: 'password123',
+    email: '',
+    password: '',
   });
 
   // Course filter for Tab 1
   const [selectedCourseFilter, setSelectedCourseFilter] = useState('all');
   const [studentSearch, setStudentSearch] = useState('');
-  const [liveStudents, setLiveStudents] = useState(registeredStudentsList);
+  const [liveStudents, setLiveStudents] = useState([]);
 
   // Modals state
   const [showAddExpenseModal, setShowAddExpenseModal] = useState(false);
@@ -141,29 +140,25 @@ export default function AdminDashboardPage() {
   // ==========================================
   const handleAdminLoginSubmit = async (e) => {
     e.preventDefault();
+    if (!adminCreds.email || !adminCreds.password) {
+      notify('error', 'Please enter admin email and password.');
+      return;
+    }
+
     await withLoader(async () => {
       try {
         const res = await authService.loginAdmin({
-          email: adminCreds.email,
+          email: adminCreds.email.trim(),
           password: adminCreds.password,
         });
         if (res && (res.success || res.token)) {
-          adminLogin(res.data || {
-            name: 'Er. A. K. Verma (Director Desk)',
-            email: adminCreds.email,
-            role: 'Super Admin & Trustee',
-          });
+          adminLogin(res.data);
           notify('success', 'Authenticated as Super Admin. Central Ledger synced.');
           return;
         }
+        notify('error', res?.message || 'Invalid administrator credentials.');
       } catch (err) {
-        console.warn('Backend admin login failed, using resilient administrative session:', err.message);
-        adminLogin({
-          name: 'Er. A. K. Verma (Director Desk)',
-          email: adminCreds.email,
-          role: 'Super Admin & Trustee',
-        });
-        notify('success', 'Authenticated as Super Admin (Offline Node Sync).');
+        notify('error', err.message || 'Invalid administrator credentials.');
       }
     }, 'Authenticating Super Admin Credentials with Institutional Node...');
   };
@@ -176,23 +171,14 @@ export default function AdminDashboardPage() {
           password: 'password123',
         });
         if (res && (res.success || res.token)) {
-          adminLogin(res.data || {
-            name: 'Er. A. K. Verma (Director Desk)',
-            email: 'admin@hitindia.org',
-            role: 'Super Admin & Central Trustee',
-          });
+          adminLogin(res.data);
           notify('success', 'Logged in as Super Admin (Director Desk)');
           return;
         }
+        notify('error', 'Demo admin account unavailable on remote server.');
       } catch (err) {
-        // Fallback for demo
+        notify('error', err.message || 'Demo admin login failed.');
       }
-      adminLogin({
-        name: 'Er. A. K. Verma (Director Desk)',
-        email: 'admin@hitindia.org',
-        role: 'Super Admin & Central Trustee',
-      });
-      notify('success', 'Logged in as Super Admin (Director Desk)');
     }, 'Accessing Central Super Admin Console...');
   };
 
@@ -202,7 +188,6 @@ export default function AdminDashboardPage() {
     if (!newExpense.title || !newExpense.amount) return;
 
     await withLoader(async () => {
-      let createdExp = null;
       try {
         const payload = {
           title: newExpense.title,
@@ -210,39 +195,29 @@ export default function AdminDashboardPage() {
           amount: Number(newExpense.amount),
           vendor: newExpense.vendor || 'Authorized Supplier',
           date: newExpense.date || new Date().toLocaleDateString('en-GB'),
-          invoiceNo: newExpense.invoiceNo || `INV-${Math.floor(1000 + Math.random() * 9000)}`,
+          invoiceNo: newExpense.invoiceNo || `INV-${Date.now()}`,
           status: 'Verified & Settled',
         };
         const res = await expenseService.addExpense(payload);
-        if (res?.data) {
-          createdExp = res.data;
+        if (res && (res.success || res.data)) {
+          const item = res.data || payload;
+          recordExpense(item);
+          setShowAddExpenseModal(false);
+          setNewExpense({
+            title: '',
+            category: 'Hardware & Lab Equipment',
+            amount: '',
+            vendor: '',
+            date: new Date().toLocaleDateString('en-GB'),
+            invoiceNo: '',
+          });
+          notify('success', `Expenditure of ₹${Number(newExpense.amount).toLocaleString('en-IN')} recorded successfully.`);
+          return;
         }
+        notify('error', res?.message || 'Failed to record expenditure.');
       } catch (err) {
-        console.warn('Backend expense recording error, updating local store:', err.message);
+        notify('error', err.message || 'Failed to record expenditure into backend.');
       }
-
-      const expItem = createdExp || {
-        id: `EXP-2026-${Math.floor(100 + Math.random() * 900)}`,
-        title: newExpense.title,
-        category: newExpense.category,
-        amount: Number(newExpense.amount),
-        date: newExpense.date,
-        vendor: newExpense.vendor || 'Authorized Supplier',
-        invoiceNo: newExpense.invoiceNo || `INV-${Math.floor(1000 + Math.random() * 9000)}`,
-        status: 'Verified & Settled',
-        approvedBy: 'Super Admin / Director',
-      };
-      recordExpense(expItem);
-      setShowAddExpenseModal(false);
-      setNewExpense({
-        title: '',
-        category: 'Hardware & Lab Equipment',
-        amount: '',
-        vendor: '',
-        date: new Date().toLocaleDateString('en-GB'),
-        invoiceNo: '',
-      });
-      notify('success', `Expenditure of ₹${expItem.amount.toLocaleString('en-IN')} recorded successfully.`);
     }, 'Recording Institutional Expenditure into Expenditure Ledger...');
   };
 
@@ -277,36 +252,25 @@ export default function AdminDashboardPage() {
         });
         notify('success', `Course ${newCourseForm.code} updated successfully.`);
       } else {
-        const newC = {
-          id: newCourseForm.code.toLowerCase().replace(/[^a-z0-9]/g, ''),
-          code: newCourseForm.code,
-          name: newCourseForm.name,
-          duration: newCourseForm.duration,
-          eligibility: newCourseForm.eligibility,
-          fee: newCourseForm.fee,
-          modules: modulesArr,
-          icon: newCourseForm.icon || 'school',
-          popular: false,
-        };
-
         try {
-          await courseService.createCourse({
-            code: newC.code,
-            name: newC.name,
-            duration: newC.duration,
-            eligibility: newC.eligibility,
-            fee: newC.fee,
+          const newCoursePayload = {
+            code: newCourseForm.code,
+            name: newCourseForm.name,
+            duration: newCourseForm.duration,
+            eligibility: newCourseForm.eligibility,
+            fee: newCourseForm.fee,
             feeAmount: 15000,
-            modules: newC.modules,
-            icon: newC.icon,
+            modules: modulesArr,
+            icon: newCourseForm.icon || 'school',
             popular: false,
-          });
+          };
+          const res = await courseService.createCourse(newCoursePayload);
+          const savedCourse = res?.data || newCoursePayload;
+          addNewCourse(savedCourse);
+          notify('success', `New course ${newCourseForm.name} added to curriculum.`);
         } catch (err) {
-          console.warn('Backend course creation error, adding to local catalog:', err.message);
+          notify('error', err.message || 'Failed to save course to server.');
         }
-
-        addNewCourse(newC);
-        notify('success', `New course ${newCourseForm.name} added to curriculum.`);
       }
 
       setShowAddCourseModal(false);
@@ -320,7 +284,6 @@ export default function AdminDashboardPage() {
     if (!newGalleryForm.title) return;
 
     await withLoader(async () => {
-      let createdGallery = null;
       try {
         const payload = {
           title: newGalleryForm.title,
@@ -334,32 +297,24 @@ export default function AdminDashboardPage() {
           isFeatured: true,
         };
         const res = await galleryService.addItem(payload);
-        if (res?.data) createdGallery = res.data;
+        if (res && (res.success || res.data)) {
+          addNewGalleryItem(res.data || payload);
+          setShowAddGalleryModal(false);
+          setNewGalleryForm({
+            title: '',
+            category: 'infrastructure',
+            location: 'Ghosi Central Campus',
+            date: 'October 2026',
+            badge: 'Event Photo',
+            desc: '',
+          });
+          notify('success', 'New photograph and event description added to Gallery.');
+          return;
+        }
+        notify('error', res?.message || 'Failed to upload photo.');
       } catch (err) {
-        console.warn('Backend gallery upload error, updating local store:', err.message);
+        notify('error', err.message || 'Failed to upload photo to server.');
       }
-
-      const item = createdGallery || {
-        id: Date.now(),
-        title: newGalleryForm.title,
-        category: newGalleryForm.category,
-        location: newGalleryForm.location,
-        date: newGalleryForm.date,
-        badge: newGalleryForm.badge || 'Campus Event',
-        desc: newGalleryForm.desc || 'Institutional event and vocational training milestone photograph.',
-        img: logo2, // uses brand logo as default fallback asset
-      };
-      addNewGalleryItem(item);
-      setShowAddGalleryModal(false);
-      setNewGalleryForm({
-        title: '',
-        category: 'infrastructure',
-        location: 'Ghosi Central Campus',
-        date: 'October 2026',
-        badge: 'Event Photo',
-        desc: '',
-      });
-      notify('success', 'New photograph and event description added to Gallery.');
     }, 'Updating Institutional Media Repository...');
   };
 
@@ -526,7 +481,7 @@ export default function AdminDashboardPage() {
   // Calculate Totals
   const totalDonationsAmount = (adminDonations || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
   const totalExpensesAmount = (expenses || []).reduce((acc, curr) => acc + (Number(curr.amount) || 0), 0);
-  const studentsSource = liveStudents && liveStudents.length > 0 ? liveStudents : registeredStudentsList;
+  const studentsSource = liveStudents || [];
   const totalStudentsCount = adminStats?.totalStudents || studentsSource.length;
 
   // Filter students
@@ -690,11 +645,13 @@ export default function AdminDashboardPage() {
               >
                 <span>All Courses</span>
                 <span className="px-1.5 py-0.5 rounded-full bg-black/20 text-[10px] font-mono">
-                  {registeredStudentsList.length}
+                  {studentsSource.length}
                 </span>
               </button>
               {courses.map((c) => {
-                const count = registeredStudentsList.filter((s) => s.courseId === c.id).length;
+                const count = studentsSource.filter(
+                  (s) => s.courseId === c.id || s.courseName?.toLowerCase() === c.name?.toLowerCase()
+                ).length;
                 return (
                   <button
                     key={c.id}
@@ -727,25 +684,35 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/20">
-                  {filteredStudents.map((st) => (
-                    <tr key={st.id} className="hover:bg-surface-container-low/50">
-                      <td className="p-3 font-mono font-bold text-primary">{st.id}</td>
-                      <td className="p-3 font-semibold text-on-surface">{st.name}</td>
-                      <td className="p-3">
-                        <span className="px-2 py-0.5 rounded bg-secondary/10 text-secondary font-bold text-[11px]">
-                          {st.courseName}
-                        </span>
-                      </td>
-                      <td className="p-3 text-on-surface-variant">{st.centre}</td>
-                      <td className="p-3 text-on-surface-variant">{st.date}</td>
-                      <td className="p-3 font-bold text-emerald-700">{st.feeStatus}</td>
-                      <td className="p-3">
-                        <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
-                          {st.status}
-                        </span>
+                  {filteredStudents.length === 0 ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-on-surface-variant text-xs">
+                        No student registration records found.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    filteredStudents.map((st, idx) => (
+                      <tr key={st.id || st._id || st.rollNo || idx} className="hover:bg-surface-container-low/50">
+                        <td className="p-3 font-mono font-bold text-primary">{st.rollNo || st.id || st._id || 'N/A'}</td>
+                        <td className="p-3 font-semibold text-on-surface">{st.name || st.fullName || 'Student'}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded bg-secondary/10 text-secondary font-bold text-[11px]">
+                            {st.courseName || st.course?.name || 'Enrolled Program'}
+                          </span>
+                        </td>
+                        <td className="p-3 text-on-surface-variant">{st.centre || st.centreName || 'Central Campus'}</td>
+                        <td className="p-3 text-on-surface-variant">
+                          {st.date || (st.createdAt ? new Date(st.createdAt).toLocaleDateString('en-GB') : 'Active')}
+                        </td>
+                        <td className="p-3 font-bold text-emerald-700">{st.feeStatus || (st.isPaid ? 'Paid' : 'Settled')}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800 font-bold text-[10px]">
+                            {st.status || 'Enrolled'}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -784,19 +751,29 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/20">
-                  {adminDonations.map((d, idx) => (
-                    <tr key={idx} className="hover:bg-surface-container-low/50">
-                      <td className="p-3 font-mono font-bold text-primary">{d.receiptNo}</td>
-                      <td className="p-3 font-semibold text-on-surface">{d.donorName}</td>
-                      <td className="p-3 font-mono text-on-surface-variant">{d.donorPan}</td>
-                      <td className="p-3 font-extrabold text-emerald-700 text-sm">
-                        ₹{Number(d.amount).toLocaleString('en-IN')}
+                  {(!adminDonations || adminDonations.length === 0) ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-on-surface-variant text-xs">
+                        No donation receipts recorded yet.
                       </td>
-                      <td className="p-3 text-on-surface-variant">{d.purpose}</td>
-                      <td className="p-3 text-on-surface-variant">{d.date}</td>
-                      <td className="p-3 text-[11px] font-semibold text-secondary">{d.mode}</td>
                     </tr>
-                  ))}
+                  ) : (
+                    adminDonations.map((d, idx) => (
+                      <tr key={d.id || d._id || d.receiptNo || idx} className="hover:bg-surface-container-low/50">
+                        <td className="p-3 font-mono font-bold text-primary">{d.receiptNo || d.id || 'N/A'}</td>
+                        <td className="p-3 font-semibold text-on-surface">{d.donorName || d.name || 'Patron'}</td>
+                        <td className="p-3 font-mono text-on-surface-variant">{d.donorPan || d.pan || 'N/A'}</td>
+                        <td className="p-3 font-extrabold text-emerald-700 text-sm">
+                          ₹{Number(d.amount || 0).toLocaleString('en-IN')}
+                        </td>
+                        <td className="p-3 text-on-surface-variant">{d.purpose || 'Institutional Mission'}</td>
+                        <td className="p-3 text-on-surface-variant">
+                          {d.date || (d.createdAt ? new Date(d.createdAt).toLocaleDateString('en-GB') : 'Recent')}
+                        </td>
+                        <td className="p-3 text-[11px] font-semibold text-secondary">{d.mode || 'UPI / NetBanking'}</td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -848,32 +825,42 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/20">
-                  {expenses.map((exp) => (
-                    <tr key={exp.id} className="hover:bg-surface-container-low/50">
-                      <td className="p-3 font-mono font-bold text-primary">{exp.id}</td>
-                      <td className="p-3 font-semibold text-on-surface">{exp.title}</td>
-                      <td className="p-3">
-                        <span className="px-2 py-0.5 rounded bg-surface-container text-secondary font-bold text-[10px]">
-                          {exp.category}
-                        </span>
-                      </td>
-                      <td className="p-3 font-extrabold text-rose-700 text-sm">
-                        ₹{Number(exp.amount).toLocaleString('en-IN')}
-                      </td>
-                      <td className="p-3 text-on-surface-variant">{exp.vendor}</td>
-                      <td className="p-3 font-mono text-outline">{exp.invoiceNo}</td>
-                      <td className="p-3 text-on-surface-variant">{exp.date}</td>
-                      <td className="p-3">
-                        <button
-                          onClick={() => removeExpense(exp.id)}
-                          className="p-1 rounded text-rose-600 hover:bg-rose-50 cursor-pointer"
-                          title="Delete Expense"
-                        >
-                          <span className="material-symbols-outlined text-base">delete</span>
-                        </button>
+                  {(!expenses || expenses.length === 0) ? (
+                    <tr>
+                      <td colSpan="8" className="p-8 text-center text-on-surface-variant text-xs">
+                        No expenditure records logged in the central ledger yet.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    expenses.map((exp, idx) => (
+                      <tr key={exp.id || exp._id || idx} className="hover:bg-surface-container-low/50">
+                        <td className="p-3 font-mono font-bold text-primary">{exp.id || exp._id || 'N/A'}</td>
+                        <td className="p-3 font-semibold text-on-surface">{exp.title || 'Expense Item'}</td>
+                        <td className="p-3">
+                          <span className="px-2 py-0.5 rounded bg-surface-container text-secondary font-bold text-[10px]">
+                            {exp.category || 'Operations'}
+                          </span>
+                        </td>
+                        <td className="p-3 font-extrabold text-rose-700 text-sm">
+                          ₹{Number(exp.amount || 0).toLocaleString('en-IN')}
+                        </td>
+                        <td className="p-3 text-on-surface-variant">{exp.vendor || 'Authorized Supplier'}</td>
+                        <td className="p-3 font-mono text-outline">{exp.invoiceNo || 'N/A'}</td>
+                        <td className="p-3 text-on-surface-variant">
+                          {exp.date || (exp.createdAt ? new Date(exp.createdAt).toLocaleDateString('en-GB') : 'Recent')}
+                        </td>
+                        <td className="p-3">
+                          <button
+                            onClick={() => removeExpense(exp.id || exp._id)}
+                            className="p-1 rounded text-rose-600 hover:bg-rose-50 cursor-pointer"
+                            title="Delete Expense"
+                          >
+                            <span className="material-symbols-outlined text-base">delete</span>
+                          </button>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
@@ -915,7 +902,12 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {courses.map((c) => (
+              {(!courses || courses.length === 0) ? (
+                <div className="col-span-full p-8 text-center text-xs text-on-surface-variant bg-surface-container-low rounded-2xl">
+                  No courses found in database. Click "Add New Course" to add one.
+                </div>
+              ) : (
+                courses.map((c) => (
                 <div
                   key={c.id}
                   className="bg-surface-container-low rounded-2xl p-5 border border-outline-variant/30 flex flex-col justify-between"
@@ -1002,7 +994,12 @@ export default function AdminDashboardPage() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              {galleryItems.map((item) => (
+              {(!galleryItems || galleryItems.length === 0) ? (
+                <div className="col-span-full p-8 text-center text-xs text-on-surface-variant bg-surface-container-low rounded-2xl">
+                  No photographs uploaded yet. Click "Add Event Photo" to publish institutional media.
+                </div>
+              ) : (
+                galleryItems.map((item) => (
                 <div
                   key={item.id}
                   className="bg-surface-container-low rounded-2xl overflow-hidden border border-outline-variant/30 flex flex-col justify-between"
@@ -1064,42 +1061,52 @@ export default function AdminDashboardPage() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/20">
-                  {pendingApprovals.map((app) => (
-                    <tr key={app.id} className="hover:bg-surface-container-low/50">
-                      <td className="p-3 font-mono font-bold text-primary">{app.id}</td>
-                      <td className="p-3 font-semibold text-on-surface">{app.name}</td>
-                      <td className="p-3 text-secondary font-semibold">{app.course}</td>
-                      <td className="p-3 text-on-surface-variant">{app.centre}</td>
-                      <td className="p-3 text-on-surface-variant">{app.date}</td>
-                      <td className="p-3">
-                        <span
-                          className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${
-                            app.status === 'Approved'
-                              ? 'bg-emerald-100 text-emerald-800'
-                              : 'bg-amber-100 text-amber-800'
-                          }`}
-                        >
-                          {app.status}
-                        </span>
-                      </td>
-                      <td className="p-3">
-                        {app.status === 'Approved' ? (
-                          <span className="text-emerald-700 font-bold flex items-center gap-1">
-                            <span className="material-symbols-outlined text-sm">verified</span>
-                            <span>Certificate Issued</span>
-                          </span>
-                        ) : (
-                          <button
-                            onClick={() => handleApprove(app.id, app.name)}
-                            className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
-                          >
-                            <span className="material-symbols-outlined text-sm">check_circle</span>
-                            <span>Approve & Issue Certificate</span>
-                          </button>
-                        )}
+                  {(!pendingApprovals || pendingApprovals.length === 0) ? (
+                    <tr>
+                      <td colSpan="7" className="p-8 text-center text-on-surface-variant text-xs">
+                        No pending certificate applications awaiting approval.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    pendingApprovals.map((app, idx) => (
+                      <tr key={app.id || app._id || idx} className="hover:bg-surface-container-low/50">
+                        <td className="p-3 font-mono font-bold text-primary">{app.id || app._id || app.applicationNumber || 'N/A'}</td>
+                        <td className="p-3 font-semibold text-on-surface">{app.name || app.fullName || 'Candidate'}</td>
+                        <td className="p-3 text-secondary font-semibold">{app.course || app.courseName || 'Program'}</td>
+                        <td className="p-3 text-on-surface-variant">{app.centre || app.centreName || 'HQ Campus'}</td>
+                        <td className="p-3 text-on-surface-variant">
+                          {app.date || (app.createdAt ? new Date(app.createdAt).toLocaleDateString('en-GB') : 'Recent')}
+                        </td>
+                        <td className="p-3">
+                          <span
+                            className={`px-2.5 py-0.5 rounded-full font-bold text-[10px] ${
+                              app.status === 'Approved'
+                                ? 'bg-emerald-100 text-emerald-800'
+                                : 'bg-amber-100 text-amber-800'
+                            }`}
+                          >
+                            {app.status || 'Pending'}
+                          </span>
+                        </td>
+                        <td className="p-3">
+                          {app.status === 'Approved' ? (
+                            <span className="text-emerald-700 font-bold flex items-center gap-1">
+                              <span className="material-symbols-outlined text-sm">verified</span>
+                              <span>Certificate Issued</span>
+                            </span>
+                          ) : (
+                            <button
+                              onClick={() => handleApprove(app.id || app._id, app.name || app.fullName)}
+                              className="px-3 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 cursor-pointer shadow-xs"
+                            >
+                              <span className="material-symbols-outlined text-sm">check_circle</span>
+                              <span>Approve & Issue Certificate</span>
+                            </button>
+                          )}
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>

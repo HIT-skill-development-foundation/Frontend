@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { mockDonationRecord } from '../../data/mockData';
 
 const initialState = {
-  currentDonation: mockDonationRecord,
-  donationHistory: [mockDonationRecord],
-  selectedPresetAmount: 1100,
+  currentDonation: null,
+  donationHistory: [],
+  selectedPresetAmount: 5000,
   taxExemptionEnabled: true,
 };
 
@@ -13,8 +12,10 @@ export const donationSlice = createSlice({
   initialState,
   reducers: {
     setDonationData: (state, action) => {
-      state.currentDonation = { ...state.currentDonation, ...action.payload };
-      state.donationHistory.unshift(state.currentDonation);
+      state.currentDonation = action.payload;
+      if (action.payload) {
+        state.donationHistory.unshift(action.payload);
+      }
     },
     setSelectedPresetAmount: (state, action) => {
       state.selectedPresetAmount = action.payload;
@@ -23,7 +24,7 @@ export const donationSlice = createSlice({
       state.taxExemptionEnabled = action.payload !== undefined ? action.payload : !state.taxExemptionEnabled;
     },
     resetDonationData: (state) => {
-      state.currentDonation = mockDonationRecord;
+      state.currentDonation = null;
     },
   },
 });

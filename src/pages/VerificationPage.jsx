@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useVerification, useLoader } from '../store/hooks';
 import studentService from '../services/studentService';
-import { initialStudentData } from '../data/mockData';
 import logo2 from '../assets/images/logo2.jpeg';
 
 export default function VerificationPage({ initialQuery = '' }) {
@@ -14,9 +13,9 @@ export default function VerificationPage({ initialQuery = '' }) {
   } = useVerification();
   const { withLoader, notify } = useLoader();
 
-  const [query, setQueryState] = useState(initialQuery || reduxQuery || 'HIT-STU-2026-00001');
-  const [searched, setSearched] = useState(reduxSearched ?? true);
-  const [result, setResult] = useState(reduxResult || initialStudentData);
+  const [query, setQueryState] = useState(initialQuery || reduxQuery || '');
+  const [searched, setSearched] = useState(Boolean(initialQuery || reduxSearched));
+  const [result, setResult] = useState(reduxResult || null);
 
   useEffect(() => {
     if (initialQuery) {

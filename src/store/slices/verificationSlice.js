@@ -1,11 +1,10 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialStudentData } from '../../data/mockData';
 
 const initialState = {
-  searchQuery: 'HIT-STU-2026-00001',
-  verificationResult: initialStudentData,
-  hasSearched: true,
-  searchHistory: ['HIT-STU-2026-00001'],
+  searchQuery: '',
+  verificationResult: null,
+  hasSearched: false,
+  searchHistory: [],
   isVerifying: false,
 };
 
@@ -19,7 +18,7 @@ export const verificationSlice = createSlice({
     setVerificationResult: (state, action) => {
       state.verificationResult = action.payload;
       state.hasSearched = true;
-      if (action.payload && !state.searchHistory.includes(state.searchQuery)) {
+      if (action.payload && state.searchQuery && !state.searchHistory.includes(state.searchQuery)) {
         state.searchHistory.unshift(state.searchQuery);
       }
     },

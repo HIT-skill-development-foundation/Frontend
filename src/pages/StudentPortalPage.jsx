@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import confetti from 'canvas-confetti';
 import { useStudent, useLoader } from '../store/hooks';
 import studentService from '../services/studentService';
 import admissionService from '../services/admissionService';
-import { authService } from '../services/hitApi';
-import { coursesList, universityProgramsList, centresList, initialStudentData } from '../data/mockData';
+import { authService, courseService, centreService } from '../services/hitApi';
 import logo2 from '../assets/images/logo2.jpeg';
 import loginSvg from '../assets/images/Login.svg';
 
@@ -12,32 +11,65 @@ export default function StudentPortalPage() {
   const { student, isLoggedIn, logIn, logOut, enrollNewStudent, logDownload } = useStudent();
   const { withLoader, notify } = useLoader();
 
+  const [coursesList, setCoursesList] = useState([]);
+  const [universityProgramsList, setUniversityProgramsList] = useState([]);
+  const [centresList, setCentresList] = useState([]);
+
+  useEffect(() => {
+    courseService.getAllCourses()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        setCoursesList(list);
+        if (list.length > 0) {
+          setSignUpData((prev) => ({ ...prev, courseId: prev.courseId || list[0].id || list[0]._id || list[0].code }));
+        }
+      })
+      .catch(() => null);
+
+    courseService.getUniversityPrograms()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        setUniversityProgramsList(list);
+      })
+      .catch(() => null);
+
+    centreService.getCentres()
+      .then((res) => {
+        const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
+        setCentresList(list);
+        if (list.length > 0) {
+          setSignUpData((prev) => ({ ...prev, centreId: prev.centreId || list[0].id || list[0]._id }));
+        }
+      })
+      .catch(() => null);
+  }, []);
+
   // Auth gate state (when not logged in)
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'signup'
 
   // Login form state
   const [loginCreds, setLoginCreds] = useState({
-    rollOrEmail: 'HIT-STU-2026-00001',
-    password: 'password123',
+    rollOrEmail: '',
+    password: '',
   });
 
   // Sign up / Registration form state
   const [signUpData, setSignUpData] = useState({
     fullName: '',
     fatherName: '',
-    dob: '2004-06-14',
+    dob: '',
     gender: 'Male',
-    category: 'OBC',
+    category: 'General',
     mobile: '',
     email: '',
-    address: 'Kasba Khas, Ward 4',
-    district: 'Mau',
+    address: '',
+    district: '',
     state: 'Uttar Pradesh',
-    courseId: 'adca',
-    centreId: 'HIT-CEN-0001',
+    courseId: '',
+    centreId: '',
     batchTime: '08:00 AM - 10:00 AM (Morning)',
     qualification: '12th Pass',
-    aadhaarNo: '4829-1928-8472',
+    aadhaarNo: '',
     paymentMode: 'upi',
   });
 
@@ -49,6 +81,11 @@ export default function StudentPortalPage() {
   // Handle Login
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
+    if (!loginCreds.rollOrEmail || !loginCreds.password) {
+      notify('error', 'Please enter your Roll Number or Email and Password.');
+      return;
+    }
+
     await withLoader(async () => {
       try {
         const res = await authService.loginStudent({
@@ -57,25 +94,15 @@ export default function StudentPortalPage() {
         });
         if (res && (res.success || res.token)) {
           const userData = res.data || {};
-          logIn({
-            ...initialStudentData,
-            ...userData,
-            rollNo: userData.rollNo || loginCreds.rollOrEmail.trim().toUpperCase(),
-          });
+          logIn(userData);
           notify('success', `Welcome back, ${userData.fullName || 'Student'}!`);
           return;
         }
+        notify('error', res?.message || 'Authentication failed. Please verify your credentials.');
       } catch (err) {
-        console.warn('Student login API error, applying resilient session fallback:', err.message);
-        logIn({
-          ...initialStudentData,
-          rollNo: loginCreds.rollOrEmail.toUpperCase().includes('HIT')
-            ? loginCreds.rollOrEmail.toUpperCase()
-            : 'HIT-STU-2026-00001',
-        });
-        notify('success', `Welcome back, ${student.fullName || 'Rahul Verma'}! (Offline Sync)`);
+        notify('error', err.message || 'Authentication failed. Please check your credentials.');
       }
-    }, 'Authenticating Student with Central NITI Aayog Ledger...');
+    }, 'Authenticating Student with Central Registry Ledger...');
   };
 
   // Demo Quick Login
@@ -87,18 +114,14 @@ export default function StudentPortalPage() {
           password: 'password123',
         });
         if (res && (res.success || res.token)) {
-          logIn({
-            ...initialStudentData,
-            ...res.data,
-          });
-          notify('success', 'Logged in as Rahul Kumar Verma (ADCA)');
+          logIn(res.data);
+          notify('success', `Logged in as ${res.data?.fullName || 'Enrolled Student'}`);
           return;
         }
+        notify('error', 'Demo student record is not available on server.');
       } catch (err) {
-        // Fallback for demonstration
+        notify('error', err.message || 'Demo login failed.');
       }
-      logIn(initialStudentData);
-      notify('success', 'Logged in as Rahul Kumar Verma (ADCA)');
     }, 'Accessing Student Dossier...');
   };
 

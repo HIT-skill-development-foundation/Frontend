@@ -12,11 +12,11 @@ export default function DonationPage({ setActiveTab, setDonationData }) {
   const [amount, setAmount] = useState(5000);
   const [customAmount, setCustomAmount] = useState('');
   const [donorInfo, setDonorInfo] = useState({
-    name: 'Arunav Sengupta',
-    pan: 'ABCPS8291M',
-    email: 'arunav.sengupta@techindia.org',
-    phone: '+91 98301-54321',
-    address: 'Sector 62, Noida, Uttar Pradesh - 201301',
+    name: '',
+    pan: '',
+    email: '',
+    phone: '',
+    address: '',
     purpose: 'Vocational & Digital Skill Sponsorship for Underprivileged Girls',
     citizenAgree: true,
   });

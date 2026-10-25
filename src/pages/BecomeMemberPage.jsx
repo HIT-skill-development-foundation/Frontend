@@ -8,11 +8,11 @@ export default function BecomeMemberPage() {
   const { withLoader, notify } = useLoader();
 
   const [formData, setFormData] = useState({
-    fullName: 'Dr. Alok Nath Tripathi',
-    phone: '+91 94152-88192',
-    email: 'dr.aloktripathi@gmail.com',
-    occupation: 'Professor of Computer Science & Social Worker',
-    address: 'Civil Lines, Mau, Uttar Pradesh - 275101',
+    fullName: '',
+    phone: '',
+    email: '',
+    occupation: '',
+    address: '',
     membershipTier: 'Life Member (₹2,500)',
     declaration: true,
   });

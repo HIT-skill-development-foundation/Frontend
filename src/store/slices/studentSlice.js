@@ -1,10 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { initialStudentData, registeredStudentsList } from '../../data/mockData';
 
 const initialState = {
-  currentStudent: initialStudentData,
-  isLoggedIn: false, // Default unauthenticated so student sees Login / Sign Up gate
-  registeredStudents: registeredStudentsList,
+  currentStudent: null,
+  isLoggedIn: false,
+  registeredStudents: [],
   downloadedIdCount: 0,
 };
 
@@ -14,30 +13,34 @@ export const studentSlice = createSlice({
   reducers: {
     loginStudent: (state, action) => {
       state.isLoggedIn = true;
-      if (action.payload) {
-        state.currentStudent = { ...state.currentStudent, ...action.payload };
-      }
+      state.currentStudent = action.payload || null;
     },
     logoutStudent: (state) => {
       state.isLoggedIn = false;
+      state.currentStudent = null;
     },
     setStudentData: (state, action) => {
-      state.currentStudent = { ...state.currentStudent, ...action.payload };
+      state.currentStudent = action.payload;
+    },
+    setRegisteredStudents: (state, action) => {
+      state.registeredStudents = action.payload || [];
     },
     updateStudentField: (state, action) => {
       const { field, value } = action.payload;
-      state.currentStudent[field] = value;
+      if (state.currentStudent) {
+        state.currentStudent[field] = value;
+      }
     },
     registerNewStudent: (state, action) => {
       state.registeredStudents.unshift(action.payload);
-      state.currentStudent = { ...state.currentStudent, ...action.payload };
+      state.currentStudent = action.payload;
       state.isLoggedIn = true;
     },
     incrementIdDownload: (state) => {
       state.downloadedIdCount += 1;
     },
     resetStudentData: (state) => {
-      state.currentStudent = initialStudentData;
+      state.currentStudent = null;
       state.isLoggedIn = false;
     },
   },
@@ -47,6 +50,7 @@ export const {
   loginStudent,
   logoutStudent,
   setStudentData,
+  setRegisteredStudents,
   updateStudentField,
   registerNewStudent,
   incrementIdDownload,
