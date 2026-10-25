@@ -1,8 +1,25 @@
 import { createSlice } from '@reduxjs/toolkit';
 
+const getStoredAdminUser = () => {
+  try {
+    const raw = localStorage.getItem('hit_admin_user');
+    return raw ? JSON.parse(raw) : null;
+  } catch {
+    return null;
+  }
+};
+
+const hasAdminToken = () => {
+  try {
+    return Boolean(localStorage.getItem('hit_admin_token'));
+  } catch {
+    return false;
+  }
+};
+
 const initialState = {
-  isAdminLoggedIn: false,
-  adminUser: null,
+  isAdminLoggedIn: hasAdminToken(),
+  adminUser: getStoredAdminUser(),
   expenses: [],
   donations: [],
   pendingApprovals: [],
@@ -27,6 +44,12 @@ export const adminSlice = createSlice({
     logoutAdmin: (state) => {
       state.isAdminLoggedIn = false;
       state.adminUser = null;
+      try {
+        localStorage.removeItem('hit_admin_token');
+        localStorage.removeItem('hit_admin_user');
+      } catch {
+        // ignore
+      }
     },
     setAdminStats: (state, action) => {
       state.stats = { ...state.stats, ...action.payload };

@@ -204,7 +204,7 @@ export default function AdminDashboardPage() {
         });
         if (res && (res.success || res.token)) {
           adminLogin(res.data);
-          notify('success', 'Logged in as Super Admin (Director Desk)');
+          notify('success', `Authenticated as ${res?.data?.name || res?.data?.email || 'Super Admin'}`);
           return;
         }
         notify('error', 'Demo admin account unavailable on remote server.');
@@ -695,7 +695,7 @@ export default function AdminDashboardPage() {
                 <div>
                   <h2 className="font-['Fraunces'] text-2xl font-semibold tracking-tight text-[#1C1917]">Super Admin Sign In</h2>
                   <p className="text-xs text-[#7A7168] mt-1">
-                    Enter your administrative credentials to open the director desk.
+                    Enter your administrative credentials to access the central console.
                   </p>
                 </div>
 
@@ -953,12 +953,18 @@ export default function AdminDashboardPage() {
 
               {/* Admin Avatar & Label */}
               <div className="flex items-center gap-2.5">
-                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#065F46] text-xs font-semibold text-white shadow-xs">
-                  AV
+                <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#065F46] text-xs font-semibold text-white shadow-xs uppercase">
+                  {adminUser?.name
+                    ? adminUser.name.split(' ').map((n) => n[0]).filter(Boolean).slice(0, 2).join('')
+                    : (adminUser?.email ? adminUser.email.slice(0, 2) : 'SA')}
                 </span>
                 <div className="hidden sm:block text-left">
-                  <p className="text-xs font-semibold leading-none text-[#1C1917]">{adminUser?.name || 'Er. A. K. Verma'}</p>
-                  <p className="mt-1 text-[10px] text-[#7A7168] font-mono">Director & Trustee · Super Admin</p>
+                  <p className="text-xs font-semibold leading-none text-[#1C1917]">
+                    {adminUser?.name || adminUser?.email || 'Administrator'}
+                  </p>
+                  <p className="mt-1 text-[10px] text-[#7A7168] font-mono">
+                    {adminUser?.role ? `${adminUser.role} · Admin Console` : 'System Administrator'}
+                  </p>
                 </div>
               </div>
             </div>
@@ -999,10 +1005,10 @@ export default function AdminDashboardPage() {
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
                     <div>
                       <p className="text-xs font-mono uppercase tracking-wider text-[#7A7168]">
-                        Sunday, October 25, 2026 · Ghosi, Mau Central Secretariat
+                        {new Date().toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' })} · Central Console
                       </p>
                       <h1 className="mt-1 font-['Fraunces'] text-2xl font-semibold tracking-tight text-[#1C1917] sm:text-3xl">
-                        Good morning, Director Verma
+                        Welcome back, {adminUser?.name ? adminUser.name.split(' ')[0] : 'Administrator'}
                       </h1>
                       <p className="mt-1 text-xs sm:text-sm text-[#7A7168]">
                         Here's how the foundation operations, students, and institutional ledgers are performing today.
