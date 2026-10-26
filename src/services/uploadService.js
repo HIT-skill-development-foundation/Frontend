@@ -76,7 +76,7 @@ export const uploadService = {
           directError.response?.data?.error?.message ||
           backendError.response?.data?.error ||
           backendError.response?.data?.message ||
-          'Failed to upload image to Cloudinary.'
+          'Failed to upload image. Please try again.'
         );
       }
     }
@@ -150,7 +150,7 @@ export const uploadService = {
           directError.response?.data?.error?.message ||
           backendError.response?.data?.error ||
           backendError.response?.data?.message ||
-          'Failed to upload document to Cloudinary.'
+          'Failed to upload document. Please try again.'
         );
       }
     }

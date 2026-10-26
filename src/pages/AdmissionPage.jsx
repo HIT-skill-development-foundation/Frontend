@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useStudent, useLoader } from '../store/hooks';
 import admissionService from '../services/admissionService';
-import { courseService, centreService } from '../services/hitApi';
+import { courseService, centreService, uploadService } from '../services/hitApi';
 import ImageUploader from '../components/common/ImageUploader';
 
 export default function AdmissionPage({ setActiveTab, setStudentData }) {
@@ -74,7 +74,19 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     e.preventDefault();
 
     await withLoader(async () => {
-      const res = await admissionService.submitApplication(formData);
+      let submissionData = { ...formData };
+      if (formData.photoFile) {
+        try {
+          const uploadRes = await uploadService.uploadImage(formData.photoFile, { folder: 'students' });
+          if (uploadRes?.url) {
+            submissionData.photoUrl = uploadRes.url;
+          }
+        } catch (uploadErr) {
+          notify('error', 'Failed to upload photo: ' + uploadErr.message);
+          return;
+        }
+      }
+      const res = await admissionService.submitApplication(submissionData);
 
       if (res.success) {
         setGeneratedRegId(res.regId);
@@ -586,9 +598,16 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     <div className="p-space-md rounded-xl bg-surface-container-low border border-outline-variant/40 flex flex-col justify-between">
                       <ImageUploader
                         label="Passport Sized Photograph"
-                        value={formData.photoUrl}
-                        onChange={(url) => setFormData((prev) => ({ ...prev, photoUrl: url, photoUploaded: !!url }))}
-                        folder="students"
+                        preview={formData.photoUrl}
+                        file={formData.photoFile}
+                        onChange={(file, previewUrl) =>
+                          setFormData((prev) => ({
+                            ...prev,
+                            photoFile: file,
+                            photoUrl: previewUrl,
+                            photoUploaded: !!file || !!previewUrl,
+                          }))
+                        }
                         helperText="Official student identification photo (JPEG, PNG, WEBP)"
                         required
                       />

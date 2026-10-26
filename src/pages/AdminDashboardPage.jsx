@@ -12,6 +12,7 @@ import {
   donationService,
   expenseService,
   galleryService,
+  uploadService,
 } from '../services/hitApi';
 import courseApi from '../services/courseApi';
 import ImageUploader from '../components/common/ImageUploader';
@@ -121,7 +122,8 @@ export default function AdminDashboardPage() {
     date: 'October 2026',
     badge: 'Event Photo',
     desc: '',
-    img: '',
+    file: null,
+    previewUrl: '',
   });
 
   // Tooltip state for interactive charts
@@ -455,25 +457,38 @@ export default function AdminDashboardPage() {
 
   const handleCreateGalleryItem = async (e) => {
     e.preventDefault();
-    if (!newGalleryForm.title) {
+    if (!newGalleryForm.title.trim()) {
       notify('error', 'Please enter a title for the event photograph.');
       return;
     }
-    if (!newGalleryForm.img) {
-      notify('error', 'Please upload a photograph to Cloudinary before publishing.');
+    if (!newGalleryForm.file && !newGalleryForm.previewUrl) {
+      notify('error', 'Please select a photograph to upload.');
       return;
     }
 
     await withLoader(async () => {
       try {
+        let imageUrl = '';
+        if (newGalleryForm.file) {
+          const uploadRes = await uploadService.uploadImage(newGalleryForm.file, { folder: 'gallery' });
+          if (!uploadRes?.url) {
+            throw new Error('Failed to retrieve uploaded image URL.');
+          }
+          imageUrl = uploadRes.url;
+        } else if (newGalleryForm.previewUrl && !newGalleryForm.previewUrl.startsWith('blob:')) {
+          imageUrl = newGalleryForm.previewUrl;
+        } else {
+          throw new Error('Please select a valid photograph to publish.');
+        }
+
         const payload = {
-          title: newGalleryForm.title,
-          category: newGalleryForm.category || 'events',
+          title: newGalleryForm.title.trim(),
+          category: newGalleryForm.category || 'infrastructure',
           location: newGalleryForm.location || 'Ghosi Central Campus',
           date: newGalleryForm.date || 'October 2026',
-          badge: newGalleryForm.badge || 'Campus Event',
-          desc: newGalleryForm.desc || 'Free computer awareness session for rural youth.',
-          img: newGalleryForm.img,
+          badge: newGalleryForm.badge || 'Event Photo',
+          desc: newGalleryForm.desc || '',
+          img: imageUrl,
           gps: newGalleryForm.location || 'Ghosi Campus Hall',
           isFeatured: true,
         };
@@ -487,13 +502,14 @@ export default function AdminDashboardPage() {
           date: 'October 2026',
           badge: 'Event Photo',
           desc: '',
-          img: '',
+          file: null,
+          previewUrl: '',
         });
-        notify('success', 'New photograph published to Cloudinary & Gallery.');
+        notify('success', 'Photograph published to gallery successfully.');
       } catch (err) {
-        notify('error', err.message || 'Failed to upload photo to server.');
+        notify('error', err.message || 'Failed to upload photo and publish record.');
       }
-    }, 'Updating Institutional Media Repository...');
+    }, 'Uploading photograph and publishing event record...');
   };
 
   const handleApprove = async (id, studentName) => {
@@ -2834,10 +2850,10 @@ export default function AdminDashboardPage() {
 
             <form onSubmit={handleCreateGalleryItem} className="space-y-4 pt-4 text-xs">
               <ImageUploader
-                label="Photograph Media File (Cloudinary)"
-                value={newGalleryForm.img}
-                onChange={(url) => setNewGalleryForm({ ...newGalleryForm, img: url })}
-                folder="gallery"
+                label="Event Photograph"
+                file={newGalleryForm.file}
+                preview={newGalleryForm.previewUrl}
+                onChange={(file, previewUrl) => setNewGalleryForm({ ...newGalleryForm, file, previewUrl })}
                 required
               />
 

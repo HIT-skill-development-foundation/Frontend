@@ -1,54 +1,73 @@
-import React, { useState, useRef } from 'react';
-import uploadService from '../../services/uploadService';
+import React, { useState, useRef, useEffect } from 'react';
 
 export default function ImageUploader({
+  file,
   value,
+  preview,
   onChange,
-  folder = 'general',
-  label = 'Photograph / Image',
+  label = 'Photograph',
   helperText = 'JPG, PNG or WEBP up to 10MB',
   required = false,
 }) {
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
   const [errorMessage, setErrorMessage] = useState('');
   const [isDragOver, setIsDragOver] = useState(false);
+  const [objectUrl, setObjectUrl] = useState('');
   const fileInputRef = useRef(null);
 
-  const handleFileSelect = async (file) => {
-    if (!file) return;
-    setErrorMessage('');
-    setIsUploading(true);
-    setUploadProgress(0);
-
-    try {
-      const result = await uploadService.uploadImage(file, {
-        folder,
-        onProgress: (percent) => setUploadProgress(percent),
-      });
-
-      if (result?.url) {
-        onChange(result.url, result);
-      } else {
-        throw new Error('Upload succeeded but no URL was returned.');
-      }
-    } catch (err) {
-      setErrorMessage(err.message || 'Failed to upload image.');
-    } finally {
-      setIsUploading(false);
-      setUploadProgress(0);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = '';
-      }
+  // Safely manage local object URL for preview to prevent memory leaks
+  useEffect(() => {
+    if (file instanceof File) {
+      const url = URL.createObjectURL(file);
+      setObjectUrl(url);
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    } else {
+      setObjectUrl('');
     }
+  }, [file]);
+
+  const displayPreview = preview || objectUrl || (typeof value === 'string' ? value : '');
+  
+  // Format clean file display name without exposing cloud vendor or raw URLs
+  const getDisplayFileName = () => {
+    if (file?.name) return file.name;
+    if (displayPreview) return 'Attached Photograph';
+    return 'Selected Photograph';
+  };
+
+  const fileSizeText = file?.size
+    ? file.size > 1024 * 1024
+      ? `${(file.size / (1024 * 1024)).toFixed(1)} MB`
+      : `${Math.round(file.size / 1024)} KB`
+    : '';
+
+  const handleFileSelect = (selectedFile) => {
+    if (!selectedFile) return;
+    setErrorMessage('');
+
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/jpg'];
+    if (!validTypes.includes(selectedFile.type)) {
+      setErrorMessage('Please select a valid image file (JPG, PNG, or WEBP).');
+      return;
+    }
+
+    const maxSize = 10 * 1024 * 1024;
+    if (selectedFile.size > maxSize) {
+      setErrorMessage('Image size exceeds 10MB. Please choose a smaller photo.');
+      return;
+    }
+
+    const previewUrl = URL.createObjectURL(selectedFile);
+    onChange(selectedFile, previewUrl);
   };
 
   const handleDrop = (e) => {
     e.preventDefault();
     setIsDragOver(false);
-    const file = e.dataTransfer.files?.[0];
-    if (file) {
-      handleFileSelect(file);
+    const droppedFile = e.dataTransfer.files?.[0];
+    if (droppedFile) {
+      handleFileSelect(droppedFile);
     }
   };
 
@@ -61,8 +80,9 @@ export default function ImageUploader({
     setIsDragOver(false);
   };
 
-  const handleRemove = () => {
-    onChange('', null);
+  const handleRemove = (e) => {
+    e.stopPropagation();
+    onChange(null, '');
     setErrorMessage('');
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
@@ -77,10 +97,6 @@ export default function ImageUploader({
             <span>{label}</span>
             {required && <span className="text-red-500">*</span>}
           </label>
-          <span className="text-[10px] text-[#7A7168] flex items-center gap-1 font-mono">
-            <span className="material-symbols-outlined text-[13px] text-[#065F46]">cloud_done</span>
-            <span>Cloudinary Powered</span>
-          </span>
         </div>
       )}
 
@@ -92,28 +108,37 @@ export default function ImageUploader({
         onChange={(e) => handleFileSelect(e.target.files?.[0])}
       />
 
-      {value ? (
-        <div className="relative group rounded-xl border border-[#E7E0D4] bg-[#FAF8F4] p-2 flex items-center gap-3 overflow-hidden">
-          <div className="relative w-20 h-20 rounded-lg overflow-hidden bg-black/5 shrink-0 border border-[#E7E0D4]">
+      {displayPreview ? (
+        <div className="relative rounded-xl border border-[#E7E0D4] bg-[#FAF8F4] p-3 flex items-center gap-3.5">
+          <div className="relative w-16 h-16 rounded-lg overflow-hidden bg-[#E7E0D4]/30 shrink-0 border border-[#E7E0D4]">
             <img
-              src={value}
-              alt="Uploaded media"
+              src={displayPreview}
+              alt="Selected photograph"
               className="w-full h-full object-cover"
             />
           </div>
 
           <div className="flex-1 min-w-0 pr-2">
-            <div className="flex items-center gap-1.5 text-xs font-semibold text-[#1C1917]">
-              <span className="material-symbols-outlined text-sm text-[#065F46]">verified</span>
-              <span className="truncate">Cloudinary Asset Stored</span>
+            <p className="text-xs font-semibold text-[#1C1917] truncate">
+              {getDisplayFileName()}
+            </p>
+            <div className="flex items-center gap-2 mt-0.5">
+              {fileSizeText && (
+                <span className="text-[11px] text-[#7A7168] font-mono">{fileSizeText}</span>
+              )}
+              {file && (
+                <span className="inline-flex items-center gap-1 text-[10px] font-medium text-emerald-700 bg-emerald-50 border border-emerald-200 px-1.5 py-0.2 rounded">
+                  <span className="material-symbols-outlined text-[11px]">check_circle</span>
+                  Ready to publish
+                </span>
+              )}
             </div>
-            <p className="text-[11px] text-[#7A7168] truncate mt-0.5 font-mono">{value}</p>
-            <div className="flex items-center gap-2 mt-2">
+
+            <div className="flex items-center gap-3 mt-2">
               <button
                 type="button"
                 onClick={() => fileInputRef.current?.click()}
-                disabled={isUploading}
-                className="text-[11px] font-semibold text-[#065F46] hover:underline flex items-center gap-0.5 cursor-pointer"
+                className="text-[11px] font-semibold text-[#065F46] hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-xs">sync</span>
                 <span>Change Photo</span>
@@ -122,8 +147,7 @@ export default function ImageUploader({
               <button
                 type="button"
                 onClick={handleRemove}
-                disabled={isUploading}
-                className="text-[11px] font-semibold text-red-600 hover:underline flex items-center gap-0.5 cursor-pointer"
+                className="text-[11px] font-semibold text-red-600 hover:underline flex items-center gap-1 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-xs">delete</span>
                 <span>Remove</span>
@@ -136,36 +160,22 @@ export default function ImageUploader({
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragLeave={handleDragLeave}
-          onClick={() => !isUploading && fileInputRef.current?.click()}
-          className={`relative border-2 border-dashed rounded-xl p-4 transition-all text-center cursor-pointer ${
+          onClick={() => fileInputRef.current?.click()}
+          className={`relative border-2 border-dashed rounded-xl p-5 transition-all text-center cursor-pointer ${
             isDragOver
               ? 'border-[#065F46] bg-[#065F46]/5 scale-[0.99]'
               : 'border-[#E7E0D4] hover:border-[#065F46]/60 bg-[#FAF8F4]/80 hover:bg-[#FAF8F4]'
-          } ${isUploading ? 'pointer-events-none opacity-80' : ''}`}
+          }`}
         >
-          {isUploading ? (
-            <div className="py-3 flex flex-col items-center">
-              <div className="w-8 h-8 border-2 border-[#065F46]/30 border-t-[#065F46] rounded-full animate-spin mb-2" />
-              <p className="text-xs font-semibold text-[#1C1917]">Uploading to Cloudinary...</p>
-              <div className="w-48 bg-[#E7E0D4] h-1.5 rounded-full mt-2 overflow-hidden">
-                <div
-                  className="bg-[#065F46] h-full transition-all duration-200"
-                  style={{ width: `${uploadProgress || 65}%` }}
-                />
-              </div>
-              <span className="text-[10px] text-[#7A7168] mt-1 font-mono">{uploadProgress}% complete</span>
+          <div className="py-2 flex flex-col items-center">
+            <div className="w-10 h-10 rounded-full bg-[#E7E0D4]/40 flex items-center justify-center text-[#065F46] mb-2">
+              <span className="material-symbols-outlined text-xl">add_photo_alternate</span>
             </div>
-          ) : (
-            <div className="py-2 flex flex-col items-center">
-              <div className="w-10 h-10 rounded-full bg-[#E7E0D4]/40 flex items-center justify-center text-[#065F46] mb-2">
-                <span className="material-symbols-outlined text-xl">cloud_upload</span>
-              </div>
-              <p className="text-xs font-semibold text-[#1C1917]">
-                Click to browse or drag & drop photograph
-              </p>
-              <p className="text-[11px] text-[#7A7168] mt-0.5">{helperText}</p>
-            </div>
-          )}
+            <p className="text-xs font-semibold text-[#1C1917]">
+              Click to browse or drag & drop photograph
+            </p>
+            <p className="text-[11px] text-[#7A7168] mt-0.5">{helperText}</p>
+          </div>
         </div>
       )}
 
