@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import confetti from 'canvas-confetti';
 import { useStudent, useLoader } from '../store/hooks';
 import admissionService from '../services/admissionService';
-import { courseService, centreService, uploadService } from '../services/hitApi';
+import { courseService, centreService, uploadService, authService } from '../services/hitApi';
 import ImageUploader from '../components/common/ImageUploader';
 
 export default function AdmissionPage({ setActiveTab, setStudentData }) {
@@ -65,9 +65,74 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
   const [generatedRegId, setGeneratedRegId] = useState('');
   const [generatedRollId, setGeneratedRollId] = useState('');
 
+  // Email OTP Verification state
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
+  const [otpTimer, setOtpTimer] = useState(0);
+
+  useEffect(() => {
+    let interval;
+    if (otpTimer > 0) {
+      interval = setInterval(() => setOtpTimer((prev) => prev - 1), 1000);
+    }
+    return () => clearInterval(interval);
+  }, [otpTimer]);
+
+  const handleSendAdmissionOtp = async () => {
+    const email = (formData.email || '').trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      notify('error', 'Please enter a valid email address first.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.sendOtp({
+          email,
+          purpose: 'signup',
+          name: formData.fullName || 'Student Candidate',
+        });
+        setOtpSent(true);
+        setOtpTimer(60);
+        notify('success', res.message || `Verification code sent to ${email}`);
+      } catch (err) {
+        notify('error', err.message || 'Failed to send OTP code.');
+      }
+    }, 'Sending OTP code via Resend...');
+  };
+
+  const handleVerifyAdmissionOtp = async () => {
+    const email = (formData.email || '').trim().toLowerCase();
+    const code = otpCode.trim();
+
+    if (!code || code.length !== 6) {
+      notify('error', 'Please enter the 6-digit code received on your email.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.verifyOtp({ email, otp: code, purpose: 'signup' });
+        if (res?.success) {
+          setIsEmailVerified(true);
+          notify('success', 'Email verified successfully! Confirmation email will be delivered here.');
+        } else {
+          notify('error', res?.message || 'Verification failed.');
+        }
+      } catch (err) {
+        notify('error', err.message || 'Incorrect verification code.');
+      }
+    }, 'Verifying OTP code...');
+  };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
+    if (name === 'email') {
+      setIsEmailVerified(false);
+      setOtpSent(false);
+    }
   };
 
   const handlePaymentSubmit = async (e) => {
@@ -401,17 +466,64 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <label className="font-label-md text-xs font-semibold text-on-surface">
-                        Email Address <span className="text-error">*</span>
-                      </label>
-                      <input
-                        type="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleInputChange}
-                        placeholder="candidate@example.com"
-                        className="h-11 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md border border-outline-variant/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary transition-all"
-                      />
+                      <div className="flex items-center justify-between">
+                        <label className="font-label-md text-xs font-semibold text-on-surface">
+                          Email Address <span className="text-error">*</span>
+                        </label>
+                        {isEmailVerified ? (
+                          <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                            <span className="material-symbols-outlined text-xs">verified</span>
+                            Verified
+                          </span>
+                        ) : (
+                          <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                            Verification recommended
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex gap-2">
+                        <input
+                          type="email"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleInputChange}
+                          disabled={isEmailVerified}
+                          placeholder="candidate@example.com"
+                          className="flex-1 h-11 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md border border-outline-variant/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-75"
+                        />
+                        {!isEmailVerified && (
+                          <button
+                            type="button"
+                            onClick={handleSendAdmissionOtp}
+                            disabled={otpTimer > 0 || !formData.email}
+                            className="px-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1 shrink-0"
+                          >
+                            <span className="material-symbols-outlined text-xs">send</span>
+                            <span>{otpTimer > 0 ? `${otpTimer}s` : otpSent ? 'Resend' : 'Verify'}</span>
+                          </button>
+                        )}
+                      </div>
+
+                      {/* Inline OTP Verification Input */}
+                      {otpSent && !isEmailVerified && (
+                        <div className="mt-2 p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-center gap-2 animate-scale-up">
+                          <input
+                            type="text"
+                            maxLength={6}
+                            placeholder="6-digit OTP"
+                            value={otpCode}
+                            onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
+                            className="w-28 h-9 px-2.5 rounded-md bg-white border border-emerald-300 text-xs font-mono tracking-widest font-bold text-primary focus:outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={handleVerifyAdmissionOtp}
+                            className="h-9 px-3.5 rounded-md bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs cursor-pointer shadow-xs"
+                          >
+                            Confirm OTP
+                          </button>
+                        </div>
+                      )}
                     </div>
 
                     <div className="md:col-span-2 flex flex-col gap-1">

@@ -24,6 +24,26 @@ export const authService = {
     return res;
   },
 
+  // Resend Email OTP: Request 6-digit verification code
+  sendOtp: async ({ email, purpose = 'login', name = '' }) => {
+    return await apiClient.post('/auth/send-otp', { email, purpose, name });
+  },
+
+  // Resend Email OTP: Verify code & Authenticate
+  verifyOtp: async ({ email, otp, purpose = 'login' }) => {
+    const res = await apiClient.post('/auth/verify-otp', { email, otp, purpose });
+    if (res.token) {
+      if (res.userType === 'admin') {
+        localStorage.setItem('hit_admin_token', res.token);
+        localStorage.setItem('hit_admin_user', JSON.stringify(res.data));
+      } else {
+        localStorage.setItem('hit_student_token', res.token);
+        localStorage.setItem('hit_student_user', JSON.stringify(res.data));
+      }
+    }
+    return res;
+  },
+
   
   logout: () => {
     localStorage.removeItem('hit_admin_token');

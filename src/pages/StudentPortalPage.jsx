@@ -45,13 +45,46 @@ export default function StudentPortalPage() {
   }, []);
 
   
+  // Navigation state: 'login' | 'signup'
   const [authMode, setAuthMode] = useState('login'); 
 
-  
+  // Login method: 'password' | 'otp'
+  const [loginMethod, setLoginMethod] = useState('password');
+
+  // Password login state
   const [loginCreds, setLoginCreds] = useState({
     rollOrEmail: '',
     password: '',
   });
+
+  // OTP login state
+  const [otpLoginEmail, setOtpLoginEmail] = useState('');
+  const [otpLoginCode, setOtpLoginCode] = useState('');
+  const [otpLoginSent, setOtpLoginSent] = useState(false);
+  const [otpResendTimer, setOtpResendTimer] = useState(0);
+
+  // Signup OTP verification state
+  const [signupOtpCode, setSignupOtpCode] = useState('');
+  const [signupOtpSent, setSignupOtpSent] = useState(false);
+  const [isSignupEmailVerified, setIsSignupEmailVerified] = useState(false);
+  const [signupResendTimer, setSignupResendTimer] = useState(0);
+
+  // Countdown timers for OTP resend
+  useEffect(() => {
+    let timer;
+    if (otpResendTimer > 0) {
+      timer = setInterval(() => setOtpResendTimer((prev) => prev - 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [otpResendTimer]);
+
+  useEffect(() => {
+    let timer;
+    if (signupResendTimer > 0) {
+      timer = setInterval(() => setSignupResendTimer((prev) => prev - 1), 1000);
+    }
+    return () => clearInterval(timer);
+  }, [signupResendTimer]);
 
   // Sign up / Registration form state
   const [signUpData, setSignUpData] = useState({
@@ -126,10 +159,110 @@ export default function StudentPortalPage() {
   };
 
   
+  // OTP Login Handlers
+  const handleSendLoginOtp = async (e) => {
+    e?.preventDefault();
+    const email = otpLoginEmail.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      notify('error', 'Please enter a valid registered email address to receive OTP.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.sendOtp({ email, purpose: 'login' });
+        setOtpLoginSent(true);
+        setOtpResendTimer(60);
+        notify('success', res.message || `Verification code sent to ${email}`);
+      } catch (err) {
+        notify('error', err.message || 'Failed to dispatch OTP code. Please check email address.');
+      }
+    }, 'Dispatching Secure OTP via Resend...');
+  };
+
+  const handleVerifyLoginOtp = async (e) => {
+    e.preventDefault();
+    const email = otpLoginEmail.trim().toLowerCase();
+    const code = otpLoginCode.trim();
+
+    if (!code || code.length !== 6) {
+      notify('error', 'Please enter the 6-digit OTP code sent to your email.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.verifyOtp({ email, otp: code, purpose: 'login' });
+        if (res && (res.success || res.token)) {
+          const userData = res.data || {};
+          logIn(userData);
+          notify('success', `Welcome back, ${userData.fullName || 'Student'}! Verified via Email OTP.`);
+          return;
+        }
+        notify('error', res?.message || 'Authentication failed with the provided OTP.');
+      } catch (err) {
+        notify('error', err.message || 'OTP verification failed. Please try again.');
+      }
+    }, 'Verifying OTP & Authorizing Session...');
+  };
+
+  // Signup OTP Handlers
+  const handleSendSignupOtp = async () => {
+    const email = signUpData.email.trim().toLowerCase();
+    if (!email || !email.includes('@')) {
+      notify('error', 'Please enter a valid email address first.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.sendOtp({
+          email,
+          purpose: 'signup',
+          name: signUpData.fullName || 'Student',
+        });
+        setSignupOtpSent(true);
+        setSignupResendTimer(60);
+        notify('success', res.message || `6-digit verification code sent to ${email}`);
+      } catch (err) {
+        notify('error', err.message || 'Failed to send OTP to email.');
+      }
+    }, 'Dispatching Email Verification Code...');
+  };
+
+  const handleVerifySignupOtp = async () => {
+    const email = signUpData.email.trim().toLowerCase();
+    const code = signupOtpCode.trim();
+
+    if (!code || code.length !== 6) {
+      notify('error', 'Please enter the 6-digit verification code.');
+      return;
+    }
+
+    await withLoader(async () => {
+      try {
+        const res = await authService.verifyOtp({ email, otp: code, purpose: 'signup' });
+        if (res?.success) {
+          setIsSignupEmailVerified(true);
+          notify('success', 'Email verified successfully! You can now complete registration.');
+        } else {
+          notify('error', res?.message || 'Failed to verify code.');
+        }
+      } catch (err) {
+        notify('error', err.message || 'Verification failed. Please check the OTP code.');
+      }
+    }, 'Verifying Email Code...');
+  };
+
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     if (!signUpData.fullName || !signUpData.mobile) {
       alert('Please enter your full name and mobile number.');
+      return;
+    }
+
+    if (!isSignupEmailVerified) {
+      notify('error', 'Please verify your email address using the OTP code before submitting.');
       return;
     }
 
@@ -144,7 +277,7 @@ export default function StudentPortalPage() {
         }
         notify(
           'success',
-          `Enrollment Confirmed! Roll No: ${res.rollId}. Registration fee of ₹100 Settled.`
+          `Enrollment Confirmed! Roll No: ${res.rollId}. Confirmation email dispatched.`
         );
       }
     }, 'Registering Student, Allocating Roll Number & Processing ₹100 Fee...');
@@ -257,83 +390,196 @@ export default function StudentPortalPage() {
               </div>
 
               {authMode === 'login' ? (
-                                <form onSubmit={handleLoginSubmit} className="max-w-md mx-auto w-full space-y-4">
+                <div className="max-w-md mx-auto w-full">
                   <div className="text-center pb-2">
                     <h3 className="font-headline text-xl font-bold text-primary">Sign In to Your Dossier</h3>
                     <p className="text-xs text-on-surface-variant mt-0.5">
-                      Enter your Permanent Roll Number or registered Mobile/Email
+                      Access your enrolled course ledger, PVC ID card & academic ledger
                     </p>
                   </div>
 
-                <div>
-                  <label className="text-xs font-bold text-on-surface-variant block mb-1">
-                    Roll Number / Mobile / Email
-                  </label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                      badge
-                    </span>
-                    <input
-                      type="text"
-                      required
-                      placeholder="e.g. HIT-STU-2026-00001"
-                      value={loginCreds.rollOrEmail}
-                      onChange={(e) => setLoginCreds({ ...loginCreds, rollOrEmail: e.target.value })}
-                      className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                    />
+                  {/* Login Mode Toggle: Password PIN vs Email OTP */}
+                  <div className="flex rounded-xl bg-surface-container-low p-1 mb-4 border border-outline-variant/30 text-xs">
+                    <button
+                      type="button"
+                      onClick={() => setLoginMethod('password')}
+                      className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        loginMethod === 'password'
+                          ? 'bg-primary text-white shadow-xs'
+                          : 'text-on-surface-variant hover:text-primary'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">lock</span>
+                      <span>Password Sign In</span>
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setLoginMethod('otp')}
+                      className={`flex-1 py-1.5 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
+                        loginMethod === 'otp'
+                          ? 'bg-primary text-white shadow-xs'
+                          : 'text-on-surface-variant hover:text-primary'
+                      }`}
+                    >
+                      <span className="material-symbols-outlined text-sm">mail</span>
+                      <span>Email OTP Sign In</span>
+                    </button>
+                  </div>
+
+                  {loginMethod === 'password' ? (
+                    <form onSubmit={handleLoginSubmit} className="space-y-4">
+                      <div>
+                        <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                          Roll Number / Mobile / Email
+                        </label>
+                        <div className="relative">
+                          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+                            badge
+                          </span>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. HIT-STU-2026-00001"
+                            value={loginCreds.rollOrEmail}
+                            onChange={(e) => setLoginCreds({ ...loginCreds, rollOrEmail: e.target.value })}
+                            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                          Password / Date of Birth PIN
+                        </label>
+                        <div className="relative">
+                          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+                            lock
+                          </span>
+                          <input
+                            type="password"
+                            required
+                            placeholder="••••••••"
+                            value={loginCreds.password}
+                            onChange={(e) => setLoginCreds({ ...loginCreds, password: e.target.value })}
+                            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between text-xs text-on-surface-variant pt-1">
+                        <label className="flex items-center gap-1.5 cursor-pointer">
+                          <input type="checkbox" defaultChecked className="rounded border-outline-variant text-primary" />
+                          <span>Remember my device</span>
+                        </label>
+                        <a href="tel:1800HITSKILL" className="text-secondary font-semibold hover:underline">
+                          Forgot Roll No?
+                        </a>
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="btn-primary w-full h-11"
+                      >
+                        <span className="material-symbols-outlined text-base">login</span>
+                        <span>Sign In to Student Portal</span>
+                      </button>
+                    </form>
+                  ) : (
+                    <form onSubmit={otpLoginSent ? handleVerifyLoginOtp : handleSendLoginOtp} className="space-y-4">
+                      <div>
+                        <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                          Roll Number or Registered Email
+                        </label>
+                        <div className="relative">
+                          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+                            badge
+                          </span>
+                          <input
+                            type="text"
+                            required
+                            placeholder="e.g. HIT-STU-2026-00001 or rahul@gmail.com"
+                            value={otpLoginEmail}
+                            onChange={(e) => setOtpLoginEmail(e.target.value)}
+                            disabled={otpLoginSent}
+                            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-75"
+                          />
+                        </div>
+                      </div>
+
+                      {otpLoginSent && (
+                        <div>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-xs font-bold text-on-surface-variant">
+                              Enter 6-Digit OTP Code
+                            </label>
+                            <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                              <span className="material-symbols-outlined text-xs">mark_email_read</span>
+                              Sent via Resend
+                            </span>
+                          </div>
+                          <div className="relative">
+                            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+                              pin
+                            </span>
+                            <input
+                              type="text"
+                              maxLength={6}
+                              required
+                              placeholder="6-digit code"
+                              value={otpLoginCode}
+                              onChange={(e) => setOtpLoginCode(e.target.value.replace(/\D/g, ''))}
+                              className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-sm font-mono tracking-widest font-bold text-primary focus:ring-2 focus:ring-primary/20"
+                            />
+                          </div>
+
+                          <div className="flex items-center justify-between text-xs text-on-surface-variant mt-2">
+                            <button
+                              type="button"
+                              onClick={() => { setOtpLoginSent(false); setOtpLoginCode(''); }}
+                              className="text-[#065F46] font-medium hover:underline cursor-pointer"
+                            >
+                              ← Change Email
+                            </button>
+                            {otpResendTimer > 0 ? (
+                              <span className="text-slate-400">Resend code in {otpResendTimer}s</span>
+                            ) : (
+                              <button
+                                type="button"
+                                onClick={handleSendLoginOtp}
+                                className="text-secondary font-semibold hover:underline cursor-pointer"
+                              >
+                                Resend OTP
+                              </button>
+                            )}
+                          </div>
+                        </div>
+                      )}
+
+                      <button
+                        type="submit"
+                        className="btn-primary w-full h-11"
+                      >
+                        <span className="material-symbols-outlined text-base">
+                          {otpLoginSent ? 'verified_user' : 'send'}
+                        </span>
+                        <span>{otpLoginSent ? 'Verify OTP & Access Dossier' : 'Send Verification OTP'}</span>
+                      </button>
+                    </form>
+                  )}
+
+                  {/* 1-Click Demo Login */}
+                  <div className="pt-4 border-t border-outline-variant/20 text-center">
+                    <span className="text-[11px] text-on-surface-variant block mb-2">Want to test the portal instantly?</span>
+                    <button
+                      type="button"
+                      onClick={handleDemoLogin}
+                      className="btn-secondary w-full h-10"
+                    >
+                      <span>1-Click Demo Login as Rahul Kumar Verma (ADCA)</span>
+                    </button>
                   </div>
                 </div>
-
-                <div>
-                  <label className="text-xs font-bold text-on-surface-variant block mb-1">
-                    Password / Date of Birth PIN
-                  </label>
-                  <div className="relative">
-                    <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                      lock
-                    </span>
-                    <input
-                      type="password"
-                      required
-                      placeholder="••••••••"
-                      value={loginCreds.password}
-                      onChange={(e) => setLoginCreds({ ...loginCreds, password: e.target.value })}
-                      className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center justify-between text-xs text-on-surface-variant pt-1">
-                  <label className="flex items-center gap-1.5 cursor-pointer">
-                    <input type="checkbox" defaultChecked className="rounded border-outline-variant text-primary" />
-                    <span>Remember my device</span>
-                  </label>
-                  <a href="tel:1800HITSKILL" className="text-secondary font-semibold hover:underline">
-                    Forgot Roll No?
-                  </a>
-                </div>
-
-                <button
-                  type="submit"
-                  className="btn-primary w-full h-11"
-                >
-                  <span className="material-symbols-outlined text-base">login</span>
-                  <span>Sign In to Student Portal</span>
-                </button>
-
-                
-                <div className="pt-4 border-t border-outline-variant/20 text-center">
-                  <span className="text-[11px] text-on-surface-variant block mb-2">Want to test the portal instantly?</span>
-                  <button
-                    type="button"
-                    onClick={handleDemoLogin}
-                    className="btn-secondary w-full h-10"
-                  >
-                    <span>1-Click Demo Login as Rahul Kumar Verma (ADCA)</span>
-                  </button>
-                </div>
-              </form>
-            ) : (
+              ) : (
                             <form onSubmit={handleSignUpSubmit} className="space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
                   <div>
@@ -398,16 +644,77 @@ export default function StudentPortalPage() {
                     />
                   </div>
 
-                  <div>
-                    <label className="text-xs font-bold text-on-surface-variant block mb-1">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="student@gmail.com"
-                      value={signUpData.email}
-                      onChange={(e) => setSignUpData({ ...signUpData, email: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20"
-                    />
+                  <div className="sm:col-span-2">
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="text-xs font-bold text-on-surface-variant">Email Address *</label>
+                      {isSignupEmailVerified ? (
+                        <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">verified</span>
+                          Email Verified
+                        </span>
+                      ) : (
+                        <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
+                          OTP verification required
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex gap-2">
+                      <input
+                        type="email"
+                        required
+                        placeholder="student@gmail.com"
+                        value={signUpData.email}
+                        disabled={isSignupEmailVerified}
+                        onChange={(e) => {
+                          setSignUpData({ ...signUpData, email: e.target.value });
+                          setIsSignupEmailVerified(false);
+                          setSignupOtpSent(false);
+                        }}
+                        className="flex-1 px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-primary/20 disabled:opacity-75"
+                      />
+                      {!isSignupEmailVerified && (
+                        <button
+                          type="button"
+                          onClick={handleSendSignupOtp}
+                          disabled={signupResendTimer > 0 || !signUpData.email}
+                          className="px-3.5 py-2 rounded-xl bg-[#064E3B] hover:bg-[#064E3B]/90 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1"
+                        >
+                          <span className="material-symbols-outlined text-xs">send</span>
+                          <span>
+                            {signupResendTimer > 0
+                              ? `Resend in ${signupResendTimer}s`
+                              : signupOtpSent
+                              ? 'Resend OTP'
+                              : 'Send OTP'}
+                          </span>
+                        </button>
+                      )}
+                    </div>
+
+                    {/* Inline OTP Input Box */}
+                    {signupOtpSent && !isSignupEmailVerified && (
+                      <div className="mt-2.5 p-3 rounded-xl bg-emerald-50/70 border border-emerald-200 flex flex-wrap items-center gap-2 animate-scale-up">
+                        <span className="text-xs font-semibold text-[#064E3B] shrink-0 flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">pin</span>
+                          <span>Enter 6-digit Code:</span>
+                        </span>
+                        <input
+                          type="text"
+                          maxLength={6}
+                          placeholder="e.g. 582914"
+                          value={signupOtpCode}
+                          onChange={(e) => setSignupOtpCode(e.target.value.replace(/\D/g, ''))}
+                          className="w-32 px-3 py-1.5 rounded-lg bg-white border border-emerald-300 text-xs font-mono tracking-widest font-bold text-primary focus:outline-none"
+                        />
+                        <button
+                          type="button"
+                          onClick={handleVerifySignupOtp}
+                          className="px-4 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs cursor-pointer shadow-xs"
+                        >
+                          Verify Code
+                        </button>
+                      </div>
+                    )}
                   </div>
 
                   <div>

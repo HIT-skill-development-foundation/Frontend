@@ -551,6 +551,11 @@ export default function HomePage({ setActiveTab }) {
                     </h4>
                     <p className="text-sm text-slate-600 max-w-md mx-auto leading-relaxed">
                       Thank you, <strong>{franchiseForm.name}</strong>. Our Head Office Coordinator will connect on <strong>{franchiseForm.phone}</strong> with the prospectus, fee schedule, and draft MoU.
+                      {franchiseForm.email && (
+                        <span className="block mt-2 text-xs text-emerald-700 font-semibold bg-emerald-50 py-1.5 px-3 rounded-lg border border-emerald-200">
+                          ✉️ An official affiliation confirmation email has been dispatched to {franchiseForm.email}.
+                        </span>
+                      )}
                     </p>
                   </div>
                   <div className="pt-4 flex justify-center gap-3">
