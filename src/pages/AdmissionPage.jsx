@@ -6,13 +6,22 @@ import admissionService from '../services/admissionService';
 import { courseService, centreService, uploadService, authService } from '../services/hitApi';
 import ImageUploader from '../components/common/ImageUploader';
 
+const INITIAL_CENTRES = [
+  { id: 'HIT-CEN-0001', name: 'Ghosi Main Campus (HQ)', district: 'Mau', address: 'Kasba Khas, Ghosi, Mau - 275105' },
+  { id: 'HIT-CEN-0002', name: 'HIT Mau City Center', district: 'Mau', address: 'Sahadatpura, Near Railway Crossing, Mau - 275101' },
+  { id: 'HIT-CEN-0003', name: 'HIT Kopaganj Branch', district: 'Mau', address: 'Main Market, Kopaganj - 275305' },
+  { id: 'HIT-CEN-0004', name: 'HIT Mohammadabad Gohna', district: 'Mau', address: 'Station Road, Mohammadabad - 276403' },
+  { id: 'HIT-CEN-0005', name: 'HIT Azamgarh District Hub', district: 'Azamgarh', address: 'Civil Lines, Near Collectrate, Azamgarh - 276001' },
+  { id: 'HIT-CEN-0006', name: 'HIT Lucknow Regional ATC', district: 'Lucknow', address: 'Alambagh Chauraha, VIP Road, Lucknow - 226005' },
+];
+
 export default function AdmissionPage({ setActiveTab, setStudentData }) {
   const navigate = useNavigate();
   const { updateStudent } = useStudent();
   const { withLoader, notify } = useLoader();
 
   const [coursesList, setCoursesList] = useState([]);
-  const [centresList, setCentresList] = useState([]);
+  const [centresList, setCentresList] = useState(INITIAL_CENTRES);
 
   useEffect(() => {
     courseService.getAllCourses()
@@ -28,8 +37,8 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     centreService.getCentres()
       .then((res) => {
         const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
-        setCentresList(list);
-        if (list.length > 0) {
+        if (list && list.length > 0) {
+          setCentresList(list);
           setFormData((prev) => ({ ...prev, centreId: prev.centreId || list[0].id || list[0]._id }));
         }
       })
@@ -51,7 +60,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     state: 'Uttar Pradesh',
     pincode: '',
     courseId: '',
-    centreId: '',
+    centreId: 'HIT-CEN-0001',
     batchTime: '08:00 AM - 10:00 AM (Morning)',
     qualification: '12th Pass',
     aadhaarNo: '',
@@ -663,11 +672,14 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                         onChange={handleInputChange}
                         className="h-12 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md border border-outline-variant/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary font-medium"
                       >
-                        {centresList.map((centre) => (
-                          <option key={centre.id} value={centre.id}>
-                            {centre.name} ({centre.id}) - {centre.district}
-                          </option>
-                        ))}
+                        {centresList.map((centre) => {
+                          const cid = centre.id || centre._id || 'HIT-CEN-0001';
+                          return (
+                            <option key={cid} value={cid}>
+                              {centre.name} ({cid}) – {centre.district}
+                            </option>
+                          );
+                        })}
                       </select>
                     </div>
 
