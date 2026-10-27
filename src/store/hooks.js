@@ -66,6 +66,7 @@ import {
 } from './slices/adminSlice';
 import {
   selectGalleryItems,
+  setGalleryItems,
   addGalleryItem,
   deleteGalleryItem,
   setGalleryCategory,
@@ -205,6 +206,7 @@ export function useAdmin() {
   const removeUniversityProgram = (id) => dispatch(deleteUniversityProgram(id));
   const addNewGalleryItem = (item) => dispatch(addGalleryItem(item));
   const removeGalleryItem = (id) => dispatch(deleteGalleryItem(id));
+  const syncGalleryItems = (items) => dispatch(setGalleryItems(items));
 
   return {
     isAdminLoggedIn,
@@ -224,6 +226,7 @@ export function useAdmin() {
     syncPendingApprovals,
     syncCourses,
     syncUniversityPrograms,
+    syncGalleryItems,
     recordExpense,
     removeExpense,
     approveCert,

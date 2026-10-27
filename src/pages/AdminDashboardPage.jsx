@@ -36,6 +36,7 @@ export default function AdminDashboardPage() {
     syncPendingApprovals,
     syncCourses,
     syncUniversityPrograms,
+    syncGalleryItems,
     recordExpense,
     removeExpense,
     approveCert,
@@ -114,10 +115,21 @@ export default function AdminDashboardPage() {
     isActive: true,
   });
 
+  const GALLERY_CATEGORIES = [
+    { id: 'all', label: 'All Campus Moments & Events' },
+    { id: 'classroom', label: 'Classroom & Labs' },
+    { id: 'pmkvy', label: 'PMKVY & Workshops' },
+    { id: 'felicitations', label: 'Ceremonies & Felicitations' },
+    { id: 'infrastructure', label: 'Campus & Infrastructure' },
+    { id: 'leadership', label: 'Leadership & Administration' },
+    { id: 'events', label: 'Community Events' },
+  ];
+
+  const [adminGalleryCategory, setAdminGalleryCategory] = useState('all');
   const [showAddGalleryModal, setShowAddGalleryModal] = useState(false);
   const [newGalleryForm, setNewGalleryForm] = useState({
     title: '',
-    category: 'infrastructure',
+    category: 'classroom',
     location: 'Ghosi Central Campus',
     date: 'October 2026',
     badge: 'Event Photo',
@@ -162,6 +174,14 @@ export default function AdminDashboardPage() {
       const univRes = await courseService.getUniversityPrograms().catch(() => null);
       if (univRes?.data && Array.isArray(univRes.data)) {
         syncUniversityPrograms(univRes.data);
+      }
+
+      // Sync Photo Gallery Items
+      const galleryRes = await galleryService.getItems().catch(() => null);
+      if (galleryRes?.data && Array.isArray(galleryRes.data)) {
+        syncGalleryItems(galleryRes.data);
+      } else if (Array.isArray(galleryRes)) {
+        syncGalleryItems(galleryRes);
       }
     } catch (err) {
       console.warn('Dashboard live sync non-blocking error:', err.message);
@@ -483,7 +503,7 @@ export default function AdminDashboardPage() {
 
         const payload = {
           title: newGalleryForm.title.trim(),
-          category: newGalleryForm.category || 'infrastructure',
+          category: newGalleryForm.category || 'classroom',
           location: newGalleryForm.location || 'Ghosi Central Campus',
           date: newGalleryForm.date || 'October 2026',
           badge: newGalleryForm.badge || 'Event Photo',
@@ -493,11 +513,12 @@ export default function AdminDashboardPage() {
           isFeatured: true,
         };
         const res = await galleryService.addItem(payload);
-        addNewGalleryItem(res?.data || payload);
+        const savedItem = { ...payload, ...(res?.data || {}) };
+        addNewGalleryItem(savedItem);
         setShowAddGalleryModal(false);
         setNewGalleryForm({
           title: '',
-          category: 'infrastructure',
+          category: 'classroom',
           location: 'Ghosi Central Campus',
           date: 'October 2026',
           badge: 'Event Photo',
@@ -510,6 +531,23 @@ export default function AdminDashboardPage() {
         notify('error', err.message || 'Failed to upload photo and publish record.');
       }
     }, 'Uploading photograph and publishing event record...');
+  };
+
+  const handleDeleteGalleryPhoto = async (item) => {
+    const id = item.id || item._id;
+    if (!id) return;
+    if (!window.confirm(`Are you sure you want to delete "${item.title || 'this photograph'}" from the gallery?`)) {
+      return;
+    }
+    await withLoader(async () => {
+      try {
+        await galleryService.deleteItem(id);
+        removeGalleryItem(id);
+        notify('success', 'Photograph deleted from gallery successfully.');
+      } catch (err) {
+        notify('error', err.message || 'Failed to delete photograph.');
+      }
+    }, 'Deleting photograph from central registry...');
   };
 
   const handleApprove = async (id, studentName) => {
@@ -2256,7 +2294,7 @@ export default function AdminDashboardPage() {
                         Photo Gallery & Event Media Management
                       </h2>
                       <p className="text-xs text-[#7A7168] mt-0.5">
-                        Manage celebrations, campus infrastructure, felicitations, and student convocations.
+                        Manage celebrations, campus infrastructure, felicitations, and student convocations across all official categories.
                       </p>
                     </div>
 
@@ -2270,45 +2308,106 @@ export default function AdminDashboardPage() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {(!galleryItems || galleryItems.length === 0) ? (
-                      <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl">
-                        No photographs uploaded yet. Click "Add Event Photo" to publish institutional media.
-                      </div>
-                    ) : (
-                      galleryItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="bg-[#FAF8F4] rounded-xl overflow-hidden border border-[#E7E0D4] flex flex-col justify-between"
+                  {/* Category Filter Tabs */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {GALLERY_CATEGORIES.map((cat) => {
+                      const isActive = adminGalleryCategory === cat.id;
+                      const count = cat.id === 'all'
+                        ? (galleryItems || []).length
+                        : (galleryItems || []).filter((item) => item.category === cat.id).length;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setAdminGalleryCategory(cat.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                            isActive
+                              ? 'bg-[#065F46] text-white shadow-xs font-semibold'
+                              : 'bg-[#FAF8F4] text-[#7A7168] hover:bg-[#F3EFE7] hover:text-[#1C1917] border border-[#E7E0D4]'
+                          }`}
                         >
-                          <div className="h-36 bg-[#065F46] overflow-hidden relative">
-                            <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
-                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono">
-                              {item.badge}
-                            </span>
-                          </div>
-
-                          <div className="p-3.5 flex-1 flex flex-col justify-between">
-                            <div>
-                              <h4 className="font-['Fraunces'] text-xs font-semibold text-[#1C1917] line-clamp-2">{item.title}</h4>
-                              <p className="text-[10px] text-[#7A7168] mt-1 font-mono">{item.location} • {item.date}</p>
-                            </div>
-
-                            <div className="pt-3 mt-3 border-t border-[#E7E0D4] flex justify-end">
-                              <button
-                                type="button"
-                                onClick={() => removeGalleryItem(item.id)}
-                                className="px-2 py-1 rounded text-rose-600 hover:bg-rose-50 text-xs font-semibold flex items-center gap-1 cursor-pointer"
-                              >
-                                <span className="material-symbols-outlined text-sm">delete</span>
-                                <span>Delete</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    )}
+                          <span>{cat.label}</span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                              isActive ? 'bg-white/20 text-white' : 'bg-[#E7E0D4] text-[#44403C]'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
+
+                  {(() => {
+                    const displayedItems = (galleryItems || []).filter((item) => {
+                      if (adminGalleryCategory === 'all') return true;
+                      return item.category === adminGalleryCategory;
+                    });
+
+                    return (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {displayedItems.length === 0 ? (
+                          <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl border border-dashed border-[#E7E0D4]">
+                            No photographs found for this category. Click &quot;Add Event Photo&quot; to publish institutional media.
+                          </div>
+                        ) : (
+                          displayedItems.map((item) => {
+                            const catObj = GALLERY_CATEGORIES.find((c) => c.id === item.category);
+                            const categoryLabel = catObj ? catObj.label : item.category || 'General';
+                            return (
+                              <div
+                                key={item.id || item._id}
+                                className="bg-[#FAF8F4] rounded-xl overflow-hidden border border-[#E7E0D4] flex flex-col justify-between group hover:border-[#065F46]/40 transition-all"
+                              >
+                                <div className="h-36 bg-[#065F46] overflow-hidden relative">
+                                  <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#065F46]/90 backdrop-blur-sm text-white text-[10px] font-medium shadow-xs">
+                                    {categoryLabel}
+                                  </span>
+                                  {item.badge && (
+                                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono">
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="p-3.5 flex-1 flex flex-col justify-between">
+                                  <div>
+                                    <h4 className="font-['Fraunces'] text-xs font-semibold text-[#1C1917] line-clamp-2">
+                                      {item.title}
+                                    </h4>
+                                    <p className="text-[10px] text-[#7A7168] mt-1 font-mono">
+                                      {item.location || 'Central Campus'} • {item.date || 'Active Session'}
+                                    </p>
+                                    {item.desc && (
+                                      <p className="text-[11px] text-[#7A7168] mt-1.5 line-clamp-2 leading-relaxed">
+                                        {item.desc}
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-3 mt-3 border-t border-[#E7E0D4] flex items-center justify-between">
+                                    <span className="text-[10px] text-[#7A7168] font-mono">
+                                      ID: #{item.id || 'N/A'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteGalleryPhoto(item)}
+                                      className="px-2 py-1 rounded text-rose-600 hover:bg-rose-50 text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                                    >
+                                      <span className="material-symbols-outlined text-sm">delete</span>
+                                      <span>Delete</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -2871,16 +2970,18 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Category</label>
+                  <label className="font-semibold text-[#1C1917] block mb-1">Gallery Category *</label>
                   <select
                     value={newGalleryForm.category}
                     onChange={(e) => setNewGalleryForm({ ...newGalleryForm, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
+                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] font-medium focus:outline-none focus:border-[#065F46]"
                   >
-                    <option value="infrastructure">Infrastructure</option>
-                    <option value="classroom">Classroom & Lab</option>
-                    <option value="felicitations">Felicitations & Awards</option>
-                    <option value="leadership">Leadership & Director</option>
+                    <option value="classroom">Classroom & Labs</option>
+                    <option value="pmkvy">PMKVY & Workshops</option>
+                    <option value="felicitations">Ceremonies & Felicitations</option>
+                    <option value="infrastructure">Campus & Infrastructure</option>
+                    <option value="leadership">Leadership & Administration</option>
+                    <option value="events">Community Events</option>
                   </select>
                 </div>
 
