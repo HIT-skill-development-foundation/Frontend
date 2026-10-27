@@ -58,6 +58,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     photoUrl: '',
     photoUploaded: false,
     aadhaarUploaded: false,
+    emailVerificationToken: '',
     paymentMode: 'upi',
   });
 
@@ -115,7 +116,9 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
       try {
         const res = await authService.verifyOtp({ email, otp: code, purpose: 'signup' });
         if (res?.success) {
+          const token = res.data?.verificationToken || res.verificationToken || '';
           setIsEmailVerified(true);
+          setFormData((prev) => ({ ...prev, emailVerificationToken: token }));
           notify('success', 'Email verified successfully! Confirmation email will be delivered here.');
         } else {
           notify('error', res?.message || 'Verification failed.');
@@ -132,6 +135,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     if (name === 'email') {
       setIsEmailVerified(false);
       setOtpSent(false);
+      setFormData((prev) => ({ ...prev, emailVerificationToken: '' }));
     }
   };
 
@@ -200,6 +204,10 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     }
     if (!formData.email.trim() || !formData.email.includes('@')) {
       notify('error', 'Please enter a valid email address.');
+      return false;
+    }
+    if (!isEmailVerified) {
+      notify('error', 'Email verification is mandatory! Please verify your email via the 6-digit OTP code before proceeding to Step 2.');
       return false;
     }
     return true;
@@ -472,18 +480,19 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     </div>
 
                     <div className="flex flex-col gap-1">
-                      <div className="flex items-center justify-between">
+                      <div className="flex items-center justify-between mb-1">
                         <label className="font-label-md text-xs font-semibold text-on-surface">
                           Email Address <span className="text-error">*</span>
                         </label>
                         {isEmailVerified ? (
-                          <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                          <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-bold flex items-center gap-1">
                             <span className="material-symbols-outlined text-xs">verified</span>
-                            Verified
+                            Email Verified
                           </span>
                         ) : (
-                          <span className="text-[10px] text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded border border-amber-200">
-                            Verification recommended
+                          <span className="text-[11px] text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200 font-bold flex items-center gap-1">
+                            <span className="material-symbols-outlined text-xs">warning</span>
+                            Verification Mandatory *
                           </span>
                         )}
                       </div>
@@ -497,15 +506,28 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                           placeholder="candidate@example.com"
                           className="flex-1 h-11 px-space-md rounded-lg bg-surface-container-low text-on-surface font-body-md border border-outline-variant/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-secondary transition-all disabled:opacity-75"
                         />
-                        {!isEmailVerified && (
+                        {isEmailVerified ? (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setIsEmailVerified(false);
+                              setOtpSent(false);
+                              setFormData((prev) => ({ ...prev, emailVerificationToken: '' }));
+                            }}
+                            className="px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-semibold text-xs whitespace-nowrap cursor-pointer transition-all flex items-center gap-1 shrink-0"
+                          >
+                            <span className="material-symbols-outlined text-xs">edit</span>
+                            <span>Change</span>
+                          </button>
+                        ) : (
                           <button
                             type="button"
                             onClick={handleSendAdmissionOtp}
                             disabled={otpTimer > 0 || !formData.email}
-                            className="px-3 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1 shrink-0"
+                            className="px-4 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1 shrink-0 shadow-xs"
                           >
                             <span className="material-symbols-outlined text-xs">send</span>
-                            <span>{otpTimer > 0 ? `${otpTimer}s` : otpSent ? 'Resend' : 'Verify'}</span>
+                            <span>{otpTimer > 0 ? `Resend in ${otpTimer}s` : otpSent ? 'Resend OTP' : 'Verify Email'}</span>
                           </button>
                         )}
                       </div>
