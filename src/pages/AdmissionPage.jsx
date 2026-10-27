@@ -206,10 +206,6 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
       notify('error', 'Please enter a valid email address.');
       return false;
     }
-    if (!isEmailVerified) {
-      notify('error', 'Email verification is mandatory! Please verify your email via the 6-digit OTP code before proceeding to Step 2.');
-      return false;
-    }
     return true;
   };
 
@@ -484,15 +480,10 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                         <label className="font-label-md text-xs font-semibold text-on-surface">
                           Email Address <span className="text-error">*</span>
                         </label>
-                        {isEmailVerified ? (
-                          <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-bold flex items-center gap-1">
+                        {isEmailVerified && (
+                          <span className="text-[11px] text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200 font-semibold flex items-center gap-1">
                             <span className="material-symbols-outlined text-xs">verified</span>
-                            Email Verified
-                          </span>
-                        ) : (
-                          <span className="text-[11px] text-red-700 bg-red-50 px-2 py-0.5 rounded-md border border-red-200 font-bold flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">warning</span>
-                            Verification Mandatory *
+                            Verified
                           </span>
                         )}
                       </div>
@@ -514,39 +505,52 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                               setOtpSent(false);
                               setFormData((prev) => ({ ...prev, emailVerificationToken: '' }));
                             }}
-                            className="px-3 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-on-surface font-semibold text-xs whitespace-nowrap cursor-pointer transition-all flex items-center gap-1 shrink-0"
+                            className="px-3.5 h-11 rounded-lg bg-surface-container-high hover:bg-surface-container-highest text-primary font-semibold text-xs whitespace-nowrap cursor-pointer transition-all flex items-center gap-1 shrink-0 border border-outline-variant/40"
                           >
                             <span className="material-symbols-outlined text-xs">edit</span>
                             <span>Change</span>
+                          </button>
+                        ) : otpTimer > 0 ? (
+                          <button
+                            type="button"
+                            disabled
+                            className="px-3.5 h-11 rounded-lg bg-slate-100 border border-slate-200 text-slate-500 font-medium text-xs whitespace-nowrap flex items-center gap-1.5 shrink-0 cursor-not-allowed"
+                          >
+                            <span className="material-symbols-outlined text-xs text-slate-400">schedule</span>
+                            <span>Resend in {otpTimer}s</span>
                           </button>
                         ) : (
                           <button
                             type="button"
                             onClick={handleSendAdmissionOtp}
-                            disabled={otpTimer > 0 || !formData.email}
-                            className="px-4 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1 shrink-0 shadow-xs"
+                            disabled={!formData.email}
+                            className="px-4 h-11 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-xs whitespace-nowrap cursor-pointer disabled:opacity-60 transition-all flex items-center gap-1.5 shrink-0 shadow-xs"
                           >
                             <span className="material-symbols-outlined text-xs">send</span>
-                            <span>{otpTimer > 0 ? `Resend in ${otpTimer}s` : otpSent ? 'Resend OTP' : 'Verify Email'}</span>
+                            <span>{otpSent ? 'Resend OTP' : 'Verify (Optional)'}</span>
                           </button>
                         )}
                       </div>
 
                       {/* Inline OTP Verification Input */}
                       {otpSent && !isEmailVerified && (
-                        <div className="mt-2 p-2.5 rounded-lg bg-emerald-50/70 border border-emerald-200 flex items-center gap-2 animate-scale-up">
+                        <div className="mt-2 p-2.5 rounded-xl bg-surface-container-low border border-outline-variant/40 flex items-center gap-2 animate-fadeIn">
+                          <span className="text-xs text-on-surface-variant font-medium shrink-0 flex items-center gap-1">
+                            <span className="material-symbols-outlined text-xs text-primary">pin</span>
+                            <span>Enter OTP:</span>
+                          </span>
                           <input
                             type="text"
                             maxLength={6}
-                            placeholder="6-digit OTP"
+                            placeholder="6-digit code"
                             value={otpCode}
                             onChange={(e) => setOtpCode(e.target.value.replace(/\D/g, ''))}
-                            className="w-28 h-9 px-2.5 rounded-md bg-white border border-emerald-300 text-xs font-mono tracking-widest font-bold text-primary focus:outline-none"
+                            className="w-28 h-9 px-2.5 rounded-lg bg-white border border-outline-variant/60 text-xs font-mono tracking-widest font-bold text-primary focus:outline-none focus:ring-2 focus:ring-primary/20 text-center"
                           />
                           <button
                             type="button"
                             onClick={handleVerifyAdmissionOtp}
-                            className="h-9 px-3.5 rounded-md bg-emerald-700 hover:bg-emerald-800 text-white font-semibold text-xs cursor-pointer shadow-xs"
+                            className="h-9 px-3.5 rounded-lg bg-primary hover:bg-primary/90 text-white font-semibold text-xs cursor-pointer shadow-xs transition-colors"
                           >
                             Confirm OTP
                           </button>
