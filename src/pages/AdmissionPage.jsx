@@ -165,7 +165,6 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
 
       if (res.success) {
         setGeneratedRegId(res.regId);
-        setGeneratedRollId(res.rollId);
         setIsCompleted(true);
 
         // Update Redux student dossier
@@ -186,9 +185,9 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
           // ignore
         }
 
-        notify('success', `Admission successfully processed! Roll No: ${res.rollId}`);
+        notify('success', `Admission successfully processed! Registration ID: ${res.regId}`);
       }
-    }, 'Cryptographically Generating Permanent Roll Number & Registering with NITI Aayog...');
+    }, 'Confirming Admission & Finalizing Application Dossier...');
   };
 
   const validateStep1 = () => {
@@ -272,7 +271,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
               { num: 1, title: 'Personal Dossier', desc: currentStep > 1 ? 'Completed' : 'Step 1' },
               { num: 2, title: 'Course & Centre', desc: currentStep > 2 ? 'Completed' : currentStep === 2 ? 'Active Selection' : 'Next' },
               { num: 3, title: 'Photo & Aadhaar', desc: currentStep > 3 ? 'Completed' : currentStep === 3 ? 'Document Upload' : 'Next' },
-              { num: 4, title: '₹100 Fee & Instant ID', desc: isCompleted ? 'Verified & Paid' : 'Verification & Pay' },
+              { num: 4, title: '₹100 Fee & Admission Confirmation', desc: isCompleted ? 'Verified & Paid' : 'Verification & Pay' },
             ].map((st) => {
               const isPassed = currentStep > st.num || isCompleted;
               const isCurrent = currentStep === st.num && !isCompleted;
@@ -344,20 +343,20 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-xl mx-auto my-8 text-left bg-surface-container-low p-6 rounded-xl border border-outline-variant/30">
               <div>
-                <span className="text-xs text-on-surface-variant block font-medium">Temporary Registration No.</span>
+                <span className="text-xs text-on-surface-variant block font-medium">Application / Registration No.</span>
                 <span className="font-mono text-base font-bold text-primary">{generatedRegId}</span>
               </div>
               <div>
-                <span className="text-xs text-on-surface-variant block font-medium">Permanent Roll Number</span>
-                <span className="font-mono text-base font-bold text-secondary">{generatedRollId}</span>
+                <span className="text-xs text-on-surface-variant block font-medium">Allocated Training Centre</span>
+                <span className="text-xs font-semibold text-on-surface">{centresList.find(c => c.id === formData.centreId)?.name || 'Ghosi Main Campus (HQ)'}</span>
               </div>
               <div>
-                <span className="text-xs text-on-surface-variant block font-medium">Allocated Training Centre</span>
-                <span className="text-xs font-semibold text-on-surface">{centresList.find(c => c.id === formData.centreId)?.name}</span>
+                <span className="text-xs text-on-surface-variant block font-medium">Registered Candidate Email</span>
+                <span className="text-xs font-semibold text-on-surface">{formData.email}</span>
               </div>
               <div>
                 <span className="text-xs text-on-surface-variant block font-medium">Processing Fee Settled</span>
-                <span className="text-xs font-bold text-emerald-700">₹100.00 (Instant Verification)</span>
+                <span className="text-xs font-bold text-emerald-700">₹100.00 (Registration Confirmed)</span>
               </div>
             </div>
 
@@ -369,7 +368,7 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                 }}
                 className="btn-primary h-12 px-6 w-full sm:w-auto"
               >
-                <span>Open Digital ID Card & Dossier</span>
+                <span>Go to Student Portal / Dossier</span>
               </button>
               <button
                 onClick={() => window.print()}

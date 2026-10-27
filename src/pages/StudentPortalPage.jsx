@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useStudent, useLoader } from '../store/hooks';
-import studentService from '../services/studentService';
 import { authService } from '../services/hitApi';
-import logo2 from '../assets/images/logo2.jpeg';
 import loginSvg from '../assets/images/Login.svg';
 
 export default function StudentPortalPage() {
   const navigate = useNavigate();
-  const { student, isLoggedIn, logIn, logOut, logDownload } = useStudent();
+  const { student, isLoggedIn, logIn, logOut } = useStudent();
   const { withLoader, notify } = useLoader();
 
-  // Login method: 'password' | 'otp'
-  const [loginMethod, setLoginMethod] = useState('password');
-
-  // Error state for prominent inline feedback
+  // Error state for prominent feedback
   const [loginError, setLoginError] = useState(null);
 
-  // Password login state
-  const [loginCreds, setLoginCreds] = useState({
-    rollOrEmail: '',
-    password: '',
-  });
-
-  // OTP login state
+  // Email & OTP login state
   const [otpLoginEmail, setOtpLoginEmail] = useState('');
   const [otpLoginCode, setOtpLoginCode] = useState('');
   const [otpLoginSent, setOtpLoginSent] = useState(false);
   const [otpResendTimer, setOtpResendTimer] = useState(0);
+
+  // Profile navigation tabs: 'profile' | 'academic' | 'fee'
+  const [activePortalTab, setActivePortalTab] = useState('profile');
 
   // Countdown timer for OTP resend
   useEffect(() => {
@@ -38,77 +30,14 @@ export default function StudentPortalPage() {
     return () => clearInterval(timer);
   }, [otpResendTimer]);
 
-  const [activePortalTab, setActivePortalTab] = useState('id_card'); 
-  const [cardSide, setCardSide] = useState('front'); 
-  const [downloadSuccess, setDownloadSuccess] = useState(false);
-
-  const handleLoginSubmit = async (e) => {
-    e.preventDefault();
-    setLoginError(null);
-    const identifier = loginCreds.rollOrEmail.trim();
-    const pass = loginCreds.password.trim();
-
-    if (!identifier || !pass) {
-      const msg = 'Please enter your Roll Number / Email and Password or DOB PIN.';
-      setLoginError(msg);
-      notify('error', msg);
-      return;
-    }
-
-    await withLoader(async () => {
-      try {
-        const res = await authService.loginStudent({
-          rollOrEmail: identifier,
-          password: pass,
-        });
-        if (res && (res.success || res.token)) {
-          const userData = res.data || {};
-          logIn(userData);
-          setLoginError(null);
-          notify('success', `Welcome back, ${userData.fullName || 'Student'}!`);
-          return;
-        }
-        const errMsg = res?.message || 'Authentication failed. Please verify your credentials.';
-        setLoginError(errMsg);
-        notify('error', errMsg);
-      } catch (err) {
-        const errMsg = err.message || 'Authentication failed. Please check your credentials or contact your ATC center.';
-        setLoginError(errMsg);
-        notify('error', errMsg);
-      }
-    }, 'Authenticating Student with Central Registry Ledger...');
-  };
-
-  const handleDemoLogin = async () => {
-    setLoginError(null);
-    await withLoader(async () => {
-      try {
-        const res = await authService.loginStudent({
-          rollOrEmail: 'rahul.verma@email.com',
-          password: 'password123',
-        });
-        if (res && (res.success || res.token)) {
-          logIn(res.data);
-          setLoginError(null);
-          notify('success', `Logged in as ${res.data?.fullName || 'Enrolled Student'}`);
-          return;
-        }
-        setLoginError('Demo student record is not available on server.');
-        notify('error', 'Demo student record is not available on server.');
-      } catch (err) {
-        setLoginError(err.message || 'Demo login failed.');
-        notify('error', err.message || 'Demo login failed.');
-      }
-    }, 'Accessing Student Dossier...');
-  };
-
-  // OTP Login Handlers
+  // Send OTP for student login
   const handleSendLoginOtp = async (e) => {
     e?.preventDefault();
     setLoginError(null);
-    const input = otpLoginEmail.trim();
-    if (!input) {
-      const msg = 'Please enter your Roll Number or registered email address.';
+    const email = otpLoginEmail.trim().toLowerCase();
+
+    if (!email || !email.includes('@')) {
+      const msg = 'Please enter your registered email address.';
       setLoginError(msg);
       notify('error', msg);
       return;
@@ -116,23 +45,24 @@ export default function StudentPortalPage() {
 
     await withLoader(async () => {
       try {
-        const res = await authService.sendOtp({ email: input, purpose: 'login' });
+        const res = await authService.sendOtp({ email, purpose: 'login' });
         setOtpLoginSent(true);
         setOtpResendTimer(60);
         setLoginError(null);
-        notify('success', res.message || `Verification code dispatched for ${input}`);
+        notify('success', res.message || `Verification code sent to ${email}`);
       } catch (err) {
-        const errMsg = err.message || 'Failed to dispatch OTP code. Please verify your email or roll number.';
+        const errMsg = err.message || 'Failed to dispatch verification code. Please check your email address.';
         setLoginError(errMsg);
         notify('error', errMsg);
       }
-    }, 'Dispatching Secure OTP via Resend...');
+    }, 'Dispatching Secure OTP Code...');
   };
 
+  // Verify OTP & log in
   const handleVerifyLoginOtp = async (e) => {
     e.preventDefault();
     setLoginError(null);
-    const input = otpLoginEmail.trim();
+    const email = otpLoginEmail.trim().toLowerCase();
     const code = otpLoginCode.trim();
 
     if (!code || code.length !== 6) {
@@ -144,56 +74,57 @@ export default function StudentPortalPage() {
 
     await withLoader(async () => {
       try {
-        const res = await authService.verifyOtp({ email: input, otp: code, purpose: 'login' });
+        const res = await authService.verifyOtp({ email, otp: code, purpose: 'login' });
         if (res && (res.success || res.token)) {
           const userData = res.data || {};
           logIn(userData);
           setLoginError(null);
-          notify('success', `Welcome back, ${userData.fullName || 'Student'}! Verified via Email OTP.`);
+          notify('success', `Welcome back, ${userData.fullName || 'Candidate'}!`);
           return;
         }
-        const errMsg = res?.message || 'Authentication failed with the provided OTP.';
+        const errMsg = res?.message || 'Authentication failed. Please check the OTP code.';
         setLoginError(errMsg);
         notify('error', errMsg);
       } catch (err) {
-        const errMsg = err.message || 'OTP verification failed. Please check the code and try again.';
+        const errMsg = err.message || 'Invalid or expired OTP code. Please try again.';
         setLoginError(errMsg);
         notify('error', errMsg);
       }
     }, 'Verifying OTP & Authorizing Session...');
   };
 
-  const handleDownloadId = async () => {
-    await withLoader(async () => {
-      await studentService.generateIdCardDownload(student.rollNo);
-      logDownload();
-      setDownloadSuccess(true);
-      notify('success', `High-Resolution PVC ID Card generated for ${student.fullName}`);
-      setTimeout(() => setDownloadSuccess(false), 4000);
-    }, 'Compiling Cryptographic PVC Student ID Card...');
+  const handleSignOut = () => {
+    authService.logout();
+    logOut();
+    setOtpLoginSent(false);
+    setOtpLoginCode('');
+    notify('info', 'Successfully signed out from Student Portal.');
   };
 
+  // -------------------------------------------------------------
+  // 1. UNAUTHENTICATED STATE: EMAIL + OTP SIGN-IN ONLY
+  // -------------------------------------------------------------
   if (!isLoggedIn) {
     return (
       <div className="flex flex-col w-full pb-space-xl">
-        {/* Top Institutional Gateway Header */}
+        {/* Top Institutional Header */}
         <div className="w-full bg-[#001030] text-white py-2.5 px-4 lg:px-8 border-b border-white/10">
           <div className="max-w-6xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
             <div className="flex items-center gap-2">
               <span className="text-white/70">Academic Wing</span>
               <span className="text-white/40">/</span>
-              <span className="text-secondary-fixed font-semibold">Central Student Authentication Gateway</span>
+              <span className="text-secondary-fixed font-semibold">Student Portal Authentication</span>
             </div>
             <span className="inline-flex items-center gap-1.5 text-emerald-400 font-medium">
               <span className="material-symbols-outlined text-sm">lock</span>
-              256-Bit SSL Encrypted Ledger
+              Verified Student Gateway
             </span>
           </div>
         </div>
 
         <div className="max-w-5xl mx-auto w-full px-4 sm:px-6 py-8 sm:py-12">
-          <div className="bg-surface-container-lowest rounded-3xl shadow-xl border border-outline-variant/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[580px]">
-            {/* Left Institutional Branding & Illustration */}
+          <div className="bg-surface-container-lowest rounded-3xl shadow-xl border border-outline-variant/30 overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[540px]">
+            {/* Left Institutional Branding */}
             <div className="lg:col-span-5 bg-[#00163d] p-6 sm:p-8 flex flex-col justify-between text-white relative overflow-hidden border-b lg:border-b-0 lg:border-r border-white/10">
               <div className="relative z-10 space-y-2">
                 <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider">
@@ -204,7 +135,7 @@ export default function StudentPortalPage() {
                   Student Portal
                 </h2>
                 <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
-                  Sign in with your institutional Roll Number or registered email to view your digital PVC ID card, verified academic ledger, and course dossier.
+                  Sign in with your registered email and secure OTP to view your admission dossier, batch timing, academic curriculum, and fee records.
                 </p>
               </div>
 
@@ -219,7 +150,7 @@ export default function StudentPortalPage() {
               <div className="relative z-10 pt-4 border-t border-white/10 space-y-2 text-xs text-slate-300">
                 <div className="flex items-center gap-2 text-emerald-300">
                   <span className="material-symbols-outlined text-sm">verified_user</span>
-                  <span className="font-semibold text-[11px]">Instant Digital PVC Card Generation</span>
+                  <span className="font-semibold text-[11px]">Passwordless Email OTP Security</span>
                 </div>
                 <div className="flex items-center gap-2 text-slate-300">
                   <span className="material-symbols-outlined text-sm text-secondary-fixed">school</span>
@@ -231,7 +162,7 @@ export default function StudentPortalPage() {
             {/* Right Login Form Column */}
             <div className="lg:col-span-7 p-6 sm:p-10 flex flex-col justify-center bg-surface-container-lowest">
               <div className="max-w-md mx-auto w-full">
-                <div className="pb-4">
+                <div className="pb-5">
                   <span className="text-xs font-bold uppercase tracking-wider text-secondary">
                     Official Candidate Access
                   </span>
@@ -239,7 +170,7 @@ export default function StudentPortalPage() {
                     Sign In to Your Dossier
                   </h3>
                   <p className="text-xs text-on-surface-variant mt-1 leading-relaxed">
-                    Exclusive login gateway for already enrolled students.
+                    Enter your registered email address to receive a 6-digit verification code.
                   </p>
                 </div>
 
@@ -250,7 +181,7 @@ export default function StudentPortalPage() {
                       error
                     </span>
                     <div className="flex-1">
-                      <strong className="block font-semibold">Authentication Issue</strong>
+                      <strong className="block font-semibold">Sign In Notice</strong>
                       <span>{loginError}</span>
                     </div>
                     <button
@@ -263,219 +194,108 @@ export default function StudentPortalPage() {
                   </div>
                 )}
 
-                {/* Login Method Toggle: Password PIN vs Email OTP */}
-                <div className="flex rounded-xl bg-surface-container-low p-1 mb-5 border border-outline-variant/30 text-xs">
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginMethod('password');
-                      setLoginError(null);
-                    }}
-                    className={`flex-1 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      loginMethod === 'password'
-                        ? 'bg-primary text-white shadow-xs'
-                        : 'text-on-surface-variant hover:text-primary'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-sm">lock</span>
-                    <span>Password / DOB PIN</span>
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => {
-                      setLoginMethod('otp');
-                      setLoginError(null);
-                    }}
-                    className={`flex-1 py-2 rounded-lg font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer ${
-                      loginMethod === 'otp'
-                        ? 'bg-primary text-white shadow-xs'
-                        : 'text-on-surface-variant hover:text-primary'
-                    }`}
-                  >
-                    <span className="material-symbols-outlined text-sm">mail</span>
-                    <span>Email OTP Sign In</span>
-                  </button>
-                </div>
-
-                {loginMethod === 'password' ? (
-                  <form onSubmit={handleLoginSubmit} className="space-y-4">
-                    <div>
-                      <label className="text-xs font-bold text-on-surface-variant block mb-1">
-                        Roll Number / Email / Mobile Number *
-                      </label>
-                      <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                          badge
-                        </span>
-                        <input
-                          type="text"
-                          required
-                          placeholder="e.g. HIT-STU-2026-00001 or email"
-                          value={loginCreds.rollOrEmail}
-                          onChange={(e) => {
-                            setLoginCreds({ ...loginCreds, rollOrEmail: e.target.value });
-                            if (loginError) setLoginError(null);
-                          }}
-                          className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                        />
-                      </div>
+                {/* Single Form: Email + OTP */}
+                <form onSubmit={otpLoginSent ? handleVerifyLoginOtp : handleSendLoginOtp} className="space-y-4">
+                  <div>
+                    <label className="text-xs font-bold text-on-surface-variant block mb-1">
+                      Registered Candidate Email <span className="text-error">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+                        mail
+                      </span>
+                      <input
+                        type="email"
+                        required
+                        placeholder="name@example.com"
+                        value={otpLoginEmail}
+                        onChange={(e) => {
+                          setOtpLoginEmail(e.target.value);
+                          if (loginError) setLoginError(null);
+                        }}
+                        disabled={otpLoginSent}
+                        className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-75 focus:outline-none"
+                      />
                     </div>
+                  </div>
 
-                    <div>
+                  {otpLoginSent && (
+                    <div className="space-y-2 animate-fadeIn">
                       <div className="flex items-center justify-between mb-1">
                         <label className="text-xs font-bold text-on-surface-variant">
-                          Password / Date of Birth PIN *
+                          Enter 6-Digit Verification Code <span className="text-error">*</span>
                         </label>
-                        <span className="text-[11px] text-slate-500">
-                          (PIN format: YYYY-MM-DD or password123)
+                        <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
+                          <span className="material-symbols-outlined text-xs">mark_email_read</span>
+                          Sent via Email
                         </span>
                       </div>
                       <div className="relative">
                         <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                          lock
-                        </span>
-                        <input
-                          type="password"
-                          required
-                          placeholder="••••••••"
-                          value={loginCreds.password}
-                          onChange={(e) => {
-                            setLoginCreds({ ...loginCreds, password: e.target.value });
-                            if (loginError) setLoginError(null);
-                          }}
-                          className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20"
-                        />
-                      </div>
-                    </div>
-
-                    <div className="flex items-center justify-between text-xs text-on-surface-variant pt-1">
-                      <label className="flex items-center gap-1.5 cursor-pointer">
-                        <input type="checkbox" defaultChecked className="rounded border-outline-variant text-primary" />
-                        <span>Remember device</span>
-                      </label>
-                      <a href="tel:1800HITSKILL" className="text-secondary font-semibold hover:underline">
-                        Forgot Roll No?
-                      </a>
-                    </div>
-
-                    <button
-                      type="submit"
-                      className="btn-primary w-full h-11"
-                    >
-                      <span className="material-symbols-outlined text-base">login</span>
-                      <span>Sign In to Student Portal</span>
-                    </button>
-                  </form>
-                ) : (
-                  <form onSubmit={otpLoginSent ? handleVerifyLoginOtp : handleSendLoginOtp} className="space-y-4">
-                    <div>
-                      <label className="text-xs font-bold text-on-surface-variant block mb-1">
-                        Roll Number or Registered Email *
-                      </label>
-                      <div className="relative">
-                        <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                          mail
+                          pin
                         </span>
                         <input
                           type="text"
+                          maxLength={6}
                           required
-                          placeholder="e.g. HIT-STU-2026-00001 or rahul@gmail.com"
-                          value={otpLoginEmail}
+                          placeholder="6-digit code"
+                          value={otpLoginCode}
                           onChange={(e) => {
-                            setOtpLoginEmail(e.target.value);
+                            setOtpLoginCode(e.target.value.replace(/\D/g, ''));
                             if (loginError) setLoginError(null);
                           }}
-                          disabled={otpLoginSent}
-                          className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm font-semibold text-primary focus:ring-2 focus:ring-primary/20 disabled:opacity-75"
+                          className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-sm font-mono tracking-widest font-bold text-primary focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                          autoFocus
                         />
                       </div>
-                    </div>
 
-                    {otpLoginSent && (
-                      <div>
-                        <div className="flex items-center justify-between mb-1">
-                          <label className="text-xs font-bold text-on-surface-variant">
-                            Enter 6-Digit OTP Code *
-                          </label>
-                          <span className="text-[11px] text-emerald-600 font-semibold flex items-center gap-1">
-                            <span className="material-symbols-outlined text-xs">mark_email_read</span>
-                            Dispatched via Resend
-                          </span>
-                        </div>
-                        <div className="relative">
-                          <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
-                            pin
-                          </span>
-                          <input
-                            type="text"
-                            maxLength={6}
-                            required
-                            placeholder="6-digit code"
-                            value={otpLoginCode}
-                            onChange={(e) => {
-                              setOtpLoginCode(e.target.value.replace(/\D/g, ''));
-                              if (loginError) setLoginError(null);
-                            }}
-                            className="w-full pl-11 pr-4 py-2.5 rounded-xl bg-surface-container-low border border-outline-variant/30 text-sm font-mono tracking-widest font-bold text-primary focus:ring-2 focus:ring-primary/20"
-                          />
-                        </div>
-
-                        <div className="flex items-center justify-between text-xs text-on-surface-variant mt-2">
+                      <div className="flex items-center justify-between text-xs text-on-surface-variant pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setOtpLoginSent(false);
+                            setOtpLoginCode('');
+                            setLoginError(null);
+                          }}
+                          className="text-[#065F46] font-medium hover:underline cursor-pointer"
+                        >
+                          ← Change Email
+                        </button>
+                        {otpResendTimer > 0 ? (
+                          <span className="text-slate-400">Resend in {otpResendTimer}s</span>
+                        ) : (
                           <button
                             type="button"
-                            onClick={() => { setOtpLoginSent(false); setOtpLoginCode(''); setLoginError(null); }}
-                            className="text-[#065F46] font-medium hover:underline cursor-pointer"
+                            onClick={handleSendLoginOtp}
+                            className="text-secondary font-semibold hover:underline cursor-pointer"
                           >
-                            ← Change Input
+                            Resend Code
                           </button>
-                          {otpResendTimer > 0 ? (
-                            <span className="text-slate-400">Resend in {otpResendTimer}s</span>
-                          ) : (
-                            <button
-                              type="button"
-                              onClick={handleSendLoginOtp}
-                              className="text-secondary font-semibold hover:underline cursor-pointer"
-                            >
-                              Resend OTP
-                            </button>
-                          )}
-                        </div>
+                        )}
                       </div>
-                    )}
+                    </div>
+                  )}
 
-                    <button
-                      type="submit"
-                      className="btn-primary w-full h-11"
-                    >
-                      <span className="material-symbols-outlined text-base">
-                        {otpLoginSent ? 'verified_user' : 'send'}
-                      </span>
-                      <span>{otpLoginSent ? 'Verify OTP & Access Dossier' : 'Send Verification OTP'}</span>
-                    </button>
-                  </form>
-                )}
-
-                {/* 1-Click Demo Login */}
-                <div className="pt-4 mt-4 border-t border-outline-variant/20 text-center">
-                  <span className="text-[11px] text-on-surface-variant block mb-2">Want to test the portal instantly?</span>
                   <button
-                    type="button"
-                    onClick={handleDemoLogin}
-                    className="btn-secondary w-full h-9 text-xs"
+                    type="submit"
+                    className="btn-primary w-full h-11 cursor-pointer font-bold"
                   >
-                    <span>1-Click Demo Login as Rahul Kumar Verma (ADCA)</span>
+                    <span className="material-symbols-outlined text-base">
+                      {otpLoginSent ? 'verified_user' : 'send'}
+                    </span>
+                    <span>{otpLoginSent ? 'Verify OTP & Access Profile' : 'Send Verification OTP'}</span>
                   </button>
-                </div>
+                </form>
 
                 {/* Fresh Admission Guidance Card */}
-                <div className="mt-6 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex items-start gap-3">
+                <div className="mt-8 p-4 rounded-2xl bg-surface-container-low border border-outline-variant/30 flex items-start gap-3">
                   <span className="material-symbols-outlined text-secondary text-xl shrink-0 mt-0.5">
                     how_to_reg
                   </span>
                   <div className="flex-1 text-xs">
                     <p className="font-bold text-primary">New Student? Apply for Online Admission</p>
                     <p className="text-on-surface-variant text-[11px] mt-0.5 leading-relaxed">
-                      If you haven't received an enrolled Roll Number yet, please complete your registration through the official admission form.
+                      If you haven't enrolled yet, please complete your admission registration through the online portal.
                     </p>
                     <button
                       type="button"
@@ -494,41 +314,59 @@ export default function StudentPortalPage() {
       </div>
     );
   }
+
+  // -------------------------------------------------------------
+  // 2. AUTHENTICATED STATE: STUDENT PROFILE & DOSSIER DASHBOARD
+  // -------------------------------------------------------------
+  const regNo = student.admissionNo || student.regId || student.regNo || 'HIT-ADM-2026';
+  const candidateInitials = (student.fullName || 'S')
+    .split(' ')
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join('')
+    .toUpperCase();
+
   return (
     <div className="flex flex-col w-full pb-space-xl">
-      
-      <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-        <div className="relative overflow-hidden bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] rounded-3xl text-white p-6 sm:p-8 shadow-xl">
-          <div className="absolute -right-12 -bottom-16 w-80 h-80 rounded-full bg-secondary opacity-15 blur-3xl pointer-events-none"></div>
+      {/* Top Banner Header */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+        <div className="relative overflow-hidden bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#134994] rounded-3xl text-white p-6 sm:p-8 shadow-xl">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-6">
-            <div className="flex flex-col gap-2 max-w-2xl">
-              <div className="flex flex-wrap items-center gap-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-label-sm text-xs uppercase tracking-wide">
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-                  {student.status || 'Active Enrolled Student'}
-                </span>
-                <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-surface-container-highest/20 text-secondary-fixed font-label-sm text-xs">
-                  <span className="material-symbols-outlined text-xs">verified</span>
-                  Roll No: {student.rollNo}
-                </span>
+            <div className="flex items-center gap-5">
+              {student.photoUrl ? (
+                <img
+                  src={student.photoUrl}
+                  alt={student.fullName}
+                  className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl object-cover border-2 border-secondary/50 shadow-md shrink-0 bg-white"
+                />
+              ) : (
+                <div className="w-18 h-18 sm:w-20 sm:h-20 rounded-2xl bg-secondary/20 border-2 border-secondary/40 flex items-center justify-center text-xl sm:text-2xl font-bold font-['Fraunces'] text-secondary-fixed shrink-0">
+                  {candidateInitials}
+                </div>
+              )}
+
+              <div className="space-y-1">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold text-xs">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                    {student.status || 'Active Enrolled Student'}
+                  </span>
+                  <span className="inline-flex items-center gap-1 px-3 py-0.5 rounded-full bg-white/10 text-secondary-fixed text-xs font-mono font-bold">
+                    Reg No: {regNo}
+                  </span>
+                </div>
+                <h1 className="font-['Fraunces'] text-2xl sm:text-3xl text-white font-bold tracking-tight">
+                  {student.fullName}
+                </h1>
+                <p className="text-xs sm:text-sm text-slate-300">
+                  {student.courseName} • <span className="text-secondary-fixed font-semibold">{student.centreName || 'Ghosi Main Campus (HQ)'}</span>
+                </p>
               </div>
-              <h1 className="font-headline text-2xl sm:text-4xl text-on-primary font-bold tracking-tight">
-                Welcome back, {student.fullName}
-              </h1>
-              <p className="font-body-md text-sm sm:text-base text-surface-container-high leading-relaxed">
-                {student.courseName} • {student.centreName} (
-                <span className="font-semibold text-secondary-fixed">{student.centreCode}</span>)
-              </p>
             </div>
 
-            
             <div className="flex items-center gap-3">
               <button
-                onClick={() => {
-                  authService.logout();
-                  logOut();
-                  notify('info', 'Successfully signed out.');
-                }}
+                onClick={handleSignOut}
                 className="h-10 px-4 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs transition-colors flex items-center gap-1.5 border border-white/20 cursor-pointer"
               >
                 <span className="material-symbols-outlined text-base">logout</span>
@@ -539,14 +377,13 @@ export default function StudentPortalPage() {
         </div>
       </div>
 
-      
-      <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
+      {/* Profile Navigation Tabs */}
+      <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-2 border-b border-outline-variant/30">
           {[
-            { id: 'id_card', label: 'Digital PVC ID Card', icon: 'badge' },
-            { id: 'course_reg', label: 'Course Registration & Fees', icon: 'school' },
-            { id: 'academic', label: 'Academic Grades & Attendance', icon: 'grade' },
-            { id: 'certificate', label: 'Certificate & Roll Verification', icon: 'verified' },
+            { id: 'profile', label: 'Student Profile & Dossier', icon: 'person' },
+            { id: 'academic', label: 'Academic Curriculum & Marks', icon: 'school' },
+            { id: 'fee', label: 'Fee & Registration Ledger', icon: 'receipt_long' },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -564,186 +401,191 @@ export default function StudentPortalPage() {
         </div>
       </div>
 
-      
-      {activePortalTab === 'id_card' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-            <div className="lg:col-span-6 flex flex-col items-center">
-              <div className="flex items-center justify-between w-full max-w-sm mb-3">
-                <span className="text-xs font-bold text-on-surface-variant uppercase tracking-wider">
-                  Interactive PVC ID Card ({cardSide.toUpperCase()})
+      {/* Tab 1: Student Profile & Dossier */}
+      {activePortalTab === 'profile' && (
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
+            {/* Personal Dossier Card */}
+            <div className="lg:col-span-7 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/30 space-y-6">
+              <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
+                <div className="flex items-center gap-2.5">
+                  <span className="material-symbols-outlined text-secondary text-2xl">account_circle</span>
+                  <h3 className="font-['Fraunces'] text-lg font-bold text-primary">
+                    Personal Identity Record
+                  </h3>
+                </div>
+                <span className="px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-800 text-[11px] font-bold border border-emerald-200">
+                  Verified Identity
                 </span>
-                <button
-                  onClick={() => setCardSide(cardSide === 'front' ? 'back' : 'front')}
-                  className="text-xs font-bold text-secondary hover:underline flex items-center gap-1 cursor-pointer"
-                >
-                  <span className="material-symbols-outlined text-sm">cached</span>
-                  <span>Flip to {cardSide === 'front' ? 'Back' : 'Front'}</span>
-                </button>
               </div>
 
-              
-              {cardSide === 'front' ? (
-                <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-primary via-primary-container to-primary text-white p-6 shadow-2xl border-2 border-secondary/30 relative overflow-hidden">
-                  <div className="flex items-center justify-between pb-3 border-b border-white/20">
-                    <div className="flex items-center gap-2">
-                      <div className="w-10 h-10 rounded-full bg-white p-0.5 border border-secondary/40 shrink-0 overflow-hidden">
-                        <img src={logo2} alt="Logo" className="w-full h-full object-contain rounded-full" />
-                      </div>
-                      <div>
-                        <span className="font-headline text-xs font-bold block leading-tight">HIT COMPUTER EDUCATION</span>
-                        <span className="text-[10px] text-secondary-fixed block">Official Student Identity Dossier</span>
-                      </div>
-                    </div>
-                  </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Candidate Legal Name</span>
+                  <span className="font-bold text-primary text-sm mt-0.5 block">{student.fullName || '—'}</span>
+                </div>
 
-                  <div className="py-4 flex gap-4 items-center">
-                    <img
-                      src={student.photoUrl}
-                      alt="Student"
-                      className="w-20 h-24 rounded-xl object-cover border-2 border-secondary/40 shadow-md shrink-0"
-                    />
-                    <div className="space-y-1 text-xs">
-                      <h4 className="font-headline text-base font-bold text-white">{student.fullName}</h4>
-                      <p className="text-[11px] text-secondary-fixed font-semibold">{student.courseName}</p>
-                      <p className="text-[11px] text-surface-container-high font-mono">Roll: {student.rollNo}</p>
-                      <p className="text-[11px] text-surface-container-high">Centre: {student.centreCode}</p>
-                    </div>
-                  </div>
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Application / Registration No.</span>
+                  <span className="font-bold font-mono text-secondary text-sm mt-0.5 block">{regNo}</span>
+                </div>
 
-                  <div className="pt-3 border-t border-white/20 flex items-center justify-between text-[10px] text-surface-container-highest">
-                    <span>Kasba Khas, Ghosi, Mau</span>
-                    <span className="text-emerald-400 font-bold">QR Verified</span>
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Father's / Guardian's Name</span>
+                  <span className="font-bold text-on-surface mt-0.5 block">{student.fatherName || '—'}</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Mother's Name</span>
+                  <span className="font-bold text-on-surface mt-0.5 block">{student.motherName || '—'}</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Date of Birth</span>
+                  <span className="font-bold text-on-surface mt-0.5 block">{student.dob || '—'}</span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Gender & Category</span>
+                  <span className="font-bold text-on-surface mt-0.5 block">
+                    {student.gender || 'Male'} • {student.category || 'General'}
+                  </span>
+                </div>
+
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20 sm:col-span-2">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Registered Contact Details</span>
+                  <div className="flex flex-wrap items-center gap-4 mt-1 text-xs">
+                    <span className="font-semibold text-primary flex items-center gap-1">
+                      <span className="material-symbols-outlined text-sm text-emerald-600">verified</span>
+                      {student.email}
+                    </span>
+                    {student.mobile && (
+                      <span className="font-semibold text-on-surface flex items-center gap-1">
+                        <span className="material-symbols-outlined text-sm text-secondary">phone_iphone</span>
+                        {student.mobile}
+                      </span>
+                    )}
                   </div>
                 </div>
-              ) : (
-                <div className="w-full max-w-sm rounded-3xl bg-gradient-to-br from-slate-900 via-primary to-slate-900 text-white p-6 shadow-2xl border-2 border-secondary/30 relative">
-                  <div className="pb-3 border-b border-white/20 text-xs font-bold text-secondary-fixed">
-                    Terms & Instructions
-                  </div>
-                  <div className="py-3 text-[11px] space-y-1 text-surface-container-high">
-                    <p>1. This card confirms registration under H.I.T India Skill Development Foundation.</p>
-                    <p>2. Must be presented during theoretical & practical lab examinations.</p>
-                    <p>3. Reg. CIN: U85300UP2021NPL148821 | NITI Aayog: UP/2021/0284729.</p>
-                    <p>4. Helpline: 1800-HIT-SKILL | +91 94520-78192.</p>
-                  </div>
-                  <div className="pt-3 border-t border-white/20 flex items-center justify-between text-xs">
-                    <span className="text-[10px] text-outline">Authorised Signatory</span>
-                    <span className="font-serif italic font-bold text-secondary-fixed">Er. A. K. Verma</span>
-                  </div>
-                </div>
-              )}
 
-              <div className="mt-4 flex gap-3">
-                <button
-                  onClick={handleDownloadId}
-                  className="btn-primary h-11 px-6"
-                >
-                  <span className="material-symbols-outlined text-base">download</span>
-                  <span>Download PVC ID Card (PDF)</span>
-                </button>
+                <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20 sm:col-span-2">
+                  <span className="text-on-surface-variant block text-[11px] font-medium">Permanent Address</span>
+                  <span className="font-medium text-on-surface mt-0.5 block leading-relaxed">
+                    {student.address?.line || student.address || 'Kasba Khas'}, {student.address?.district || student.district || 'Mau'}, {student.address?.state || student.state || 'Uttar Pradesh'} - {student.address?.pincode || student.pincode || '275105'}
+                  </span>
+                </div>
               </div>
             </div>
 
-            
-            <div className="lg:col-span-6 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/30 space-y-4">
-              <h3 className="font-headline text-lg font-bold text-primary pb-2 border-b border-outline-variant/20">
-                Enrollment Dossier Details
-              </h3>
-              <div className="grid grid-cols-2 gap-4 text-xs">
-                <div>
-                  <span className="text-on-surface-variant block">Father's Name:</span>
-                  <span className="font-bold text-on-surface">{student.fatherName || 'Dinesh Verma'}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block">Date of Birth:</span>
-                  <span className="font-bold text-on-surface">{student.dob || '2004-06-14'}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block">Batch Timing:</span>
-                  <span className="font-bold text-secondary">{student.batchTime || 'Morning (08-10 AM)'}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block">Training Centre:</span>
-                  <span className="font-bold text-on-surface">{student.centreName}</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block">Registration Status:</span>
-                  <span className="font-bold text-emerald-700">₹100 Fee Settled (Online)</span>
-                </div>
-                <div>
-                  <span className="text-on-surface-variant block">Attendance:</span>
-                  <span className="font-bold text-primary">{student.attendance || '94.5%'}</span>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-
-      
-      {activePortalTab === 'course_reg' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
-          <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6">
-            <div className="flex items-center justify-between pb-3 border-b border-outline-variant/20">
-              <div>
-                <h3 className="font-headline text-xl font-bold text-primary">Enrolled Course Curriculum</h3>
-                <p className="text-xs text-on-surface-variant mt-0.5">{student.courseName}</p>
-              </div>
-              <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
-                Status: Active
-              </span>
-            </div>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/20 text-xs space-y-2">
-                <span className="text-on-surface-variant font-bold uppercase tracking-wider block">Course Details</span>
-                <p><strong>Code:</strong> {student.courseCode || 'ADCA-101'}</p>
-                <p><strong>Duration:</strong> {student.courseDuration || '12 Months'}</p>
-                <p><strong>Affiliated Hub:</strong> {student.centreName}</p>
+            {/* Enrolled Program & Campus Card */}
+            <div className="lg:col-span-5 bg-surface-container-lowest p-6 sm:p-8 rounded-3xl shadow-sm border border-outline-variant/30 space-y-6">
+              <div className="flex items-center gap-2.5 pb-3 border-b border-outline-variant/20">
+                <span className="material-symbols-outlined text-secondary text-2xl">school</span>
+                <h3 className="font-['Fraunces'] text-lg font-bold text-primary">
+                  Academic Program & ATC
+                </h3>
               </div>
 
-              <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/20 text-xs space-y-2">
-                <span className="text-on-surface-variant font-bold uppercase tracking-wider block">Fee Ledger</span>
-                <p><strong>Registration Fee:</strong> <span className="text-emerald-700 font-bold">₹100.00 (Paid)</span></p>
-                <p><strong>Monthly Tuition Fee:</strong> ₹600.00 / Month</p>
-                <p><strong>Payment Status:</strong> Current Month Paid (Receipt Generated)</p>
+              <div className="space-y-3.5 text-xs">
+                <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-secondary font-bold uppercase tracking-wider text-[10px] block">
+                    Enrolled Program
+                  </span>
+                  <h4 className="font-bold text-primary text-sm mt-0.5">{student.courseName}</h4>
+                  <p className="text-on-surface-variant text-xs mt-1">
+                    Duration: <strong>{student.courseDuration || '3 Months'}</strong> • Code: <strong>{student.courseCode || 'CCC'}</strong>
+                  </p>
+                </div>
+
+                <div className="p-4 rounded-2xl bg-surface-container-low border border-outline-variant/20">
+                  <span className="text-secondary font-bold uppercase tracking-wider text-[10px] block">
+                    Authorized Training Centre (ATC)
+                  </span>
+                  <h4 className="font-bold text-on-surface text-sm mt-0.5">
+                    {student.centreName || 'Ghosi Main Campus (HQ)'}
+                  </h4>
+                  <p className="text-on-surface-variant text-xs mt-1 leading-relaxed">
+                    Kasba Khas, Ghosi, Mau, Uttar Pradesh - 275105
+                  </p>
+                  <span className="inline-block mt-2 px-2.5 py-0.5 rounded-md bg-white border border-outline-variant/40 text-[11px] font-mono font-bold text-primary">
+                    Centre ID: {student.centreCode || 'HIT-CEN-0001'}
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                    <span className="text-on-surface-variant block text-[11px]">Batch Timing:</span>
+                    <span className="font-bold text-primary block mt-0.5">{student.batchTime || 'Morning (08:00 AM – 10:00 AM)'}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-container-low border border-outline-variant/20">
+                    <span className="text-on-surface-variant block text-[11px]">Academic Session:</span>
+                    <span className="font-bold text-primary block mt-0.5">2026–2027</span>
+                  </div>
+                </div>
+
+                <div className="p-3 rounded-xl bg-emerald-50/60 border border-emerald-200 text-emerald-900 text-[11px] flex items-center gap-2">
+                  <span className="material-symbols-outlined text-emerald-700 text-lg shrink-0">verified</span>
+                  <span>Registered under H.I.T India Skill Development Foundation (NITI Aayog & ISO 9001:2015).</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      
+      {/* Tab 2: Academic Curriculum & Marks */}
       {activePortalTab === 'academic' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
           <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6">
-            <h3 className="font-headline text-xl font-bold text-primary pb-3 border-b border-outline-variant/20">
-              Unit Examination Marks & Subject Grades
-            </h3>
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between pb-4 border-b border-outline-variant/20 gap-3">
+              <div>
+                <h3 className="font-['Fraunces'] text-xl font-bold text-primary">
+                  Academic Modules & Performance Evaluation
+                </h3>
+                <p className="text-xs text-on-surface-variant mt-0.5">
+                  Continuous performance tracking and unit exam assessments for {student.courseName}.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3">
+                <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold flex items-center gap-1.5">
+                  <span className="material-symbols-outlined text-sm">done_all</span>
+                  Attendance: {student.attendance || '100% Verified'}
+                </span>
+                <span className="px-3 py-1 rounded-full bg-secondary-container text-secondary text-xs font-bold">
+                  Overall: {student.overallGrade || 'A+'}
+                </span>
+              </div>
+            </div>
+
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="bg-surface-container-low text-on-surface-variant">
-                    <th className="p-3 rounded-l-xl">Subject / Practical Module</th>
+                  <tr className="bg-surface-container-low text-on-surface-variant font-bold">
+                    <th className="p-3 rounded-l-xl">Curriculum / Practical Module</th>
                     <th className="p-3">Max Marks</th>
                     <th className="p-3">Marks Obtained</th>
-                    <th className="p-3 rounded-r-xl">Grade</th>
+                    <th className="p-3">Grade</th>
+                    <th className="p-3 rounded-r-xl">Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-outline-variant/20">
-                  {(student.subjects || [
+                  {(student.subjects && student.subjects.length > 0 ? student.subjects : [
                     { name: 'Computer Fundamentals & OS', marks: '92/100', grade: 'A+' },
-                    { name: 'MS Office 2024 Productivity Suite', marks: '88/100', grade: 'A' },
-                    { name: 'Tally Prime 4.0 with GST', marks: '95/100', grade: 'A+' },
-                    { name: 'Web Designing (HTML, CSS, JS)', marks: '86/100', grade: 'A' },
-                    { name: 'Programming in Python & Logic', marks: '90/100', grade: 'A+' },
+                    { name: 'Office Productivity Tools (Word, Excel, PPT)', marks: '88/100', grade: 'A' },
+                    { name: 'Financial Accounting & Digital Payment Systems', marks: '95/100', grade: 'A+' },
+                    { name: 'Internet Applications & Cyber Ethics', marks: '90/100', grade: 'A+' },
                   ]).map((sub, i) => (
-                    <tr key={i} className="hover:bg-surface-container-low/50">
+                    <tr key={i} className="hover:bg-surface-container-low/50 transition-colors">
                       <td className="p-3 font-semibold text-primary">{sub.name}</td>
                       <td className="p-3 text-on-surface-variant">100</td>
                       <td className="p-3 font-bold text-on-surface">{sub.marks}</td>
                       <td className="p-3 font-extrabold text-emerald-700">{sub.grade}</td>
+                      <td className="p-3">
+                        <span className="px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 font-semibold text-[10px]">
+                          Completed
+                        </span>
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -753,19 +595,58 @@ export default function StudentPortalPage() {
         </div>
       )}
 
-      
-      {activePortalTab === 'certificate' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-8">
-          <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 text-center max-w-2xl mx-auto space-y-4">
-            <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto">
-              <span className="material-symbols-outlined text-4xl">verified_user</span>
+      {/* Tab 3: Fee & Registration Ledger */}
+      {activePortalTab === 'fee' && (
+        <div className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-6">
+          <div className="bg-surface-container-lowest rounded-3xl p-6 sm:p-8 shadow-sm border border-outline-variant/30 space-y-6">
+            <div className="flex items-center justify-between pb-4 border-b border-outline-variant/20">
+              <div>
+                <h3 className="font-['Fraunces'] text-xl font-bold text-primary">
+                  Registration & Fee Ledger
+                </h3>
+                <p className="text-xs text-on-surface-variant mt-0.5">
+                  Official financial settlement ledger for candidate enrollment.
+                </p>
+              </div>
+              <span className="px-3 py-1 rounded-full bg-emerald-100 text-emerald-800 text-xs font-bold">
+                Status: Settled & Cleared
+              </span>
             </div>
-            <h3 className="font-headline text-2xl font-bold text-primary">Cryptographically Verified Credential</h3>
-            <p className="text-xs text-on-surface-variant leading-relaxed">
-              Permanent Roll Number <strong>{student.rollNo}</strong> is cryptographically registered in the central academic ledger of H.I.T India Skill Development Foundation.
-            </p>
-            <div className="p-4 rounded-2xl bg-surface-container-low text-xs font-mono text-primary font-bold">
-              CENTRAL-REGISTRY-LEDGER-HASH: {student.rollNo}-VERIFIED-2026
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/20 text-xs space-y-3">
+                <span className="text-secondary font-bold uppercase tracking-wider text-[11px] block">
+                  Admission Fee Summary
+                </span>
+                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
+                  <span className="text-on-surface-variant">Nominal Registration Fee:</span>
+                  <span className="font-bold text-emerald-700 text-sm">₹100.00</span>
+                </div>
+                <div className="flex items-center justify-between pb-2 border-b border-outline-variant/20">
+                  <span className="text-on-surface-variant">Payment Method:</span>
+                  <span className="font-semibold text-on-surface">Online UPI / Net Banking</span>
+                </div>
+                <div className="flex items-center justify-between">
+                  <span className="text-on-surface-variant">Settlement State:</span>
+                  <span className="font-bold text-emerald-700 flex items-center gap-1">
+                    <span className="material-symbols-outlined text-sm">check_circle</span>
+                    Payment Cleared
+                  </span>
+                </div>
+              </div>
+
+              <div className="p-5 rounded-2xl bg-surface-container-low border border-outline-variant/20 text-xs space-y-3">
+                <span className="text-secondary font-bold uppercase tracking-wider text-[11px] block">
+                  Central Registry Audit
+                </span>
+                <p className="text-on-surface-variant leading-relaxed">
+                  Your registration fee of ₹100.00 has been verified and permanently linked to registration ledger <strong>{regNo}</strong>.
+                </p>
+                <div className="pt-2">
+                  <span className="text-[11px] text-slate-500 block">Authorized By:</span>
+                  <span className="font-bold text-primary">Central Admissions Desk, Ghosi Main Campus (HQ)</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
