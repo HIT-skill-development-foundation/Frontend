@@ -181,12 +181,56 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     }, 'Cryptographically Generating Permanent Roll Number & Registering with NITI Aayog...');
   };
 
+  const validateStep1 = () => {
+    if (!formData.fullName.trim()) {
+      notify('error', 'Please enter your Full Legal Name.');
+      return false;
+    }
+    if (!formData.fatherName.trim()) {
+      notify('error', "Please enter your Father's Name.");
+      return false;
+    }
+    if (!formData.dob) {
+      notify('error', 'Please enter your Date of Birth.');
+      return false;
+    }
+    if (!formData.mobile.trim() || formData.mobile.replace(/[^0-9]/g, '').length < 10) {
+      notify('error', 'Please enter a valid 10-digit mobile number.');
+      return false;
+    }
+    if (!formData.email.trim() || !formData.email.includes('@')) {
+      notify('error', 'Please enter a valid email address.');
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep2 = () => {
+    if (!formData.courseId) {
+      notify('error', 'Please select a Course.');
+      return false;
+    }
+    if (!formData.centreId) {
+      notify('error', 'Please select a Training Centre.');
+      return false;
+    }
+    return true;
+  };
+
+  const validateStep3 = () => {
+    if (!formData.aadhaarNo.trim() || formData.aadhaarNo.replace(/[^0-9]/g, '').length < 12) {
+      notify('error', 'Please enter a valid 12-digit Aadhaar Number.');
+      return false;
+    }
+    return true;
+  };
+
   return (
     <div className="flex flex-col w-full">
-      
-      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm">
-          <div className="flex items-center gap-space-xs text-label-sm font-label-sm">
+      {/* Top Breadcrumb & Status Bar */}
+      <div className="w-full bg-[#001030] text-white py-2.5 px-4 lg:px-8 border-b border-white/10">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
             <button 
               onClick={() => {
                 if (setActiveTab) setActiveTab('home');
@@ -199,50 +243,51 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
             <span className="text-white/40">/</span>
             <span className="text-secondary-fixed font-semibold">Student Admissions Session 2026-2027</span>
           </div>
-          <div className="flex items-center gap-space-xs bg-white/10 px-space-sm py-1 rounded-full text-label-sm font-label-sm text-secondary-fixed border border-white/15">
-            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+          <div className="flex items-center gap-2 text-slate-300">
+            <span className="inline-block w-2 h-2 rounded-full bg-emerald-400"></span>
             <span>Direct Enrollment • Processing Fee Flat ₹100.00</span>
           </div>
         </div>
       </div>
 
-      
-      <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-space-lg px-margin-sm lg:px-margin-lg shadow-inner">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-space-md">
-          <div className="flex items-start gap-space-md max-w-3xl">
-            <div className="w-12 h-12 rounded-xl bg-secondary/30 flex items-center justify-center shrink-0 text-secondary-fixed shadow-sm">
+      {/* Institutional Hero Header */}
+      <section className="w-full bg-[#001438] text-white py-8 lg:py-10 px-4 lg:px-8 border-b border-white/10">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div className="flex items-start gap-4 max-w-3xl">
+            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-secondary-fixed border border-white/15">
               <span className="material-symbols-outlined text-3xl">how_to_reg</span>
             </div>
             <div className="flex flex-col">
-              <div className="flex items-center gap-space-xs mb-1">
-                <span className="px-2 py-0.5 rounded text-label-sm font-label-sm uppercase tracking-wider bg-on-tertiary-container text-white font-bold">
-                  Standard Fee Notice
+              <div className="flex items-center gap-2 mb-1.5">
+                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold tracking-wider bg-white/10 text-secondary-fixed border border-white/15">
+                  Academic Session 2026–2027
                 </span>
-                <span className="text-label-sm font-label-sm text-white/80">
-                  Govt. Registered Skill Mission
+                <span className="text-xs text-slate-300">
+                  Government Affiliated Skill Mission
                 </span>
               </div>
-              <h1 className="font-headline-xl text-2xl sm:text-4xl text-white font-bold leading-tight tracking-tight">
-                Online Admission Form <span className="text-tertiary-fixed font-normal">(Session 2026–27)</span>
+              <h1 className="font-['Fraunces'] text-2xl sm:text-4xl text-white font-bold leading-tight tracking-tight">
+                Online Admission & Registration Form
               </h1>
-              <p className="font-body-md text-sm sm:text-base text-white/80 mt-1">
-                Admission & Verification Processing Fee: <strong className="text-white font-semibold">Flat ₹100.00</strong>. Instant digital registration code, student profile, and QR-verifiable student credential generated immediately on transaction clearance.
+              <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
+                Direct candidate registration under H.I.T Skill Development Foundation. Application Processing & Digital Ledger Fee: <strong className="text-white font-semibold">Flat ₹100.00</strong>. Permanent Roll Number and verifiable student credential generated immediately on transaction clearance.
               </p>
             </div>
           </div>
-          <div className="flex flex-row md:flex-col items-center md:items-end justify-between bg-white/10 backdrop-blur-md p-space-md rounded-xl shadow-md min-w-[220px] border border-white/15">
+
+          <div className="flex flex-row md:flex-col items-center md:items-end justify-between bg-white/5 p-4 rounded-xl border border-white/10 min-w-[220px]">
             <div className="flex flex-col text-left md:text-right">
-              <span className="font-label-sm text-label-sm text-on-primary-container uppercase tracking-wide">
-                Government Affiliated
+              <span className="text-[11px] text-white/60 uppercase tracking-wider font-semibold">
+                Accredited Body
               </span>
-              <span className="font-headline-md text-headline-md text-white font-bold">
+              <span className="font-['Fraunces'] text-lg text-white font-bold">
                 H.I.T Foundation
               </span>
-              <span className="font-label-sm text-label-sm text-secondary-fixed">
-                NITI Aayog Darpan Verified
+              <span className="text-xs text-secondary-fixed">
+                NITI Aayog & ISO 9001:2015
               </span>
             </div>
-            <div className="flex items-center gap-1 mt-2 text-label-sm font-label-sm text-emerald-300">
+            <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-medium">
               <span className="material-symbols-outlined text-sm">lock</span>
               <span>256-Bit SSL Secured</span>
             </div>
@@ -250,10 +295,10 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
         </div>
       </section>
 
-      
-      <div className="w-full bg-surface-container-low py-space-md px-margin-sm lg:px-margin-lg shadow-sm border-b border-outline-variant/20">
+      {/* Multi-Step Progress Tracker */}
+      <div className="w-full bg-surface-container-low py-3.5 px-4 lg:px-8 border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-space-sm">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
             {[
               { num: 1, title: 'Personal Dossier', desc: currentStep > 1 ? 'Completed' : 'Step 1' },
               { num: 2, title: 'Course & Centre', desc: currentStep > 2 ? 'Completed' : currentStep === 2 ? 'Active Selection' : 'Next' },
@@ -265,17 +310,23 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
               return (
                 <div
                   key={st.num}
-                  onClick={() => !isCompleted && setCurrentStep(st.num)}
-                  className={`flex items-center gap-space-sm p-space-sm rounded-lg cursor-pointer transition-all ${
+                  onClick={() => {
+                    if (isCompleted) return;
+                    if (st.num === 1) setCurrentStep(1);
+                    else if (st.num === 2 && validateStep1()) setCurrentStep(2);
+                    else if (st.num === 3 && validateStep1() && validateStep2()) setCurrentStep(3);
+                    else if (st.num === 4 && validateStep1() && validateStep2() && validateStep3()) setCurrentStep(4);
+                  }}
+                  className={`flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all ${
                     isCurrent
-                      ? 'bg-surface-container-lowest ring-2 ring-secondary shadow-sm'
+                      ? 'bg-surface-container-lowest border-2 border-primary shadow-xs'
                       : isPassed
-                      ? 'bg-surface-container-lowest shadow-sm'
-                      : 'bg-surface-container-lowest/60 opacity-80'
+                      ? 'bg-surface-container-lowest border border-emerald-200'
+                      : 'bg-surface-container-lowest/70 border border-outline-variant/30 opacity-75'
                   }`}
                 >
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-label-md shrink-0 ${
+                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs shrink-0 ${
                       isPassed
                         ? 'bg-emerald-600 text-white'
                         : isCurrent
@@ -286,11 +337,11 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     {isPassed ? <span className="material-symbols-outlined text-sm">check</span> : st.num}
                   </div>
                   <div className="flex flex-col min-w-0">
-                    <span className="font-label-md text-label-md font-bold text-primary truncate">
+                    <span className="text-xs font-bold text-primary truncate">
                       {st.title}
                     </span>
                     <span
-                      className={`font-label-sm text-xs truncate ${
+                      className={`text-[11px] truncate ${
                         isPassed ? 'text-emerald-600 font-semibold' : isCurrent ? 'text-secondary font-semibold' : 'text-on-surface-variant'
                       }`}
                     >
@@ -577,7 +628,9 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                   <div className="flex justify-end pt-4 border-t border-outline-variant/20">
                     <button
                       type="button"
-                      onClick={() => setCurrentStep(2)}
+                      onClick={() => {
+                        if (validateStep1()) setCurrentStep(2);
+                      }}
                       className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to Course & Centre</span>
@@ -682,7 +735,9 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setCurrentStep(3)}
+                      onClick={() => {
+                        if (validateStep2()) setCurrentStep(3);
+                      }}
                       className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to Documents & Photo</span>
@@ -763,7 +818,9 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
                     </button>
                     <button
                       type="button"
-                      onClick={() => setCurrentStep(4)}
+                      onClick={() => {
+                        if (validateStep3()) setCurrentStep(4);
+                      }}
                       className="btn-primary h-11 px-6"
                     >
                       <span>Proceed to ₹100 Payment</span>
@@ -864,55 +921,96 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
 
             
             <div className="lg:col-span-4 flex flex-col gap-4">
-              <div className="bg-surface-container-lowest p-space-md rounded-2xl shadow-sm border border-outline-variant/30">
-                <div className="flex items-center gap-2 mb-3 pb-2 border-b border-outline-variant/20">
-                  <span className="material-symbols-outlined text-secondary">fact_check</span>
-                  <h3 className="font-headline text-base font-bold text-primary">Enrollment Summary</h3>
-                </div>
+              {currentStep < 4 ? (
+                <div className="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/30">
+                  <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-outline-variant/20">
+                    <span className="material-symbols-outlined text-secondary text-lg">assignment</span>
+                    <h3 className="font-['Fraunces'] text-base font-bold text-primary">Application Instructions</h3>
+                  </div>
 
-                <div className="space-y-3 text-xs">
-                  <div>
-                    <span className="text-on-surface-variant block">Candidate Name:</span>
-                    <span className="font-bold text-primary text-sm">{formData.fullName || '—'}</span>
+                  <ul className="space-y-3 text-xs text-on-surface-variant">
+                    <li className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-sm shrink-0 mt-0.5">verified</span>
+                      <span><strong>Personal Dossier:</strong> Enter your full name and father's name exactly as recorded in your 10th marksheet or Aadhaar.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-sm shrink-0 mt-0.5">verified</span>
+                      <span><strong>Contact Verification:</strong> Verification OTP, permanent Roll Number, and ID card will be dispatched to your registered email and mobile.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-sm shrink-0 mt-0.5">verified</span>
+                      <span><strong>Course & Centre:</strong> In Step 2, choose your intended certification program and your nearest Authorized Training Centre (ATC).</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-sm shrink-0 mt-0.5">verified</span>
+                      <span><strong>Photo & Identity:</strong> Keep a passport photo or smartphone portrait ready for your student PVC ID card in Step 3.</span>
+                    </li>
+                    <li className="flex items-start gap-2.5">
+                      <span className="material-symbols-outlined text-emerald-600 text-sm shrink-0 mt-0.5">verified</span>
+                      <span><strong>Nominal Processing Fee:</strong> Flat ₹100 registration fee settles via UPI or Net Banking at Step 4 with instant admission clearance.</span>
+                    </li>
+                  </ul>
+                </div>
+              ) : (
+                <div className="bg-surface-container-lowest p-5 rounded-2xl shadow-sm border border-outline-variant/30">
+                  <div className="flex items-center gap-2 mb-3 pb-2.5 border-b border-outline-variant/20">
+                    <span className="material-symbols-outlined text-secondary text-lg">fact_check</span>
+                    <h3 className="font-['Fraunces'] text-base font-bold text-primary">Enrollment Summary & Review</h3>
                   </div>
-                  <div>
-                    <span className="text-on-surface-variant block">Selected Course:</span>
-                    <span className="font-semibold text-secondary">
-                      {coursesList.find((c) => c.id === formData.courseId)?.name}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-on-surface-variant block">Training Centre:</span>
-                    <span className="font-semibold text-on-surface">
-                      {centresList.find((c) => c.id === formData.centreId)?.name}
-                    </span>
-                  </div>
-                  <div>
-                    <span className="text-on-surface-variant block">Batch Timing:</span>
-                    <span className="font-medium text-on-surface">{formData.batchTime}</span>
-                  </div>
-                  <div className="pt-2 border-t border-outline-variant/20">
-                    <span className="text-on-surface-variant block">Processing Fee:</span>
-                    <span className="font-bold text-base text-primary">₹100.00</span>
+
+                  <div className="space-y-3 text-xs">
+                    <div>
+                      <span className="text-on-surface-variant block text-[11px]">Candidate Name:</span>
+                      <span className="font-bold text-primary text-sm">{formData.fullName || '—'}</span>
+                    </div>
+                    <div>
+                      <span className="text-on-surface-variant block text-[11px]">Selected Course:</span>
+                      <span className="font-semibold text-secondary">
+                        {coursesList.find((c) => c.id === formData.courseId)?.name || 'Course Selected'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-on-surface-variant block text-[11px]">Training Centre:</span>
+                      <span className="font-semibold text-on-surface">
+                        {centresList.find((c) => c.id === formData.centreId)?.name || 'Center Selected'}
+                      </span>
+                    </div>
+                    <div>
+                      <span className="text-on-surface-variant block text-[11px]">Batch Timing:</span>
+                      <span className="font-medium text-on-surface">{formData.batchTime}</span>
+                    </div>
+                    <div className="pt-2 border-t border-outline-variant/20">
+                      <span className="text-on-surface-variant block text-[11px]">Processing Fee:</span>
+                      <span className="font-bold text-base text-emerald-700">₹100.00</span>
+                    </div>
                   </div>
                 </div>
-              </div>
+              )}
 
-              
-              <div className="bg-primary text-on-primary p-space-md rounded-2xl shadow-sm">
+              {/* Admissions Helpline Support */}
+              <div className="bg-[#001030] text-white p-5 rounded-2xl shadow-sm border border-white/10">
                 <span className="text-xs uppercase tracking-wider text-secondary-fixed font-bold block mb-1">
                   Need Help With Admission?
                 </span>
-                <p className="text-xs text-on-primary-container leading-relaxed mb-3">
-                  Our admissions helpline assists students in filling details and selecting centres.
+                <p className="text-xs text-slate-300 leading-relaxed mb-3">
+                  Our admissions desk is available Mon–Sat (09:00 AM to 06:00 PM) to assist students with center selection and form filling.
                 </p>
-                <a
-                  href="tel:1800HITSKILL"
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs"
-                >
-                  <span className="material-symbols-outlined text-sm">call</span>
-                  <span>1800-HIT-SKILL</span>
-                </a>
+                <div className="flex flex-col gap-2">
+                  <a
+                    href="tel:1800HITSKILL"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-white font-bold text-xs transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm text-secondary-fixed">call</span>
+                    <span>1800-HIT-SKILL (Toll Free)</span>
+                  </a>
+                  <a
+                    href="mailto:admissions@hit.org.in"
+                    className="inline-flex items-center gap-2 px-3 py-2 rounded-lg bg-white/5 hover:bg-white/10 text-white/90 text-xs transition-colors"
+                  >
+                    <span className="material-symbols-outlined text-sm text-secondary-fixed">mail</span>
+                    <span>admissions@hit.org.in</span>
+                  </a>
+                </div>
               </div>
             </div>
           </div>

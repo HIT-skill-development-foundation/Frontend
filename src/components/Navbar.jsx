@@ -154,7 +154,7 @@ export default function Navbar({ activeTab, setActiveTab }) {
           })}
         </nav>
 
-        {/* Right Action CTA Buttons: Student Portal + Register Now */}
+        {/* Right Action CTA Buttons: Login + Register Now */}
         <div className="hidden lg:flex items-center gap-2.5 ml-4 pl-4 border-l border-white/15">
           <button
             type="button"
@@ -165,8 +165,8 @@ export default function Navbar({ activeTab, setActiveTab }) {
                 : 'border-white/20 text-white/90 hover:text-white hover:bg-white/10 hover:border-white/30'
             }`}
           >
-            <span className="material-symbols-outlined text-[15px] text-secondary-fixed">badge</span>
-            <span>Student Portal</span>
+            <span className="material-symbols-outlined text-[15px] text-secondary-fixed">login</span>
+            <span>Login</span>
           </button>
 
           <button
@@ -233,8 +233,8 @@ export default function Navbar({ activeTab, setActiveTab }) {
               onClick={() => handleNavClick({ path: '/student-portal', id: 'student_portal' })}
               className="w-full py-2.5 px-4 rounded-lg bg-white/10 hover:bg-white/15 text-white font-semibold text-xs flex items-center justify-center gap-2 border border-white/20 cursor-pointer"
             >
-              <span className="material-symbols-outlined text-base text-secondary-fixed">badge</span>
-              <span>Student Portal Login</span>
+              <span className="material-symbols-outlined text-base text-secondary-fixed">login</span>
+              <span>Student Login</span>
             </button>
           </div>
 
