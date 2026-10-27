@@ -36,6 +36,7 @@ export default function AdminDashboardPage() {
     syncPendingApprovals,
     syncCourses,
     syncUniversityPrograms,
+    syncGalleryItems,
     recordExpense,
     removeExpense,
     approveCert,
@@ -114,10 +115,38 @@ export default function AdminDashboardPage() {
     isActive: true,
   });
 
+  const DEFAULT_GALLERY_CATEGORIES = [
+    { id: 'all', label: 'All Campus Moments & Events' },
+    { id: 'classroom', label: 'Classroom & Labs' },
+    { id: 'pmkvy', label: 'PMKVY & Workshops' },
+    { id: 'felicitations', label: 'Ceremonies & Felicitations' },
+    { id: 'infrastructure', label: 'Campus & Infrastructure' },
+    { id: 'leadership', label: 'Leadership & Administration' },
+    { id: 'events', label: 'Community Events' },
+  ];
+
+  const allAdminCategories = useMemo(() => {
+    const defaultIds = new Set(DEFAULT_GALLERY_CATEGORIES.map((c) => c.id));
+    const extra = [];
+    (galleryItems || []).forEach((item) => {
+      if (item?.category && !defaultIds.has(item.category)) {
+        defaultIds.add(item.category);
+        extra.push({
+          id: item.category,
+          label: item.categoryLabel || item.category.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        });
+      }
+    });
+    return [...DEFAULT_GALLERY_CATEGORIES, ...extra];
+  }, [galleryItems]);
+
+  const [adminGalleryCategory, setAdminGalleryCategory] = useState('all');
   const [showAddGalleryModal, setShowAddGalleryModal] = useState(false);
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [customCategoryInput, setCustomCategoryInput] = useState('');
   const [newGalleryForm, setNewGalleryForm] = useState({
     title: '',
-    category: 'infrastructure',
+    category: 'classroom',
     location: 'Ghosi Central Campus',
     date: 'October 2026',
     badge: 'Event Photo',
@@ -162,6 +191,14 @@ export default function AdminDashboardPage() {
       const univRes = await courseService.getUniversityPrograms().catch(() => null);
       if (univRes?.data && Array.isArray(univRes.data)) {
         syncUniversityPrograms(univRes.data);
+      }
+
+      // Sync Photo Gallery Items
+      const galleryRes = await galleryService.getItems().catch(() => null);
+      if (galleryRes?.data && Array.isArray(galleryRes.data)) {
+        syncGalleryItems(galleryRes.data);
+      } else if (Array.isArray(galleryRes)) {
+        syncGalleryItems(galleryRes);
       }
     } catch (err) {
       console.warn('Dashboard live sync non-blocking error:', err.message);
@@ -481,9 +518,29 @@ export default function AdminDashboardPage() {
           throw new Error('Please select a valid photograph to publish.');
         }
 
+        let categoryKey = newGalleryForm.category || 'classroom';
+        let categoryLabel = '';
+
+        if (isCustomCategory) {
+          const trimmed = customCategoryInput.trim();
+          if (!trimmed) {
+            notify('error', 'Please enter a name for the custom category.');
+            return;
+          }
+          categoryLabel = trimmed;
+          categoryKey = trimmed
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          if (!categoryKey) {
+            categoryKey = 'events';
+          }
+        }
+
         const payload = {
           title: newGalleryForm.title.trim(),
-          category: newGalleryForm.category || 'infrastructure',
+          category: categoryKey,
+          categoryLabel: categoryLabel || undefined,
           location: newGalleryForm.location || 'Ghosi Central Campus',
           date: newGalleryForm.date || 'October 2026',
           badge: newGalleryForm.badge || 'Event Photo',
@@ -493,11 +550,14 @@ export default function AdminDashboardPage() {
           isFeatured: true,
         };
         const res = await galleryService.addItem(payload);
-        addNewGalleryItem(res?.data || payload);
+        const savedItem = { ...payload, ...(res?.data || {}) };
+        addNewGalleryItem(savedItem);
         setShowAddGalleryModal(false);
+        setIsCustomCategory(false);
+        setCustomCategoryInput('');
         setNewGalleryForm({
           title: '',
-          category: 'infrastructure',
+          category: 'classroom',
           location: 'Ghosi Central Campus',
           date: 'October 2026',
           badge: 'Event Photo',
@@ -510,6 +570,23 @@ export default function AdminDashboardPage() {
         notify('error', err.message || 'Failed to upload photo and publish record.');
       }
     }, 'Uploading photograph and publishing event record...');
+  };
+
+  const handleDeleteGalleryPhoto = async (item) => {
+    const id = item.id || item._id;
+    if (!id) return;
+    if (!window.confirm(`Are you sure you want to delete "${item.title || 'this photograph'}" from the gallery?`)) {
+      return;
+    }
+    await withLoader(async () => {
+      try {
+        await galleryService.deleteItem(id);
+        removeGalleryItem(id);
+        notify('success', 'Photograph deleted from gallery successfully.');
+      } catch (err) {
+        notify('error', err.message || 'Failed to delete photograph.');
+      }
+    }, 'Deleting photograph from central registry...');
   };
 
   const handleApprove = async (id, studentName) => {
@@ -2256,7 +2333,7 @@ export default function AdminDashboardPage() {
                         Photo Gallery & Event Media Management
                       </h2>
                       <p className="text-xs text-[#7A7168] mt-0.5">
-                        Manage celebrations, campus infrastructure, felicitations, and student convocations.
+                        Manage celebrations, campus infrastructure, felicitations, and student convocations across all official categories.
                       </p>
                     </div>
 
@@ -2270,45 +2347,106 @@ export default function AdminDashboardPage() {
                     </button>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {(!galleryItems || galleryItems.length === 0) ? (
-                      <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl">
-                        No photographs uploaded yet. Click "Add Event Photo" to publish institutional media.
-                      </div>
-                    ) : (
-                      galleryItems.map((item) => (
-                        <div
-                          key={item.id}
-                          className="bg-[#FAF8F4] rounded-xl overflow-hidden border border-[#E7E0D4] flex flex-col justify-between"
+                  {/* Category Filter Tabs */}
+                  <div className="flex flex-wrap items-center gap-2">
+                    {allAdminCategories.map((cat) => {
+                      const isActive = adminGalleryCategory === cat.id;
+                      const count = cat.id === 'all'
+                        ? (galleryItems || []).length
+                        : (galleryItems || []).filter((item) => item.category === cat.id).length;
+                      return (
+                        <button
+                          key={cat.id}
+                          type="button"
+                          onClick={() => setAdminGalleryCategory(cat.id)}
+                          className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all flex items-center gap-1.5 cursor-pointer ${
+                            isActive
+                              ? 'bg-[#065F46] text-white shadow-xs font-semibold'
+                              : 'bg-[#FAF8F4] text-[#7A7168] hover:bg-[#F3EFE7] hover:text-[#1C1917] border border-[#E7E0D4]'
+                          }`}
                         >
-                          <div className="h-36 bg-[#065F46] overflow-hidden relative">
-                            <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
-                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded-full bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono">
-                              {item.badge}
-                            </span>
-                          </div>
-
-                          <div className="p-3.5 flex-1 flex flex-col justify-between">
-                            <div>
-                              <h4 className="font-['Fraunces'] text-xs font-semibold text-[#1C1917] line-clamp-2">{item.title}</h4>
-                              <p className="text-[10px] text-[#7A7168] mt-1 font-mono">{item.location} • {item.date}</p>
-                            </div>
-
-                            <div className="pt-3 mt-3 border-t border-[#E7E0D4] flex justify-end">
-                              <button
-                                type="button"
-                                onClick={() => removeGalleryItem(item.id)}
-                                className="px-2 py-1 rounded text-rose-600 hover:bg-rose-50 text-xs font-semibold flex items-center gap-1 cursor-pointer"
-                              >
-                                <span className="material-symbols-outlined text-sm">delete</span>
-                                <span>Delete</span>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))
-                    )}
+                          <span>{cat.label}</span>
+                          <span
+                            className={`text-[10px] px-1.5 py-0.2 rounded-full font-mono ${
+                              isActive ? 'bg-white/20 text-white' : 'bg-[#E7E0D4] text-[#44403C]'
+                            }`}
+                          >
+                            {count}
+                          </span>
+                        </button>
+                      );
+                    })}
                   </div>
+
+                  {(() => {
+                    const displayedItems = (galleryItems || []).filter((item) => {
+                      if (adminGalleryCategory === 'all') return true;
+                      return item.category === adminGalleryCategory;
+                    });
+
+                    return (
+                      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {displayedItems.length === 0 ? (
+                          <div className="col-span-full p-8 text-center text-xs text-[#7A7168] bg-[#FAF8F4] rounded-xl border border-dashed border-[#E7E0D4]">
+                            No photographs found for this category. Click &quot;Add Event Photo&quot; to publish institutional media.
+                          </div>
+                        ) : (
+                          displayedItems.map((item) => {
+                            const catObj = allAdminCategories.find((c) => c.id === item.category);
+                            const categoryLabel = item.categoryLabel || (catObj ? catObj.label : (item.category ? item.category.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : 'General'));
+                            return (
+                              <div
+                                key={item.id || item._id}
+                                className="bg-[#FAF8F4] rounded-xl overflow-hidden border border-[#E7E0D4] flex flex-col justify-between group hover:border-[#065F46]/40 transition-all"
+                              >
+                                <div className="h-36 bg-[#065F46] overflow-hidden relative">
+                                  <img src={item.img} alt={item.title} className="w-full h-full object-cover" />
+                                  <span className="absolute top-2 left-2 px-2 py-0.5 rounded-md bg-[#065F46]/90 backdrop-blur-sm text-white text-[10px] font-medium shadow-xs">
+                                    {categoryLabel}
+                                  </span>
+                                  {item.badge && (
+                                    <span className="absolute top-2 right-2 px-2 py-0.5 rounded-md bg-black/60 backdrop-blur-sm text-white text-[10px] font-mono">
+                                      {item.badge}
+                                    </span>
+                                  )}
+                                </div>
+
+                                <div className="p-3.5 flex-1 flex flex-col justify-between">
+                                  <div>
+                                    <h4 className="font-['Fraunces'] text-xs font-semibold text-[#1C1917] line-clamp-2">
+                                      {item.title}
+                                    </h4>
+                                    <p className="text-[10px] text-[#7A7168] mt-1 font-mono">
+                                      {item.location || 'Central Campus'} • {item.date || 'Active Session'}
+                                    </p>
+                                    {item.desc && (
+                                      <p className="text-[11px] text-[#7A7168] mt-1.5 line-clamp-2 leading-relaxed">
+                                        {item.desc}
+                                      </p>
+                                    )}
+                                  </div>
+
+                                  <div className="pt-3 mt-3 border-t border-[#E7E0D4] flex items-center justify-between">
+                                    <span className="text-[10px] text-[#7A7168] font-mono">
+                                      ID: #{item.id || 'N/A'}
+                                    </span>
+                                    <button
+                                      type="button"
+                                      onClick={() => handleDeleteGalleryPhoto(item)}
+                                      className="px-2 py-1 rounded text-rose-600 hover:bg-rose-50 text-xs font-semibold flex items-center gap-1 cursor-pointer transition-colors"
+                                    >
+                                      <span className="material-symbols-outlined text-sm">delete</span>
+                                      <span>Delete</span>
+                                    </button>
+                                  </div>
+                                </div>
+                              </div>
+                            );
+                          })
+                        )}
+                      </div>
+                    );
+                  })()}
                 </div>
               )}
 
@@ -2841,7 +2979,11 @@ export default function AdminDashboardPage() {
               <h3 className="font-['Fraunces'] text-lg font-semibold text-[#1C1917]">Publish Event Photograph</h3>
               <button
                 type="button"
-                onClick={() => setShowAddGalleryModal(false)}
+                onClick={() => {
+                  setShowAddGalleryModal(false);
+                  setIsCustomCategory(false);
+                  setCustomCategoryInput('');
+                }}
                 className="p-1 rounded-lg hover:bg-[#F3EFE7] text-[#7A7168]"
               >
                 <span className="material-symbols-outlined">close</span>
@@ -2871,17 +3013,79 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Category</label>
-                  <select
-                    value={newGalleryForm.category}
-                    onChange={(e) => setNewGalleryForm({ ...newGalleryForm, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] focus:outline-none focus:border-[#065F46]"
-                  >
-                    <option value="infrastructure">Infrastructure</option>
-                    <option value="classroom">Classroom & Lab</option>
-                    <option value="felicitations">Felicitations & Awards</option>
-                    <option value="leadership">Leadership & Director</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-[#1C1917] block">
+                      Category *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomCategory(!isCustomCategory);
+                        if (!isCustomCategory) {
+                          setCustomCategoryInput('');
+                        }
+                      }}
+                      className="text-[11px] text-[#065F46] hover:underline font-semibold flex items-center gap-0.5 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-xs">
+                        {isCustomCategory ? 'list' : 'add_circle'}
+                      </span>
+                      <span>{isCustomCategory ? 'Standard' : '+ New Category'}</span>
+                    </button>
+                  </div>
+
+                  {!isCustomCategory ? (
+                    <select
+                      value={newGalleryForm.category}
+                      onChange={(e) => {
+                        if (e.target.value === '__new_custom__') {
+                          setIsCustomCategory(true);
+                          setCustomCategoryInput('');
+                        } else {
+                          setNewGalleryForm({ ...newGalleryForm, category: e.target.value });
+                        }
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] font-medium focus:outline-none focus:border-[#065F46]"
+                    >
+                      <optgroup label="Standard Categories">
+                        <option value="classroom">Classroom & Labs</option>
+                        <option value="pmkvy">PMKVY & Workshops</option>
+                        <option value="felicitations">Ceremonies & Felicitations</option>
+                        <option value="infrastructure">Campus & Infrastructure</option>
+                        <option value="leadership">Leadership & Administration</option>
+                        <option value="events">Community Events</option>
+                      </optgroup>
+                      {allAdminCategories.filter((c) => !DEFAULT_GALLERY_CATEGORIES.some((d) => d.id === c.id)).length > 0 && (
+                        <optgroup label="Custom Categories">
+                          {allAdminCategories
+                            .filter((c) => !DEFAULT_GALLERY_CATEGORIES.some((d) => d.id === c.id))
+                            .map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.label}
+                              </option>
+                            ))}
+                        </optgroup>
+                      )}
+                      <option value="__new_custom__" className="font-semibold text-[#065F46]">
+                        + Add New / Custom Category...
+                      </option>
+                    </select>
+                  ) : (
+                    <div className="space-y-1">
+                      <input
+                        type="text"
+                        required
+                        autoFocus
+                        placeholder="e.g. Sports Meet, Alumni Gala..."
+                        value={customCategoryInput}
+                        onChange={(e) => setCustomCategoryInput(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#065F46] text-[#1C1917] font-medium placeholder-[#7A7168] focus:outline-none focus:ring-1 focus:ring-[#065F46]"
+                      />
+                      <p className="text-[10px] text-[#7A7168]">
+                        Creates a new category tab on public Gallery page.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -2934,7 +3138,11 @@ export default function AdminDashboardPage() {
               <div className="pt-3 border-t border-[#E7E0D4] flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowAddGalleryModal(false)}
+                  onClick={() => {
+                    setShowAddGalleryModal(false);
+                    setIsCustomCategory(false);
+                    setCustomCategoryInput('');
+                  }}
                   className="px-4 py-2 rounded-lg text-[#7A7168] hover:bg-[#F3EFE7] cursor-pointer"
                 >
                   Cancel
