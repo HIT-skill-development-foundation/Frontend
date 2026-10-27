@@ -8,11 +8,6 @@ import ImageUploader from '../components/common/ImageUploader';
 
 const INITIAL_CENTRES = [
   { id: 'HIT-CEN-0001', name: 'Ghosi Main Campus (HQ)', district: 'Mau', address: 'Kasba Khas, Ghosi, Mau - 275105' },
-  { id: 'HIT-CEN-0002', name: 'HIT Mau City Center', district: 'Mau', address: 'Sahadatpura, Near Railway Crossing, Mau - 275101' },
-  { id: 'HIT-CEN-0003', name: 'HIT Kopaganj Branch', district: 'Mau', address: 'Main Market, Kopaganj - 275305' },
-  { id: 'HIT-CEN-0004', name: 'HIT Mohammadabad Gohna', district: 'Mau', address: 'Station Road, Mohammadabad - 276403' },
-  { id: 'HIT-CEN-0005', name: 'HIT Azamgarh District Hub', district: 'Azamgarh', address: 'Civil Lines, Near Collectrate, Azamgarh - 276001' },
-  { id: 'HIT-CEN-0006', name: 'HIT Lucknow Regional ATC', district: 'Lucknow', address: 'Alambagh Chauraha, VIP Road, Lucknow - 226005' },
 ];
 
 export default function AdmissionPage({ setActiveTab, setStudentData }) {
@@ -37,10 +32,12 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
     centreService.getCentres()
       .then((res) => {
         const list = Array.isArray(res?.data) ? res.data : (Array.isArray(res) ? res : []);
-        if (list && list.length > 0) {
-          setCentresList(list);
-          setFormData((prev) => ({ ...prev, centreId: prev.centreId || list[0].id || list[0]._id }));
-        }
+        const mainCampusCentres = list.filter(
+          (c) => c.id === 'HIT-CEN-0001' || (c.name && c.name.toLowerCase().includes('main campus'))
+        );
+        const finalCentres = mainCampusCentres.length > 0 ? mainCampusCentres : INITIAL_CENTRES;
+        setCentresList(finalCentres);
+        setFormData((prev) => ({ ...prev, centreId: prev.centreId || finalCentres[0].id || finalCentres[0]._id }));
       })
       .catch(() => null);
   }, []);
