@@ -32,10 +32,7 @@ export default function CoursesOfferPage() {
     });
   }, [dispatch]);
 
-  
   const [activeCatalogTab, setActiveCatalogTab] = useState('vocational');
-
-  
   const [filterDuration, setFilterDuration] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCourseModal, setSelectedCourseModal] = useState(null);
@@ -57,9 +54,10 @@ export default function CoursesOfferPage() {
     const formula = c.formula || '';
     const modules = Array.isArray(c.modules) ? c.modules : [];
     const duration = c.duration || '';
-    const q = searchQuery.toLowerCase();
+    const q = searchQuery.toLowerCase().trim();
 
     const matchesSearch =
+      !q ||
       name.toLowerCase().includes(q) ||
       code.toLowerCase().includes(q) ||
       formula.toLowerCase().includes(q) ||
@@ -79,8 +77,8 @@ export default function CoursesOfferPage() {
     const name = p.name || '';
     const code = p.code || '';
     const streams = p.streams || '';
-    if (!searchQuery) return true;
-    const q = searchQuery.toLowerCase();
+    if (!searchQuery.trim()) return true;
+    const q = searchQuery.toLowerCase().trim();
     return (
       name.toLowerCase().includes(q) ||
       code.toLowerCase().includes(q) ||
@@ -110,449 +108,485 @@ export default function CoursesOfferPage() {
     }, 2800);
   };
 
+  const formatFee = (c) => {
+    if (c.fee && typeof c.fee === 'string' && c.fee.trim() !== '') {
+      return c.fee;
+    }
+    if (typeof c.fee === 'number') {
+      return `₹${c.fee.toLocaleString('en-IN')}`;
+    }
+    if (c.feeAmount && typeof c.feeAmount === 'number') {
+      return `₹${c.feeAmount.toLocaleString('en-IN')}`;
+    }
+    return 'Subsidized Scheme';
+  };
+
   return (
-    <div className="flex flex-col w-full pb-space-xl">
-      
-      <div className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] to-[#0d4499] text-white py-space-sm px-margin-sm lg:px-margin-lg shadow-sm border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-space-sm text-label-sm font-label-sm">
-          <div className="flex items-center gap-space-xs">
-            <span className="text-white/70">Academic Catalog</span>
-            <span className="text-white/40">/</span>
-            <span className="text-secondary-fixed font-semibold">
+    <div className="flex flex-col w-full min-h-screen bg-[#f8fafc] text-[#0f172a]">
+      {/* Top Breadcrumb Navigation */}
+      <div className="w-full bg-[#001438] text-white/80 py-3 px-4 sm:px-6 lg:px-8 border-b border-white/10">
+        <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2 text-xs">
+          <div className="flex items-center gap-2">
+            <span className="text-white/60">Academic Offerings</span>
+            <span className="text-white/30">/</span>
+            <span className="text-emerald-400 font-medium">
               {activeCatalogTab === 'vocational'
-                ? 'Vocational & Computer IT Diploma Programs'
-                : 'University Programs (Online & Distance Mode)'}
+                ? 'Vocational IT Diploma Frameworks'
+                : 'UGC-Approved University Degree Programs'}
             </span>
           </div>
-          <span className="inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/10 text-secondary-fixed text-xs font-semibold border border-white/15">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-            Direct Admissions Open • Session 2026–2027
-          </span>
+          <div className="flex items-center gap-2 text-[11px] text-white/70">
+            <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
+            <span>Direct Admissions Open • Session 2026–2027</span>
+          </div>
         </div>
       </div>
 
-      
-      <section className="w-full bg-gradient-to-r from-[#000d29] via-[#072a6b] via-[#0d4499] to-[#1a62c6] text-white py-12 px-margin-sm lg:px-margin-lg shadow-inner">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-secondary-fixed text-xs font-bold uppercase tracking-wider mb-3">
-              <span className="material-symbols-outlined text-sm">school</span>
-              Comprehensive Academic Offerings
+      {/* Hero Header Section */}
+      <section className="w-full bg-[#00163d] text-white py-12 px-4 sm:px-6 lg:px-8 border-b border-slate-800">
+        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-end justify-between gap-8">
+          <div className="max-w-3xl space-y-3">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-white/10 text-emerald-300 text-xs font-semibold tracking-wider uppercase border border-white/15">
+              <span>ISO 9001:2015 Certified Curriculum</span>
+              <span className="text-white/40">•</span>
+              <span>Govt. Aligned Standards</span>
             </div>
-            <h1 className="font-headline text-3xl sm:text-5xl font-extrabold tracking-tight leading-tight">
-              Course Catalog & Syllabi
+            <h1 className="font-['Fraunces'] text-3xl sm:text-4xl md:text-5xl font-semibold tracking-tight text-white leading-tight">
+              Course Catalog & Academic Syllabi
             </h1>
-            <p className="font-body-lg text-sm sm:text-base text-surface-container-high mt-3 leading-relaxed">
-              Explore our certified vocational IT diplomas with hands-on lab projects, along with recognized
-              UGC-approved University Online & Distance degree programs for career acceleration.
+            <p className="text-sm sm:text-base text-slate-300 leading-relaxed font-normal">
+              Industry-calibrated computer IT diplomas with hands-on lab training, paired with UGC-recognized
+              Online & Distance University degree programs for civil examination readiness and employment.
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-3 shrink-0">
+          <div className="flex items-center gap-3 shrink-0">
             <button
               onClick={() => navigate('/student-portal')}
-              className="btn-primary h-11 px-6"
+              className="h-11 px-6 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-medium text-xs sm:text-sm transition-all shadow-sm flex items-center gap-2 cursor-pointer"
             >
-              <span>Enroll / Student Sign Up</span>
+              <span className="material-symbols-outlined text-base">how_to_reg</span>
+              <span>Student Sign Up / Admission</span>
             </button>
           </div>
         </div>
       </section>
 
-      
-      <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg -mt-6">
-        <div className="bg-surface-container-lowest p-2 rounded-2xl shadow-lg border border-outline-variant/30 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+      {/* Main Content Area */}
+      <main className="max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 py-8 space-y-6">
+        {/* Controls Card: Catalog Tabs & Search */}
+        <div className="bg-white rounded-xl border border-slate-200 p-3 sm:p-4 shadow-xs flex flex-col md:flex-row items-stretch md:items-center justify-between gap-4">
+          {/* Segmented Catalog Toggle */}
+          <div className="flex items-center p-1 bg-slate-100 rounded-lg border border-slate-200/80 gap-1">
             <button
+              type="button"
               onClick={() => {
                 setActiveCatalogTab('vocational');
                 setSearchQuery('');
               }}
-              className={`flex-1 sm:flex-none px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
                 activeCatalogTab === 'vocational'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-primary'
+                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span className="material-symbols-outlined text-lg">terminal</span>
-              <span>Vocational & IT Courses (9 Programs)</span>
+              <span className="material-symbols-outlined text-base text-slate-700">terminal</span>
+              <span>Vocational & IT Diplomas</span>
+              <span className="text-[11px] font-mono px-1.5 py-0.2 rounded bg-slate-200/80 text-slate-700">
+                {courses.length || 9}
+              </span>
             </button>
 
             <button
+              type="button"
               onClick={() => {
                 setActiveCatalogTab('university');
                 setSearchQuery('');
               }}
-              className={`flex-1 sm:flex-none px-5 py-3 rounded-xl text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 cursor-pointer ${
+              className={`px-4 py-2 rounded-md text-xs sm:text-sm font-medium transition-all flex items-center gap-2 cursor-pointer ${
                 activeCatalogTab === 'university'
-                  ? 'bg-primary text-white shadow-md'
-                  : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container hover:text-primary'
+                  ? 'bg-white text-slate-900 shadow-xs font-semibold'
+                  : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <span className="material-symbols-outlined text-lg">history_edu</span>
-              <span>University Program (Online & Distance)</span>
-              <span className="px-2 py-0.5 rounded-full bg-secondary-fixed text-primary text-[10px] font-extrabold uppercase">
+              <span className="material-symbols-outlined text-base text-slate-700">school</span>
+              <span>University Degrees</span>
+              <span className="text-[10px] uppercase font-bold tracking-wider px-1.5 py-0.2 rounded bg-emerald-100 text-emerald-800">
                 UGC Approved
               </span>
             </button>
           </div>
 
-          
-          <div className="relative w-full sm:w-80">
-            <span className="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-on-surface-variant text-lg">
+          {/* Search Bar */}
+          <div className="relative w-full md:w-80">
+            <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">
               search
             </span>
             <input
               type="text"
               placeholder={
                 activeCatalogTab === 'vocational'
-                  ? 'Search course (e.g. BCC, ADCA, Tally)...'
-                  : 'Search degree (e.g. BCA, MBA, BA)...'
+                  ? 'Search by code, title, or topic...'
+                  : 'Search by degree (BCA, MBA, BA)...'
               }
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-primary/30"
+              className="w-full pl-9 pr-8 py-2 text-xs sm:text-sm bg-slate-50 border border-slate-200 rounded-lg text-slate-900 placeholder:text-slate-400 focus:outline-none focus:bg-white focus:border-slate-400 transition-all"
             />
+            {searchQuery && (
+              <button
+                type="button"
+                onClick={() => setSearchQuery('')}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+              >
+                <span className="material-symbols-outlined text-sm">close</span>
+              </button>
+            )}
           </div>
         </div>
-      </div>
 
-      
-      
-      
-      {activeCatalogTab === 'vocational' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-          
-          <div className="flex items-center justify-between flex-wrap gap-3 pb-6 border-b border-outline-variant/20">
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <span className="text-xs font-bold text-on-surface-variant mr-1">Duration Filter:</span>
-              {[
-                { id: 'all', label: 'All (9 Programs)' },
-                { id: '12m', label: '12 Month (ADCA)' },
-                { id: '6m', label: '6 Month (CCA, DCPA, DTP)' },
-                { id: '3m', label: '3 Month (CCC, CHW, Tally, COA)' },
-                { id: '2m', label: '2 Month (BCC)' },
-              ].map((f) => (
-                <button
-                  key={f.id}
-                  onClick={() => setFilterDuration(f.id)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    filterDuration === f.id
-                      ? 'bg-secondary text-white shadow-xs'
-                      : 'bg-surface-container-low text-on-surface-variant hover:bg-surface-container'
-                  }`}
+        {/* ============================================================== */}
+        {/* TAB 1: VOCATIONAL & IT DIPLOMAS */}
+        {/* ============================================================== */}
+        {activeCatalogTab === 'vocational' && (
+          <div className="space-y-6">
+            {/* Duration Filters */}
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200">
+              <div className="flex items-center gap-1.5 flex-wrap text-xs">
+                <span className="text-slate-500 font-medium mr-1 text-xs">Duration:</span>
+                {[
+                  { id: 'all', label: 'All Durations' },
+                  { id: '12m', label: '12 Months (ADCA)' },
+                  { id: '6m', label: '6 Months (CCA, DCPA, DTP)' },
+                  { id: '3m', label: '3 Months (CCC, Tally, COA, CHW)' },
+                  { id: '2m', label: '2 Months (BCC)' },
+                ].map((f) => (
+                  <button
+                    key={f.id}
+                    type="button"
+                    onClick={() => setFilterDuration(f.id)}
+                    className={`px-3 py-1.5 rounded-lg text-xs font-medium transition-all cursor-pointer ${
+                      filterDuration === f.id
+                        ? 'bg-[#00163d] text-white font-semibold shadow-xs'
+                        : 'bg-white text-slate-600 hover:bg-slate-100 border border-slate-200'
+                    }`}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              <span className="text-xs text-slate-500 font-mono">
+                Showing <strong>{filteredVocationalCourses.length}</strong> of {courses.length || 9} Programs
+              </span>
+            </div>
+
+            {/* Course Grid */}
+            {isLoading ? (
+              <div className="py-16 text-center text-xs text-slate-500 bg-white rounded-xl border border-slate-200">
+                Loading academic syllabus catalog...
+              </div>
+            ) : filteredVocationalCourses.length === 0 ? (
+              <div className="py-16 text-center space-y-2 bg-white rounded-xl border border-dashed border-slate-300">
+                <span className="material-symbols-outlined text-3xl text-slate-400">search_off</span>
+                <p className="text-sm font-semibold text-slate-700">No matching vocational courses found</p>
+                <p className="text-xs text-slate-500">Try modifying your search keywords or duration filter.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {filteredVocationalCourses.map((course) => {
+                  const feeText = formatFee(course);
+                  const modulesList = Array.isArray(course.modules) ? course.modules : [];
+
+                  return (
+                    <div
+                      key={course.id || course.code}
+                      className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col justify-between hover:border-slate-400 hover:shadow-md transition-all duration-200"
+                    >
+                      <div className="space-y-4">
+                        {/* Card Top: Code, Duration, Track */}
+                        <div className="flex items-center justify-between gap-2 pb-3 border-b border-slate-100">
+                          <div className="flex items-center gap-2">
+                            <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-[#00163d] border border-slate-200">
+                              {course.code}
+                            </span>
+                            <span className="text-xs text-slate-500 flex items-center gap-1 font-medium">
+                              <span className="material-symbols-outlined text-sm text-slate-400">schedule</span>
+                              <span>{course.duration}</span>
+                            </span>
+                          </div>
+
+                          <span className="text-[11px] text-slate-500 font-medium">
+                            Eligibility: <strong className="text-slate-800">{course.eligibility || '10th / 12th'}</strong>
+                          </span>
+                        </div>
+
+                        {/* Title & Bundle formula */}
+                        <div>
+                          <h3 className="font-['Fraunces'] text-lg font-semibold text-slate-900 leading-snug">
+                            {course.name}
+                          </h3>
+                          {course.formula && (
+                            <p className="text-[11px] text-emerald-800 font-medium mt-1 font-mono">
+                              Framework Bundle: {course.formula}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Structured Curriculum Outline (No generic green checkmark icons) */}
+                        <div className="space-y-2 pt-2">
+                          <span className="text-[11px] font-semibold text-slate-500 uppercase tracking-wider block">
+                            Key Curriculum Outline:
+                          </span>
+                          <div className="space-y-1.5">
+                            {modulesList.slice(0, 4).map((mod, i) => (
+                              <div
+                                key={i}
+                                className="flex items-start gap-2.5 text-xs text-slate-700 leading-relaxed"
+                              >
+                                <span className="font-mono text-[10px] text-slate-400 font-semibold w-4 shrink-0 pt-0.5">
+                                  0{i + 1}
+                                </span>
+                                <span className="line-clamp-1">{mod}</span>
+                              </div>
+                            ))}
+                            {modulesList.length > 4 && (
+                              <div className="text-[11px] text-slate-500 font-medium pl-6 pt-0.5">
+                                + {modulesList.length - 4} additional technical units
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Card Footer: Fee & Action Buttons */}
+                      <div className="pt-5 mt-5 border-t border-slate-100 flex items-center justify-between gap-3">
+                        <div>
+                          <span className="text-[10px] text-slate-400 block uppercase font-semibold tracking-wider">
+                            Course Fee
+                          </span>
+                          <span className="font-mono text-sm font-bold text-slate-900">
+                            {feeText}
+                          </span>
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                          <button
+                            type="button"
+                            onClick={() => setSelectedCourseModal(course)}
+                            className="px-3 py-1.5 rounded-lg border border-slate-300 hover:border-slate-400 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors cursor-pointer"
+                          >
+                            Syllabus
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => navigate('/student-portal')}
+                            className="px-3.5 py-1.5 rounded-lg bg-[#00163d] hover:bg-[#072a6b] text-white text-xs font-medium transition-colors shadow-xs cursor-pointer"
+                          >
+                            Apply
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* ============================================================== */}
+        {/* TAB 2: UNIVERSITY DEGREE PROGRAMS */}
+        {/* ============================================================== */}
+        {activeCatalogTab === 'university' && (
+          <div className="space-y-6">
+            {/* Accreditation Header Card */}
+            <div className="bg-white rounded-xl border border-slate-200 p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6 shadow-xs">
+              <div className="space-y-2 max-w-3xl">
+                <div className="flex items-center gap-2">
+                  <span className="px-2.5 py-0.5 rounded bg-emerald-100 text-emerald-800 text-[11px] font-bold uppercase tracking-wider">
+                    UGC • DEB • AICTE Aligned
+                  </span>
+                  <span className="text-xs text-slate-500">Recognized Central & State Partner Universities</span>
+                </div>
+                <h2 className="font-['Fraunces'] text-xl sm:text-2xl font-semibold text-slate-900">
+                  Online & Distance University Degree Programs
+                </h2>
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed font-normal">
+                  HIT Foundation provides admission counseling, digital learning support, and document verification for
+                  accredited undergraduate and postgraduate degree courses. Valid for all Union and State public
+                  examination boards.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-3 shrink-0">
+                <div className="px-4 py-2 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                  <span className="font-mono text-base font-bold text-slate-900 block">100%</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Govt. Job Valid</span>
+                </div>
+                <div className="px-4 py-2 bg-slate-50 rounded-lg border border-slate-200 text-center">
+                  <span className="font-mono text-base font-bold text-emerald-700 block">LMS</span>
+                  <span className="text-[10px] text-slate-500 font-medium">Digital Study Material</span>
+                </div>
+              </div>
+            </div>
+
+            {/* University Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+              {filteredUnivPrograms.map((univ) => (
+                <div
+                  key={univ.id}
+                  className="bg-white rounded-xl border border-slate-200 p-5 flex flex-col justify-between hover:border-slate-400 hover:shadow-md transition-all duration-200"
                 >
-                  {f.label}
-                </button>
+                  <div className="space-y-3">
+                    <div className="flex items-center justify-between gap-2 pb-2.5 border-b border-slate-100">
+                      <span className="font-mono text-xs font-bold px-2 py-0.5 rounded bg-slate-100 text-[#00163d] border border-slate-200">
+                        {univ.code}
+                      </span>
+                      <span className="text-[11px] text-slate-500 font-mono">{univ.duration}</span>
+                    </div>
+
+                    <h3 className="font-['Fraunces'] text-base font-semibold text-slate-900 leading-snug">
+                      {univ.name}
+                    </h3>
+
+                    <div className="space-y-1.5 text-xs text-slate-600">
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Eligibility</span>
+                        <span className="font-medium text-slate-800">{univ.eligibility}</span>
+                      </div>
+                      <div>
+                        <span className="text-slate-400 block text-[10px] uppercase font-semibold">Program Level</span>
+                        <span className="font-medium text-slate-800">{univ.type}</span>
+                      </div>
+                    </div>
+
+                    {univ.streams && (
+                      <div className="pt-2">
+                        <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider block mb-1">
+                          Available Streams / Specializations:
+                        </span>
+                        <p className="text-xs text-slate-700 bg-slate-50 p-2.5 rounded-lg border border-slate-100 leading-relaxed font-medium">
+                          {univ.streams}
+                        </p>
+                      </div>
+                    )}
+                  </div>
+
+                  <div className="pt-4 mt-4 border-t border-slate-100 flex items-center justify-between gap-2">
+                    <div>
+                      <span className="text-[10px] text-slate-400 block uppercase font-semibold">Mode</span>
+                      <span className="text-xs font-medium text-slate-800">Online & Distance</span>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setSelectedUnivModal(univ);
+                        setInquiryData({ ...inquiryData, program: univ.name });
+                      }}
+                      className="px-3.5 py-1.5 rounded-lg bg-[#00163d] hover:bg-[#072a6b] text-white text-xs font-medium transition-colors shadow-xs cursor-pointer flex items-center gap-1"
+                    >
+                      <span>Inquire</span>
+                      <span className="material-symbols-outlined text-sm">arrow_forward</span>
+                    </button>
+                  </div>
+                </div>
               ))}
             </div>
-
-            <span className="text-xs text-on-surface-variant font-medium">
-              Showing <strong>{filteredVocationalCourses.length}</strong> Vocational Programs
-            </span>
           </div>
+        )}
+      </main>
 
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 pt-6">
-            {filteredVocationalCourses.map((course) => (
-              <div
-                key={course.id}
-                className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all border border-outline-variant/30 flex flex-col justify-between group relative overflow-hidden"
-              >
-                
-                {course.formula && (
-                  <div className="absolute top-0 inset-x-0 bg-primary/5 py-1 px-4 border-b border-outline-variant/20">
-                    <span className="text-[10px] font-bold text-primary truncate block">
-                      Bundle: {course.formula}
-                    </span>
-                  </div>
-                )}
-
-                <div className={course.formula ? 'pt-3' : ''}>
-                  
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-surface-container-low text-primary flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors shadow-xs">
-                      <span className="material-symbols-outlined text-2xl">{course.icon || 'terminal'}</span>
-                    </div>
-
-                    <div className="flex flex-col items-end gap-1">
-                      {course.popular && (
-                        <span className="px-2.5 py-0.5 rounded-full bg-tertiary-fixed text-on-tertiary-fixed text-[10px] font-bold uppercase tracking-wider">
-                          Popular Choice
-                        </span>
-                      )}
-                      <span className="px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 text-xs font-extrabold font-mono">
-                        {typeof course.fee === 'number' ? `₹${course.fee.toLocaleString('en-IN')}` : course.fee}
-                      </span>
-                    </div>
-                  </div>
-
-                  
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-mono text-xs font-extrabold px-2 py-0.5 rounded bg-surface-container text-secondary">
-                      {course.code}
-                    </span>
-                    <span className="text-xs text-on-surface-variant font-medium">
-                      Duration: <strong className="text-on-surface">{course.duration}</strong>
-                    </span>
-                  </div>
-
-                  
-                  <h3 className="font-headline text-lg font-bold text-primary group-hover:text-secondary transition-colors mb-1.5 leading-snug">
-                    {course.name}
-                  </h3>
-
-                  
-                  <p className="text-xs text-on-surface-variant font-medium mb-3">
-                    Eligibility: <span className="text-on-surface font-semibold">{course.eligibility}</span>
-                  </p>
-
-                  
-                  <div className="space-y-1.5 pt-3 border-t border-outline-variant/20 mb-4">
-                    <span className="text-[11px] font-bold text-on-surface-variant uppercase tracking-wider block">
-                      Curriculum Modules:
-                    </span>
-                    <ul className="text-xs space-y-1 text-on-surface">
-                      {course.modules &&
-                        course.modules.slice(0, 5).map((mod, i) => (
-                          <li key={i} className="flex items-center gap-2">
-                            <span className="material-symbols-outlined text-[15px] text-emerald-600 shrink-0">
-                              check_circle
-                            </span>
-                            <span className="truncate">{mod}</span>
-                          </li>
-                        ))}
-                      {course.modules && course.modules.length > 5 && (
-                        <li className="text-[11px] text-primary font-semibold pl-6">
-                          + {course.modules.length - 5} more topics included
-                        </li>
-                      )}
-                    </ul>
-                  </div>
-                </div>
-
-                
-                <div className="pt-4 border-t border-outline-variant/20 flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant block uppercase tracking-wider font-semibold">
-                      Total Course Fee
-                    </span>
-                    <span className="text-sm font-extrabold text-primary font-mono">
-                      {typeof course.fee === 'number' ? `₹${course.fee.toLocaleString('en-IN')}` : course.fee}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-1.5">
-                    <button
-                      onClick={() => setSelectedCourseModal(course)}
-                      className="btn-secondary h-8 px-3 text-xs"
-                    >
-                      <span>Syllabus</span>
-                    </button>
-                    <button
-                      onClick={() => navigate('/student-portal')}
-                      className="btn-primary h-8 px-3.5 text-xs"
-                    >
-                      <span>Apply</span>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      
-      
-      
-      {activeCatalogTab === 'university' && (
-        <div className="max-w-7xl mx-auto w-full px-margin-sm lg:px-margin-lg pt-6">
-          
-          <div className="bg-gradient-to-r from-secondary/15 via-primary/10 to-secondary/15 p-6 rounded-3xl border border-secondary/30 mb-8 flex flex-col md:flex-row items-center justify-between gap-6">
-            <div className="space-y-1">
-              <div className="flex items-center gap-2">
-                <span className="px-2.5 py-0.5 rounded-full bg-secondary text-white text-[11px] font-bold uppercase tracking-wider">
-                  Accredited Program
-                </span>
-                <span className="text-xs font-semibold text-primary">UGC • DEB • AICTE Aligned Universities</span>
-              </div>
-              <h2 className="font-headline text-xl sm:text-2xl font-extrabold text-primary">
-                University Programs (Online and Distance Mode)
-              </h2>
-              <p className="text-xs sm:text-sm text-on-surface-variant max-w-3xl leading-relaxed">
-                HIT Computer Education provides academic counseling and admission support for recognized Online & Distance
-                degree courses: <strong>BA, B.Com, BCA, MCA, MBA, PGDCA, MA, and Other Courses</strong>. Ideal for students, working
-                professionals, and civil services aspirants.
-              </p>
-            </div>
-
-            <div className="flex items-center gap-2 shrink-0">
-              <div className="text-center px-4 py-2 bg-white rounded-xl shadow-xs border border-outline-variant/30">
-                <span className="font-headline text-lg font-bold text-primary block">100%</span>
-                <span className="text-[10px] text-on-surface-variant font-medium">Valid for Govt. Jobs</span>
-              </div>
-              <div className="text-center px-4 py-2 bg-white rounded-xl shadow-xs border border-outline-variant/30">
-                <span className="font-headline text-lg font-bold text-secondary block">Digital</span>
-                <span className="text-[10px] text-on-surface-variant font-medium">LMS & E-Content</span>
-              </div>
-            </div>
-          </div>
-
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            {filteredUnivPrograms.map((univ) => (
-              <div
-                key={univ.id}
-                className="bg-surface-container-lowest rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all border border-outline-variant/30 flex flex-col justify-between group"
-              >
-                <div>
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="w-12 h-12 rounded-xl bg-surface-container-low text-secondary flex items-center justify-center group-hover:bg-secondary group-hover:text-white transition-colors shadow-xs">
-                      <span className="material-symbols-outlined text-2xl">{univ.icon || 'history_edu'}</span>
-                    </div>
-                    <span className="px-2 py-0.5 rounded bg-surface-container text-on-surface-variant text-[10px] font-bold">
-                      {univ.mode}
-                    </span>
-                  </div>
-
-                  <div className="flex items-center gap-2 mb-1.5">
-                    <span className="font-mono text-xs font-extrabold px-2 py-0.5 rounded bg-secondary/10 text-secondary">
-                      {univ.code}
-                    </span>
-                    <span className="text-[11px] text-on-surface-variant font-medium">{univ.duration}</span>
-                  </div>
-
-                  <h3 className="font-headline text-lg font-bold text-primary group-hover:text-secondary transition-colors mb-2 leading-snug">
-                    {univ.name}
-                  </h3>
-
-                  <div className="space-y-2 text-xs text-on-surface-variant pb-3 border-b border-outline-variant/20 mb-3">
-                    <p>
-                      <strong className="text-on-surface">Eligibility:</strong> {univ.eligibility}
-                    </p>
-                    <p>
-                      <strong className="text-on-surface">Type:</strong> {univ.type}
-                    </p>
-                  </div>
-
-                  <div>
-                    <span className="text-[10px] font-bold text-on-surface-variant uppercase tracking-wider block mb-1">
-                      Key Streams / Subjects:
-                    </span>
-                    <p className="text-xs text-on-surface font-medium leading-relaxed bg-surface-container-low p-2.5 rounded-xl">
-                      {univ.streams}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="pt-4 border-t border-outline-variant/20 mt-4 flex items-center justify-between gap-2">
-                  <div>
-                    <span className="text-[10px] text-on-surface-variant block uppercase font-semibold">Mode</span>
-                    <span className="text-xs font-bold text-primary">Distance / Online</span>
-                  </div>
-
-                  <button
-                    onClick={() => {
-                      setSelectedUnivModal(univ);
-                      setInquiryData({ ...inquiryData, program: univ.name });
-                    }}
-                    className="px-3.5 py-1.5 rounded-lg bg-secondary hover:bg-secondary/90 text-white text-xs font-bold transition-all flex items-center gap-1 shadow-xs cursor-pointer"
-                  >
-                    <span>Inquire Now</span>
-                    <span className="material-symbols-outlined text-sm">contact_support</span>
-                  </button>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
-      
-      
-      
+      {/* ============================================================== */}
+      {/* MODAL 1: DETAILED COURSE SYLLABUS */}
+      {/* ============================================================== */}
       {selectedCourseModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-surface-container-lowest max-w-xl w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-scale-up">
-            <div className="flex items-start justify-between pb-4 border-b border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-primary text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined text-2xl">{selectedCourseModal.icon || 'terminal'}</span>
-                </div>
-                <div>
-                  <span className="font-mono text-xs font-bold text-secondary">{selectedCourseModal.code}</span>
-                  <h3 className="font-headline text-lg sm:text-xl font-bold text-primary">
-                    {selectedCourseModal.name}
-                  </h3>
-                </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-white max-w-xl w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 animate-scale-up">
+            <div className="flex items-start justify-between pb-4 border-b border-slate-200">
+              <div>
+                <span className="font-mono text-xs font-bold text-slate-500 uppercase">
+                  {selectedCourseModal.code} • {selectedCourseModal.duration}
+                </span>
+                <h3 className="font-['Fraunces'] text-xl font-semibold text-slate-900 mt-1">
+                  {selectedCourseModal.name}
+                </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedCourseModal(null)}
-                className="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
             </div>
 
-            <div className="py-4 space-y-3 text-sm">
-              <div className="grid grid-cols-2 gap-3 bg-surface-container-low p-3.5 rounded-xl text-xs">
+            <div className="py-4 space-y-4 text-xs sm:text-sm">
+              <div className="grid grid-cols-2 gap-3 bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 text-xs">
                 <div>
-                  <span className="text-on-surface-variant block">Course Duration:</span>
-                  <span className="font-bold text-primary">{selectedCourseModal.duration}</span>
+                  <span className="text-slate-400 block font-medium">Program Duration:</span>
+                  <span className="font-semibold text-slate-800">{selectedCourseModal.duration}</span>
                 </div>
                 <div>
-                  <span className="text-on-surface-variant block">Entry Eligibility:</span>
-                  <span className="font-bold text-on-surface">{selectedCourseModal.eligibility}</span>
+                  <span className="text-slate-400 block font-medium">Entry Eligibility:</span>
+                  <span className="font-semibold text-slate-800">{selectedCourseModal.eligibility}</span>
                 </div>
                 <div>
-                  <span className="text-on-surface-variant block">Fee Schedule:</span>
-                  <span className="font-bold text-emerald-700">{selectedCourseModal.fee}</span>
+                  <span className="text-slate-400 block font-medium">Fee Schedule:</span>
+                  <span className="font-bold text-slate-900 font-mono">{formatFee(selectedCourseModal)}</span>
                 </div>
                 <div>
-                  <span className="text-on-surface-variant block">Certification:</span>
-                  <span className="font-bold text-primary">QR-Verifiable ISO 9001:2015</span>
+                  <span className="text-slate-400 block font-medium">Certification Standard:</span>
+                  <span className="font-semibold text-slate-800">ISO 9001:2015 QR-Verifiable</span>
                 </div>
               </div>
 
               {selectedCourseModal.formula && (
-                <div className="p-3 bg-primary/5 rounded-xl border border-primary/20 text-xs">
-                  <span className="text-[10px] font-bold text-primary block uppercase tracking-wider mb-0.5">
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-xs">
+                  <span className="text-[10px] font-semibold text-slate-500 uppercase tracking-wider block mb-0.5">
                     Syllabus Formulation:
                   </span>
-                  <p className="font-semibold text-primary">{selectedCourseModal.formula}</p>
+                  <p className="font-mono text-xs font-medium text-slate-800">{selectedCourseModal.formula}</p>
                 </div>
               )}
 
               <div>
-                <h4 className="font-headline text-sm font-bold text-primary mb-2">Detailed Syllabus & Modules:</h4>
+                <h4 className="font-semibold text-xs text-slate-900 uppercase tracking-wider mb-2">
+                  Complete Curriculum Modules & Topics:
+                </h4>
                 <div className="space-y-1.5 max-h-56 overflow-y-auto pr-1">
                   {selectedCourseModal.modules &&
                     selectedCourseModal.modules.map((m, idx) => (
-                      <div key={idx} className="flex items-center gap-2 p-2 rounded-lg bg-surface-container text-xs">
-                        <span className="w-5 h-5 rounded-full bg-primary/10 text-primary font-bold flex items-center justify-center text-[10px] shrink-0">
-                          {idx + 1}
+                      <div
+                        key={idx}
+                        className="flex items-center gap-2.5 p-2 rounded-lg bg-slate-50 border border-slate-100 text-xs text-slate-800"
+                      >
+                        <span className="font-mono text-[10px] font-bold text-slate-500 w-5 text-center shrink-0">
+                          {idx + 1 < 10 ? `0${idx + 1}` : idx + 1}
                         </span>
-                        <span className="font-medium text-on-surface">{m}</span>
+                        <span className="font-medium">{m}</span>
                       </div>
                     ))}
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-outline-variant/20 flex items-center justify-end gap-3">
+            <div className="pt-4 border-t border-slate-200 flex items-center justify-end gap-3">
               <button
+                type="button"
                 onClick={() => setSelectedCourseModal(null)}
-                className="px-4 py-2 rounded-xl text-xs font-semibold text-on-surface hover:bg-surface-container cursor-pointer"
+                className="px-4 py-2 rounded-lg text-xs font-medium text-slate-600 hover:bg-slate-100 cursor-pointer"
               >
                 Close
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setSelectedCourseModal(null);
                   navigate('/student-portal');
                 }}
-                className="px-5 py-2 rounded-xl bg-primary hover:bg-primary-container text-white text-xs font-bold shadow-md cursor-pointer flex items-center gap-1.5"
+                className="px-5 py-2 rounded-lg bg-[#00163d] hover:bg-[#072a6b] text-white text-xs font-medium shadow-xs cursor-pointer flex items-center gap-1.5"
               >
                 <span>Proceed to Student Registration</span>
                 <span className="material-symbols-outlined text-sm">arrow_forward</span>
@@ -562,27 +596,25 @@ export default function CoursesOfferPage() {
         </div>
       )}
 
-      
-      
-      
+      {/* ============================================================== */}
+      {/* MODAL 2: UNIVERSITY PROGRAM INQUIRY */}
+      {/* ============================================================== */}
       {selectedUnivModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-fade-in">
-          <div className="bg-surface-container-lowest max-w-lg w-full rounded-3xl p-6 sm:p-8 shadow-2xl border border-white/20 animate-scale-up">
-            <div className="flex items-start justify-between pb-4 border-b border-outline-variant/20">
-              <div className="flex items-center gap-3">
-                <div className="w-12 h-12 rounded-xl bg-secondary text-white flex items-center justify-center">
-                  <span className="material-symbols-outlined text-2xl">{selectedUnivModal.icon || 'history_edu'}</span>
-                </div>
-                <div>
-                  <span className="font-mono text-xs font-bold text-secondary">
-                    {selectedUnivModal.code} • {selectedUnivModal.mode}
-                  </span>
-                  <h3 className="font-headline text-lg font-bold text-primary">{selectedUnivModal.name}</h3>
-                </div>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-xs p-4">
+          <div className="bg-white max-w-lg w-full rounded-2xl p-6 sm:p-8 shadow-xl border border-slate-200 animate-scale-up">
+            <div className="flex items-start justify-between pb-4 border-b border-slate-200">
+              <div>
+                <span className="font-mono text-xs font-bold text-slate-500">
+                  {selectedUnivModal.code} • {selectedUnivModal.duration}
+                </span>
+                <h3 className="font-['Fraunces'] text-lg font-semibold text-slate-900 mt-0.5">
+                  {selectedUnivModal.name}
+                </h3>
               </div>
               <button
+                type="button"
                 onClick={() => setSelectedUnivModal(null)}
-                className="p-1 rounded-lg text-on-surface-variant hover:bg-surface-container cursor-pointer"
+                className="p-1 rounded-lg text-slate-400 hover:bg-slate-100 hover:text-slate-700 cursor-pointer"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
@@ -590,74 +622,74 @@ export default function CoursesOfferPage() {
 
             {inquirySubmitted ? (
               <div className="py-8 text-center space-y-3">
-                <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto text-2xl">
-                  <span className="material-symbols-outlined text-3xl">check_circle</span>
+                <div className="w-12 h-12 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center mx-auto text-2xl">
+                  <span className="material-symbols-outlined text-2xl">check</span>
                 </div>
-                <h4 className="font-headline text-lg font-bold text-primary">Inquiry Received Successfully!</h4>
-                <p className="text-xs text-on-surface-variant max-w-sm mx-auto">
+                <h4 className="font-['Fraunces'] text-lg font-semibold text-slate-900">Inquiry Registered</h4>
+                <p className="text-xs text-slate-600 max-w-sm mx-auto leading-relaxed">
                   Our University Admissions Counselor will contact you on <strong>{inquiryData.phone}</strong> with
-                  syllabus, partner university details, and fee structures.
+                  syllabus details and partner university guidelines.
                 </p>
               </div>
             ) : (
               <form onSubmit={handleInquirySubmit} className="py-4 space-y-3.5 text-xs">
-                <div className="p-3 bg-secondary/10 rounded-xl border border-secondary/20">
-                  <p className="text-secondary font-bold">
-                    University Program: {selectedUnivModal.name} ({selectedUnivModal.duration})
+                <div className="p-3 bg-slate-50 rounded-lg border border-slate-200">
+                  <p className="font-medium text-slate-900">
+                    Selected: {selectedUnivModal.name} ({selectedUnivModal.duration})
                   </p>
-                  <p className="text-on-surface-variant mt-0.5">Eligibility: {selectedUnivModal.eligibility}</p>
+                  <p className="text-slate-500 mt-0.5">Eligibility: {selectedUnivModal.eligibility}</p>
                 </div>
 
                 <div>
-                  <label className="font-bold text-on-surface-variant block mb-1">Your Full Name *</label>
+                  <label className="font-semibold text-slate-800 block mb-1">Your Full Name *</label>
                   <input
                     type="text"
                     required
-                    placeholder="Enter your name"
+                    placeholder="Enter candidate full name"
                     value={inquiryData.name}
                     onChange={(e) => setInquiryData({ ...inquiryData, name: e.target.value })}
-                    className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-secondary/20"
+                    className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-slate-400 focus:bg-white"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="font-bold text-on-surface-variant block mb-1">WhatsApp / Mobile *</label>
+                    <label className="font-semibold text-slate-800 block mb-1">WhatsApp / Contact No. *</label>
                     <input
                       type="tel"
                       required
-                      placeholder="10-digit number"
+                      placeholder="10-digit mobile number"
                       value={inquiryData.phone}
                       onChange={(e) => setInquiryData({ ...inquiryData, phone: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-secondary/20"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs font-mono focus:outline-none focus:border-slate-400 focus:bg-white"
                     />
                   </div>
                   <div>
-                    <label className="font-bold text-on-surface-variant block mb-1">Highest Qualification</label>
+                    <label className="font-semibold text-slate-800 block mb-1">Highest Qualification</label>
                     <input
                       type="text"
                       placeholder="e.g. 12th Pass, BA, B.Sc"
                       value={inquiryData.qualification}
                       onChange={(e) => setInquiryData({ ...inquiryData, qualification: e.target.value })}
-                      className="w-full px-3 py-2 rounded-xl bg-surface-container-low border border-outline-variant/30 text-xs focus:ring-2 focus:ring-secondary/20"
+                      className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-xs focus:outline-none focus:border-slate-400 focus:bg-white"
                     />
                   </div>
                 </div>
 
-                <div className="pt-3 border-t border-outline-variant/20 flex items-center justify-end gap-2.5">
+                <div className="pt-3 border-t border-slate-200 flex items-center justify-end gap-2.5">
                   <button
                     type="button"
                     onClick={() => setSelectedUnivModal(null)}
-                    className="px-4 py-2 rounded-xl text-on-surface font-semibold hover:bg-surface-container cursor-pointer"
+                    className="px-4 py-2 rounded-lg text-slate-600 font-medium hover:bg-slate-100 cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 rounded-xl bg-secondary hover:bg-secondary/90 text-white font-bold shadow-md cursor-pointer flex items-center gap-1.5"
+                    className="px-5 py-2 rounded-lg bg-[#00163d] hover:bg-[#072a6b] text-white font-medium shadow-xs cursor-pointer flex items-center gap-1.5"
                   >
-                    <span>Request Free Counseling Call</span>
-                    <span className="material-symbols-outlined text-sm">call</span>
+                    <span>Request Academic Counseling</span>
+                    <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   </button>
                 </div>
               </form>
