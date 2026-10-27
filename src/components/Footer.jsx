@@ -156,6 +156,16 @@ export default function Footer({ setActiveTab }) {
                 </button>
               </li>
               <li>
+                <button onClick={() => handleNav('/become-member', 'become_member')} className="hover:text-white transition-colors cursor-pointer text-left">
+                  Become a Member
+                </button>
+              </li>
+              <li>
+                <button onClick={() => handleNav('/#franchise-contact', 'franchise')} className="hover:text-white transition-colors cursor-pointer text-left">
+                  Franchise Inquiry (ATC)
+                </button>
+              </li>
+              <li>
                 <button onClick={() => handleNav('/receipt', 'receipt')} className="hover:text-white transition-colors cursor-pointer text-left">
                   Download 80G Receipt
                 </button>
@@ -166,7 +176,16 @@ export default function Footer({ setActiveTab }) {
 
         
         <div className="pt-8 flex flex-col md:flex-row items-center justify-between gap-4 text-xs text-slate-400">
-          <p>© 2026 H.I.T India Skill Development Foundation. All rights reserved.</p>
+          <p className="flex items-center gap-2">
+            <span>© 2026 H.I.T India Skill Development Foundation. All rights reserved.</span>
+            <span>•</span>
+            <button
+              onClick={() => handleNav('/admin', 'admin')}
+              className="hover:text-white transition-colors cursor-pointer text-slate-400 font-medium"
+            >
+              Staff / Admin Portal
+            </button>
+          </p>
           <p className="flex flex-wrap items-center gap-2 font-mono text-[11px] text-slate-400">
             <span>MCA CIN: U85300UP2021NPL148821</span>
             <span>•</span>
