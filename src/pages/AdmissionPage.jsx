@@ -250,51 +250,6 @@ export default function AdmissionPage({ setActiveTab, setStudentData }) {
         </div>
       </div>
 
-      {/* Institutional Hero Header */}
-      <section className="w-full bg-[#001438] text-white py-8 lg:py-10 px-4 lg:px-8 border-b border-white/10">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="flex items-start gap-4 max-w-3xl">
-            <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center shrink-0 text-secondary-fixed border border-white/15">
-              <span className="material-symbols-outlined text-3xl">how_to_reg</span>
-            </div>
-            <div className="flex flex-col">
-              <div className="flex items-center gap-2 mb-1.5">
-                <span className="px-2.5 py-0.5 rounded text-[11px] font-semibold tracking-wider bg-white/10 text-secondary-fixed border border-white/15">
-                  Academic Session 2026–2027
-                </span>
-                <span className="text-xs text-slate-300">
-                  Government Affiliated Skill Mission
-                </span>
-              </div>
-              <h1 className="font-['Fraunces'] text-2xl sm:text-4xl text-white font-bold leading-tight tracking-tight">
-                Online Admission & Registration Form
-              </h1>
-              <p className="text-xs sm:text-sm text-slate-300 mt-1.5 leading-relaxed">
-                Direct candidate registration under H.I.T Skill Development Foundation. Application Processing & Digital Ledger Fee: <strong className="text-white font-semibold">Flat ₹100.00</strong>. Permanent Roll Number and verifiable student credential generated immediately on transaction clearance.
-              </p>
-            </div>
-          </div>
-
-          <div className="flex flex-row md:flex-col items-center md:items-end justify-between bg-white/5 p-4 rounded-xl border border-white/10 min-w-[220px]">
-            <div className="flex flex-col text-left md:text-right">
-              <span className="text-[11px] text-white/60 uppercase tracking-wider font-semibold">
-                Accredited Body
-              </span>
-              <span className="font-['Fraunces'] text-lg text-white font-bold">
-                H.I.T Foundation
-              </span>
-              <span className="text-xs text-secondary-fixed">
-                NITI Aayog & ISO 9001:2015
-              </span>
-            </div>
-            <div className="flex items-center gap-1.5 mt-2 text-xs text-emerald-400 font-medium">
-              <span className="material-symbols-outlined text-sm">lock</span>
-              <span>256-Bit SSL Secured</span>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Multi-Step Progress Tracker */}
       <div className="w-full bg-surface-container-low py-3.5 px-4 lg:px-8 border-b border-outline-variant/20">
         <div className="max-w-7xl mx-auto">
