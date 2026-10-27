@@ -34,7 +34,7 @@ export default function GalleryPage() {
     };
   }, [selectedCategory]);
 
-  const categories = [
+  const DEFAULT_CATEGORIES = [
     { id: 'all', label: 'All Campus Moments & Events' },
     { id: 'classroom', label: 'Classroom & Labs' },
     { id: 'pmkvy', label: 'PMKVY & Workshops' },
@@ -43,6 +43,27 @@ export default function GalleryPage() {
     { id: 'leadership', label: 'Leadership & Administration' },
     { id: 'events', label: 'Community Events' },
   ];
+
+  const [categories, setCategories] = useState(DEFAULT_CATEGORIES);
+
+  useEffect(() => {
+    if (Array.isArray(items) && items.length > 0) {
+      setCategories((prev) => {
+        const existingIds = new Set(prev.map((c) => c.id));
+        const newCats = [];
+        items.forEach((item) => {
+          if (item?.category && !existingIds.has(item.category)) {
+            existingIds.add(item.category);
+            newCats.push({
+              id: item.category,
+              label: item.categoryLabel || item.category.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+            });
+          }
+        });
+        return newCats.length > 0 ? [...prev, ...newCats] : prev;
+      });
+    }
+  }, [items]);
 
   const filteredItems = items.filter((item) => {
     if (!item) return false;

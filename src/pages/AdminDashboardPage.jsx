@@ -115,7 +115,7 @@ export default function AdminDashboardPage() {
     isActive: true,
   });
 
-  const GALLERY_CATEGORIES = [
+  const DEFAULT_GALLERY_CATEGORIES = [
     { id: 'all', label: 'All Campus Moments & Events' },
     { id: 'classroom', label: 'Classroom & Labs' },
     { id: 'pmkvy', label: 'PMKVY & Workshops' },
@@ -125,8 +125,25 @@ export default function AdminDashboardPage() {
     { id: 'events', label: 'Community Events' },
   ];
 
+  const allAdminCategories = useMemo(() => {
+    const defaultIds = new Set(DEFAULT_GALLERY_CATEGORIES.map((c) => c.id));
+    const extra = [];
+    (galleryItems || []).forEach((item) => {
+      if (item?.category && !defaultIds.has(item.category)) {
+        defaultIds.add(item.category);
+        extra.push({
+          id: item.category,
+          label: item.categoryLabel || item.category.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()),
+        });
+      }
+    });
+    return [...DEFAULT_GALLERY_CATEGORIES, ...extra];
+  }, [galleryItems]);
+
   const [adminGalleryCategory, setAdminGalleryCategory] = useState('all');
   const [showAddGalleryModal, setShowAddGalleryModal] = useState(false);
+  const [isCustomCategory, setIsCustomCategory] = useState(false);
+  const [customCategoryInput, setCustomCategoryInput] = useState('');
   const [newGalleryForm, setNewGalleryForm] = useState({
     title: '',
     category: 'classroom',
@@ -501,9 +518,29 @@ export default function AdminDashboardPage() {
           throw new Error('Please select a valid photograph to publish.');
         }
 
+        let categoryKey = newGalleryForm.category || 'classroom';
+        let categoryLabel = '';
+
+        if (isCustomCategory) {
+          const trimmed = customCategoryInput.trim();
+          if (!trimmed) {
+            notify('error', 'Please enter a name for the custom category.');
+            return;
+          }
+          categoryLabel = trimmed;
+          categoryKey = trimmed
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+          if (!categoryKey) {
+            categoryKey = 'events';
+          }
+        }
+
         const payload = {
           title: newGalleryForm.title.trim(),
-          category: newGalleryForm.category || 'classroom',
+          category: categoryKey,
+          categoryLabel: categoryLabel || undefined,
           location: newGalleryForm.location || 'Ghosi Central Campus',
           date: newGalleryForm.date || 'October 2026',
           badge: newGalleryForm.badge || 'Event Photo',
@@ -516,6 +553,8 @@ export default function AdminDashboardPage() {
         const savedItem = { ...payload, ...(res?.data || {}) };
         addNewGalleryItem(savedItem);
         setShowAddGalleryModal(false);
+        setIsCustomCategory(false);
+        setCustomCategoryInput('');
         setNewGalleryForm({
           title: '',
           category: 'classroom',
@@ -2310,7 +2349,7 @@ export default function AdminDashboardPage() {
 
                   {/* Category Filter Tabs */}
                   <div className="flex flex-wrap items-center gap-2">
-                    {GALLERY_CATEGORIES.map((cat) => {
+                    {allAdminCategories.map((cat) => {
                       const isActive = adminGalleryCategory === cat.id;
                       const count = cat.id === 'all'
                         ? (galleryItems || []).length
@@ -2353,8 +2392,8 @@ export default function AdminDashboardPage() {
                           </div>
                         ) : (
                           displayedItems.map((item) => {
-                            const catObj = GALLERY_CATEGORIES.find((c) => c.id === item.category);
-                            const categoryLabel = catObj ? catObj.label : item.category || 'General';
+                            const catObj = allAdminCategories.find((c) => c.id === item.category);
+                            const categoryLabel = item.categoryLabel || (catObj ? catObj.label : (item.category ? item.category.replace(/[-_]/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase()) : 'General'));
                             return (
                               <div
                                 key={item.id || item._id}
@@ -2940,7 +2979,11 @@ export default function AdminDashboardPage() {
               <h3 className="font-['Fraunces'] text-lg font-semibold text-[#1C1917]">Publish Event Photograph</h3>
               <button
                 type="button"
-                onClick={() => setShowAddGalleryModal(false)}
+                onClick={() => {
+                  setShowAddGalleryModal(false);
+                  setIsCustomCategory(false);
+                  setCustomCategoryInput('');
+                }}
                 className="p-1 rounded-lg hover:bg-[#F3EFE7] text-[#7A7168]"
               >
                 <span className="material-symbols-outlined">close</span>
@@ -2970,19 +3013,79 @@ export default function AdminDashboardPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="font-semibold text-[#1C1917] block mb-1">Gallery Category *</label>
-                  <select
-                    value={newGalleryForm.category}
-                    onChange={(e) => setNewGalleryForm({ ...newGalleryForm, category: e.target.value })}
-                    className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] font-medium focus:outline-none focus:border-[#065F46]"
-                  >
-                    <option value="classroom">Classroom & Labs</option>
-                    <option value="pmkvy">PMKVY & Workshops</option>
-                    <option value="felicitations">Ceremonies & Felicitations</option>
-                    <option value="infrastructure">Campus & Infrastructure</option>
-                    <option value="leadership">Leadership & Administration</option>
-                    <option value="events">Community Events</option>
-                  </select>
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="font-semibold text-[#1C1917] block">
+                      Category *
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIsCustomCategory(!isCustomCategory);
+                        if (!isCustomCategory) {
+                          setCustomCategoryInput('');
+                        }
+                      }}
+                      className="text-[11px] text-[#065F46] hover:underline font-semibold flex items-center gap-0.5 cursor-pointer"
+                    >
+                      <span className="material-symbols-outlined text-xs">
+                        {isCustomCategory ? 'list' : 'add_circle'}
+                      </span>
+                      <span>{isCustomCategory ? 'Standard' : '+ New Category'}</span>
+                    </button>
+                  </div>
+
+                  {!isCustomCategory ? (
+                    <select
+                      value={newGalleryForm.category}
+                      onChange={(e) => {
+                        if (e.target.value === '__new_custom__') {
+                          setIsCustomCategory(true);
+                          setCustomCategoryInput('');
+                        } else {
+                          setNewGalleryForm({ ...newGalleryForm, category: e.target.value });
+                        }
+                      }}
+                      className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#E7E0D4] text-[#1C1917] font-medium focus:outline-none focus:border-[#065F46]"
+                    >
+                      <optgroup label="Standard Categories">
+                        <option value="classroom">Classroom & Labs</option>
+                        <option value="pmkvy">PMKVY & Workshops</option>
+                        <option value="felicitations">Ceremonies & Felicitations</option>
+                        <option value="infrastructure">Campus & Infrastructure</option>
+                        <option value="leadership">Leadership & Administration</option>
+                        <option value="events">Community Events</option>
+                      </optgroup>
+                      {allAdminCategories.filter((c) => !DEFAULT_GALLERY_CATEGORIES.some((d) => d.id === c.id)).length > 0 && (
+                        <optgroup label="Custom Categories">
+                          {allAdminCategories
+                            .filter((c) => !DEFAULT_GALLERY_CATEGORIES.some((d) => d.id === c.id))
+                            .map((c) => (
+                              <option key={c.id} value={c.id}>
+                                {c.label}
+                              </option>
+                            ))}
+                        </optgroup>
+                      )}
+                      <option value="__new_custom__" className="font-semibold text-[#065F46]">
+                        + Add New / Custom Category...
+                      </option>
+                    </select>
+                  ) : (
+                    <div className="space-y-1">
+                      <input
+                        type="text"
+                        required
+                        autoFocus
+                        placeholder="e.g. Sports Meet, Alumni Gala..."
+                        value={customCategoryInput}
+                        onChange={(e) => setCustomCategoryInput(e.target.value)}
+                        className="w-full px-3 py-2 rounded-lg bg-[#FAF8F4] border border-[#065F46] text-[#1C1917] font-medium placeholder-[#7A7168] focus:outline-none focus:ring-1 focus:ring-[#065F46]"
+                      />
+                      <p className="text-[10px] text-[#7A7168]">
+                        Creates a new category tab on public Gallery page.
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 <div>
@@ -3035,7 +3138,11 @@ export default function AdminDashboardPage() {
               <div className="pt-3 border-t border-[#E7E0D4] flex justify-end gap-3">
                 <button
                   type="button"
-                  onClick={() => setShowAddGalleryModal(false)}
+                  onClick={() => {
+                    setShowAddGalleryModal(false);
+                    setIsCustomCategory(false);
+                    setCustomCategoryInput('');
+                  }}
                   className="px-4 py-2 rounded-lg text-[#7A7168] hover:bg-[#F3EFE7] cursor-pointer"
                 >
                   Cancel
